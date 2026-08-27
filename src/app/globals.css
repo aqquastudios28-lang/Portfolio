@@ -1,26 +1,208 @@
 @import "tailwindcss";
 
+/* ============================================================
+   DESIGN TOKENS
+
+   Direction: technical editorial. Ink and bone, a visible
+   hairline grid, mono metadata, square corners.
+
+   ONE RULE, held everywhere: colour is interaction.
+   Orange marks hover, focus and current state. Nothing
+   decorative is allowed to use it — no glows, no coloured
+   punctuation, no accent for its own sake. The resting page
+   is achromatic so the work supplies every bit of colour.
+   ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Surfaces — warm-shifted, not neutral grey */
+  --ink: #0b0b0c;
+  --ink-2: #101011;
+  --ink-3: #161618;
+
+  /* The grid, made visible */
+  --rule: rgb(237 235 231 / 0.12);
+  --rule-strong: rgb(237 235 231 / 0.28);
+
+  /* Type */
+  --bone: #edebe7;
+  --bone-dim: #928e87;
+  --bone-faint: #605d58;
+
+  /* Interaction only */
+  --accent: #ff4a1c;
+
+  /* Square. Print has no rounded corners. */
+  --radius: 0px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-bone: var(--bone);
+  --color-bone-dim: var(--bone-dim);
+  --color-bone-faint: var(--bone-faint);
+  --color-accent: var(--accent);
+
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-jb), ui-monospace, SFMono-Regular, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ============================================================
+   BASE
+   ============================================================ */
+/* Must live in @layer base. Unlayered CSS outranks Tailwind's layered
+   utilities, so an unlayered reset here would silently kill every
+   border-bone / border-accent / border-transparent on the site. */
+@layer base {
+  * {
+    border-color: var(--rule);
   }
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--ink);
+  color: var(--bone);
+  font-family: var(--font-sans);
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   TYPE
+
+   Two families only: Archivo across display and text, JetBrains
+   Mono for metadata. Size and spacing carry the hierarchy, not
+   a third typeface.
+   ============================================================ */
+/* In @layer components so Tailwind utilities can still override any of
+   these — an unlayered .t-label would beat normal-case, lowercase, etc. */
+@layer components {
+  .t-display {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.9rem, 9.5vw, 8rem);
+    line-height: 0.86;
+    letter-spacing: -0.045em;
+  }
+
+  .t-h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.25rem, 5.6vw, 4.25rem);
+    line-height: 0.94;
+    letter-spacing: -0.04em;
+  }
+
+  .t-h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.6rem, 3vw, 2.25rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+  }
+
+  .t-h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.15rem;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+  }
+
+  .t-lead {
+    font-size: clamp(1.0625rem, 1.4vw, 1.1875rem);
+    line-height: 1.58;
+    color: var(--bone-dim);
+    text-wrap: pretty;
+  }
+
+  .t-body {
+    font-size: 0.9375rem;
+    line-height: 1.72;
+    color: var(--bone-dim);
+    text-wrap: pretty;
+  }
+
+  /* Metadata. Every label, index number and running head on the site. */
+  .t-label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--bone-faint);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ============================================================
+   MOTION
+
+   One feel, used everywhere: a short rise with no fade-in blur,
+   no scale, no bounce. Scoped to .js so a script failure leaves
+   the page plainly readable rather than blank.
+   ============================================================ */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.5s cubic-bezier(0.32, 0.72, 0, 1),
+    transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.js .reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ============================================================
+   GRID
+
+   The rules are structure, not ornament. A vertical hairline
+   marks the metadata column on wide screens.
+   ============================================================ */
+.rail {
+  display: grid;
+  gap: 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  .rail {
+    grid-template-columns: 9rem 1fr;
+    gap: 0 3.5rem;
+  }
 }
