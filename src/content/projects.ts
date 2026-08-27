@@ -2,198 +2,57 @@ import type { Project } from "./types";
 
 export const projects: Project[] = [
   {
-    slug: "roblox-interface-suite",
-    title: "Game Interface & Navigation Master Suite",
+    slug: "navigation-hub",
+    title: "Main Navigation Hub & Interface",
     summary:
-      "A complete modular Roblox UI design system featuring navigation hub, storefront, gacha rolls, stat upgrades, retention rewards, and settings.",
+      "A bold, high-contrast modal connecting players directly to core game modes, shops, and progression portals.",
     category: "Roblox UI",
     year: "2025",
-    role: "UI/UX Design, Visual Direction, Figma Component System",
-    tools: ["Figma", "Roblox Studio", "Photoshop", "Luau"],
+    role: "UI/UX Design, Visual Styling",
+    tools: ["Figma", "Photoshop", "Roblox Studio"],
     published: true,
     featured: true,
     cover: {
       src: "/media/projects/Index.png",
       kind: "image",
-      alt: "Roblox Game UI navigation hub displaying core game portals and actions",
+      alt: "Main Navigation Hub Modal",
       ratio: "4/3",
     },
     overview:
-      "Designed and built a cohesive, production-ready interface suite for Roblox experiences. The design system covers every primary touchpoint in the player journey: high-level navigation, currency monetization, transparent RNG mechanics, progression loops, daily retention calendars, and player accessibility settings.",
+      "Designed the primary navigation hub that greets players and acts as the central router for experience activities, portals, and inventory systems.",
     problem:
-      "Many Roblox game interfaces suffer from inconsistent visual styling, low legibility on small phone displays, and cluttered layouts that overwhelm players. The objective was to create a bold, vibrant, and tactile design language that maintains clear visual hierarchy, crisp readability, and satisfying feedback across all device form factors.",
+      "Main menus in Roblox often get buried or cluttered with secondary buttons. The goal was to build a clean, instantly readable index modal that directs player attention without hesitation.",
     process: [
       {
-        title: "Established unified visual tokens",
-        body: "Standardized thick comic outlines, glossy gradient fills, bevel highlights, header ribbons, and consistent close buttons across all modal screens.",
+        title: "Standardized visual frame language",
+        body: "Established thick black outlines, metallic bevels, and vibrant gradient backdrops that set the art direction for the entire game.",
       },
       {
-        title: "Designed mobile-friendly touch targets",
-        body: "Sized all buttons, purchase triggers, and tab selectors generously to ensure comfortable interaction on mobile screens with zero miss-taps.",
+        title: "Optimized mobile touch targets",
+        body: "Engineered large interactive portals and clear close triggers for seamless thumb reach on phones and tablets.",
       },
       {
-        title: "Engineered transparent monetization & odds UX",
-        body: "Structured shop and gacha interfaces with clear drop probabilities, tiered bundle pricing (Buy 1, Buy 3, Buy 10), and clear value props.",
-      },
-      {
-        title: "Created multi-state retention & progression flows",
-        body: "Designed 6-day daily reward loops with distinct Claim, Locked, and Claimed visual treatments alongside fast-action Buy Max upgrade controls.",
-      },
-      {
-        title: "Designed tactile feedback states",
-        body: "Created high-contrast glowing toggle switches and active button states that give immediate audio-visual confirmation.",
+        title: "Consistent brand header treatment",
+        body: "Created custom comic typography with high-contrast drop shadows and signature header badges.",
       },
     ],
     solution:
-      "A 9-frame modular UI system built with reusable Figma auto-layout components. The unified design language ensures instant familiarity as players transition from the main navigation hub into specialized sub-menus.",
-    gallery: [
-      {
-        src: "/media/projects/Index.png",
-        kind: "image",
-        alt: "Main interface index modal showing navigation options",
-        caption: "Main Index Hub — Master navigation screen connecting core experience modes.",
-        ratio: "4/3",
-      },
-      {
-        src: "/media/projects/Vendor.png",
-        kind: "image",
-        alt: "Vendor modal splitting into Gacha and Upgrades portals",
-        caption: "Vendor Hub — Economy gateway directing players to Gacha rolls or Stat Upgrades.",
-        ratio: "16/9",
-      },
-      {
-        src: "/media/projects/Gacha.png",
-        kind: "image",
-        alt: "Gacha rolling modal with normal rolls, premium rolls, and drop odds",
-        caption: "Gacha Rolling System — Transparent odds display with multi-roll buy options.",
-        ratio: "4/3",
-      },
-      {
-        src: "/media/projects/GemsShop.png",
-        kind: "image",
-        alt: "Gems currency shop modal showing tiered gem packs and pricing",
-        caption: "Gems Currency Store — Tiered gem purchasing packs with clean pricing hierarchy.",
-        ratio: "4/3",
-      },
-      {
-        src: "/media/projects/Pass.png",
-        kind: "image",
-        alt: "Gamepass and season pass shop modal",
-        caption: "Gamepass Store — Showcase for VIP perks, exclusive passes, and limited offers.",
-        ratio: "4/3",
-      },
-      {
-        src: "/media/projects/Upgrades@2x.png",
-        kind: "image",
-        alt: "Stat upgrades menu with Buy 1 and Buy Max bulk purchase options",
-        caption: "Stat Upgrades Menu — High-speed progression with dedicated Buy Max and Buy 1 triggers.",
-        ratio: "1/1",
-      },
-      {
-        src: "/media/projects/DailyRewards.png",
-        kind: "image",
-        alt: "6-day daily rewards calendar with claim and locked reward states",
-        caption: "Daily Retention Calendar — 6-day login progression with distinct visual claim states.",
-        ratio: "4/3",
-      },
-      {
-        src: "/media/projects/LeftSideBar.png",
-        kind: "image",
-        alt: "Left vertical sidebar navigation bar",
-        caption: "Left Quick-Nav Sidebar — Compact, persistent sidebar for fast modal summoning.",
-        ratio: "2/3",
-      },
-      {
-        src: "/media/projects/Settings.png",
-        kind: "image",
-        alt: "Settings modal with shadow and music glowing toggle switches",
-        caption: "Settings Menu — Tactile glowing toggle switches for visual and audio preferences.",
-        ratio: "2/3",
-      },
-    ],
+      "A central command modal with vivid visual cues, clear portal buttons, and responsive auto-layout scaling.",
+    gallery: [],
     outcome:
-      "All frames were built with strict component architecture in Figma, ready for pixel-perfect slice export and Luau implementation in Roblox Studio.",
+      "An intuitive launchpad that guides new and veteran players to active gameplay loops in seconds.",
     metrics: [
-      { value: "9 Frames", label: "Complete UI System" },
-      { value: "100%", label: "Vector Figma Assets" },
-      { value: "Mobile-Ready", label: "Touch-Optimized" },
+      { value: "Figma Vector", label: "Asset Format" },
+      { value: "Mobile-First", label: "Touch Design" },
+      { value: "High Contrast", label: "Visual Hierarchy" },
     ],
   },
 
   {
-    slug: "storefront-gamepass-system",
-    title: "Storefront, Gems & Gamepass System",
+    slug: "vendor-gateway",
+    title: "Vendor & Merchant Hub",
     summary:
-      "A complete monetization storefront featuring currency packs, VIP gamepasses, and merchant hubs.",
-    category: "Roblox UI",
-    year: "2025",
-    role: "UI/UX Design, Asset Creation",
-    tools: ["Figma", "Photoshop", "Roblox Studio"],
-    published: true,
-    featured: true,
-    cover: {
-      src: "/media/projects/GemsShop.png",
-      kind: "image",
-      alt: "Gems Currency Storefront showing tiered packs",
-      ratio: "4/3",
-    },
-    overview:
-      "Designed a full storefront and economy interface system for Roblox. Covers currency bundles, gamepasses, and merchant vendor hubs, built to drive clear monetization without dark patterns.",
-    problem:
-      "Storefronts often suffer from confusing pricing tiers and messy layout hierarchy. The goal was to make item values instantly legible and purchase flows frictionless.",
-    process: [
-      {
-        title: "Clear value visual hierarchy",
-        body: "Differentiated gem packs with distinct visual scaling, glowing borders, and bold currency values.",
-      },
-      {
-        title: "Prominent gamepass callouts",
-        body: "Designed distinct badges and benefit callouts for VIP and premium perks.",
-      },
-      {
-        title: "Streamlined vendor routing",
-        body: "Built the vendor portal screen to split player intent cleanly between rolling and deterministic upgrades.",
-      },
-    ],
-    solution:
-      "A high-contrast, colorful store design with distinct item frames, readable price tags, and clear purchase confirmations.",
-    gallery: [
-      {
-        src: "/media/projects/GemsShop.png",
-        kind: "image",
-        alt: "Gems Currency Shop",
-        caption: "Gems Shop — Multiple tiers with clear value propositions.",
-        ratio: "4/3",
-      },
-      {
-        src: "/media/projects/Pass.png",
-        kind: "image",
-        alt: "Gamepass and VIP Shop",
-        caption: "Pass Store — Clear feature listing and immediate purchase triggers.",
-        ratio: "4/3",
-      },
-      {
-        src: "/media/projects/Vendor.png",
-        kind: "image",
-        alt: "Vendor Hub",
-        caption: "Vendor Gateway — Direct routing to Gacha and Upgrades.",
-        ratio: "16/9",
-      },
-    ],
-    outcome:
-      "Delivered clean, modular shop frames with easily swappable prices, icons, and bundle banners.",
-    metrics: [
-      { value: "3 Modals", label: "Storefront Screens" },
-      { value: "High Contrast", label: "Visual Legibility" },
-      { value: "100%", label: "Scalable Vector UI" },
-    ],
-  },
-
-  {
-    slug: "gacha-rng-system",
-    title: "Gacha & RNG Rolling Interface",
-    summary:
-      "A transparent gacha roll system featuring normal & premium rolls, explicit odds, and bulk rolling.",
+      "A dual-portal merchant gateway routing player economy into randomized rolls and deterministic stat upgrades.",
     category: "Roblox UI",
     year: "2025",
     role: "UI/UX Design, System Architecture",
@@ -201,42 +60,81 @@ export const projects: Project[] = [
     published: true,
     featured: true,
     cover: {
-      src: "/media/projects/Gacha.png",
+      src: "/media/projects/Vendor.png",
       kind: "image",
-      alt: "Gacha Rolling System UI",
-      ratio: "4/3",
+      alt: "Vendor Hub Interface",
+      ratio: "16/9",
     },
     overview:
-      "Designed a complete Gacha rolling modal with dual currency support (in-game cash & premium robux/gems) and transparent odds breakdown.",
+      "Designed the primary merchant interface that cleanly divides player currency spend between luck-based Gacha rolls and deterministic stat Upgrades.",
     problem:
-      "Many gacha interfaces conceal drop rates or make multi-rolling clunky. Players need instant clarity on what they can win and how much rolls cost.",
+      "Consolidating multiple progression systems into one NPC without creating a confusing, multi-tabbed monster menu.",
     process: [
       {
-        title: "Transparent drop rate table",
-        body: "Placed color-coded rarity tiers (Common to Celestial) directly beside the roll view.",
+        title: "Split intent into two clear pillars",
+        body: "Divided the interface into two bold, distinct cards (Blue for Gacha, Green for Upgrades) with representative iconography.",
       },
       {
-        title: "Multi-tier bulk rolling",
-        body: "Designed 1x, 3x, and 10x roll buttons to accommodate both early-game and endgame players.",
+        title: "Shopping bag header badge",
+        body: "Crafted a 3D-styled shopping bag vector anchor to give the NPC modal clear thematic identity.",
       },
       {
-        title: "Dual roll tracks",
-        body: "Separated standard in-game currency rolls from premium luck-boosted rolls.",
+        title: "Immediate call-to-actions",
+        body: "Gave each portal high-visibility typography and glowing interior borders for quick touch selection.",
       },
     ],
     solution:
-      "A two-tier roll modal with prominent dice iconography, vivid cyber grid textures, and high-visibility action buttons.",
-    gallery: [
+      "A streamlined two-choice gateway that reduces decision fatigue and speeds up in-game economy interactions.",
+    gallery: [],
+    outcome:
+      "Players instantly recognize where to spend in-game currency based on their immediate progression goals.",
+    metrics: [
+      { value: "2 Choices", label: "Core Economy Paths" },
+      { value: "100%", label: "Scalable Vector UI" },
+      { value: "Zero Friction", label: "Navigation Flow" },
+    ],
+  },
+
+  {
+    slug: "gacha-rng-system",
+    title: "Gacha & RNG Roll System",
+    summary:
+      "A transparent roll system featuring normal & premium rolls, explicit odds breakdown, and bulk purchasing.",
+    category: "Roblox UI",
+    year: "2025",
+    role: "UI/UX Design, Economy Architecture",
+    tools: ["Figma", "Roblox Studio"],
+    published: true,
+    featured: true,
+    cover: {
+      src: "/media/projects/Gacha.png",
+      kind: "image",
+      alt: "Gacha Roll System UI",
+      ratio: "4/3",
+    },
+    overview:
+      "Designed a complete Gacha rolling modal with dual currency support (in-game cash & premium robux/gems) and transparent odds breakdown from Common to Celestial.",
+    problem:
+      "Many Roblox gacha interfaces hide drop rates or make multi-rolling tedious. Players need instant clarity on odds, pricing, and roll quantities.",
+    process: [
       {
-        src: "/media/projects/Gacha.png",
-        kind: "image",
-        alt: "Gacha roll screen",
-        caption: "Gacha Roll System with transparent odds and multi-purchase triggers.",
-        ratio: "4/3",
+        title: "Dedicated odds transparency panel",
+        body: "Placed color-coded rarity tiers directly beside the roll view so players never have to guess drop probabilities.",
+      },
+      {
+        title: "Multi-tier bulk rolling",
+        body: "Designed 1x, 3x, and 10x roll buttons to accommodate both early-game and endgame rolling loops.",
+      },
+      {
+        title: "Dual currency tracks",
+        body: "Clearly separated standard in-game currency rolls from premium luck-boosted rolls with distinct yellow/blue color palettes.",
       },
     ],
+    solution:
+      "A high-energy two-tier roll modal with prominent 3D dice iconography, cyber grid textures, and high-visibility action buttons.",
+    gallery: [],
     outcome:
-      "An engaging, fair, and high-energy roll interface tailored for maximum player satisfaction.",
+      "An engaging, fair, and high-converting roll interface tailored for player excitement and clarity.",
     metrics: [
       { value: "7 Tiers", label: "Rarity Breakdown" },
       { value: "1x / 3x / 10x", label: "Multi-Roll Options" },
@@ -245,16 +143,110 @@ export const projects: Project[] = [
   },
 
   {
-    slug: "progression-stat-upgrades",
-    title: "Progression & Stat Upgrades System",
+    slug: "gems-currency-shop",
+    title: "Gems Currency Storefront",
     summary:
-      "High-efficiency player upgrade menu with level counters, stat icons, and Buy Max shortcuts.",
+      "A clean in-game economy store offering tiered gem packages with prominent value scaling.",
+    category: "Roblox UI",
+    year: "2025",
+    role: "UI/UX Design, Monetization UX",
+    tools: ["Figma", "Photoshop"],
+    published: true,
+    featured: true,
+    cover: {
+      src: "/media/projects/GemsShop.png",
+      kind: "image",
+      alt: "Gems Currency Shop",
+      ratio: "4/3",
+    },
+    overview:
+      "Designed the primary premium currency shop displaying tiered gem bundles, pricing badges, and purchase triggers without misleading dark patterns.",
+    problem:
+      "Currency shops often feel cluttered and fail to communicate per-pack value effectively.",
+    process: [
+      {
+        title: "Distinct pack scaling",
+        body: "Created visual differentiation between small starter packs and high-value bulk chests.",
+      },
+      {
+        title: "Legible price tags",
+        body: "Ensured Robux costs and gem quantities read immediately on both mobile and desktop screens.",
+      },
+      {
+        title: "Clean checkout triggers",
+        body: "Designed high-contrast purchase buttons with green action states and clear confirmation affordance.",
+      },
+    ],
+    solution:
+      "A vibrant storefront with organized product cards, high-contrast price pills, and custom gem chest artwork.",
+    gallery: [],
+    outcome:
+      "A trustworthy and high-converting storefront that makes currency acquisition clear and rewarding.",
+    metrics: [
+      { value: "Transparent", label: "Pricing Structure" },
+      { value: "Mobile-Ready", label: "Touch Targets" },
+      { value: "Custom", label: "Illustrative Badges" },
+    ],
+  },
+
+  {
+    slug: "gamepass-vip-store",
+    title: "Gamepass & VIP Perks Store",
+    summary:
+      "A showcase modal highlighting VIP benefits, permanent multipliers, and exclusive abilities.",
+    category: "Roblox UI",
+    year: "2025",
+    role: "UI/UX Design, Visual Styling",
+    tools: ["Figma", "Photoshop"],
+    published: true,
+    featured: true,
+    cover: {
+      src: "/media/projects/Pass.png",
+      kind: "image",
+      alt: "Gamepass and VIP Shop",
+      ratio: "4/3",
+    },
+    overview:
+      "Designed a dedicated Gamepass and Season Pass modal showcasing perks, auto-features, and exclusive gameplay boosts.",
+    problem:
+      "Communicating the tangible gameplay benefit of multiple gamepasses in a compact, readable interface.",
+    process: [
+      {
+        title: "Feature callout cards",
+        body: "Structured each pass card with bold title, benefit description, and direct Buy button.",
+      },
+      {
+        title: "Thematic header illustration",
+        body: "Designed custom vector header ribbons with golden star accents to denote premium status.",
+      },
+      {
+        title: "Single-tap acquisition flow",
+        body: "Ensured pass buttons trigger standard Roblox marketplace purchase prompts smoothly.",
+      },
+    ],
+    solution:
+      "A polished VIP showcase with rich card borders, distinctive iconography, and effortless purchase interactions.",
+    gallery: [],
+    outcome:
+      "Elevated premium gamepass presentation resulting in high player trust and clear value understanding.",
+    metrics: [
+      { value: "VIP Perks", label: "Benefit Focus" },
+      { value: "Retina 2x", label: "Vector Assets" },
+      { value: "High Contrast", label: "Visual Clarity" },
+    ],
+  },
+
+  {
+    slug: "stat-upgrades",
+    title: "Stat Upgrades & Level Progression",
+    summary:
+      "High-efficiency player upgrade menu with level counters, custom stat icons, and Buy Max shortcuts.",
     category: "Roblox UI",
     year: "2025",
     role: "UI/UX Design, Iconography",
     tools: ["Figma", "Photoshop"],
     published: true,
-    featured: false,
+    featured: true,
     cover: {
       src: "/media/projects/Upgrades@2x.png",
       kind: "image",
@@ -264,7 +256,7 @@ export const projects: Project[] = [
     overview:
       "Designed a dedicated character upgrade and stat boost interface. Built for rapid upgrading with custom illustrative icons for inventory slots, luck boosts, and mutation modifiers.",
     problem:
-      "Upgrade menus often force players into repetitive clicking. Designing effective bulk-buy shortcuts while preserving clear progression state was essential.",
+      "Upgrade menus often force players into repetitive single-clicking. Providing bulk-buy shortcuts while preserving clear progression state was essential.",
     process: [
       {
         title: "Custom illustrative icons",
@@ -276,20 +268,12 @@ export const projects: Project[] = [
       },
       {
         title: "Clear level progress indicators",
-        body: "Integrated explicit level limits (e.g. 1/24, 1/100, 1/10) to communicate endgame depth.",
+        body: "Integrated explicit level limits (e.g. 1/24, 1/100, 1/10) to communicate depth.",
       },
     ],
     solution:
       "An energizing green grid upgrade board with high-contrast item rows and bold purchase triggers.",
-    gallery: [
-      {
-        src: "/media/projects/Upgrades@2x.png",
-        kind: "image",
-        alt: "Stat Upgrades Full Resolution View",
-        caption: "Stat Upgrades — Illustrated badges, level counters, and Buy Max buttons.",
-        ratio: "1/1",
-      },
-    ],
+    gallery: [],
     outcome:
       "A fast, clean stat enhancement interface that scales gracefully from early progression to max level.",
     metrics: [
@@ -300,16 +284,16 @@ export const projects: Project[] = [
   },
 
   {
-    slug: "daily-rewards-retention",
-    title: "Daily Rewards & Retention Calendar",
+    slug: "daily-rewards",
+    title: "6-Day Daily Rewards Calendar",
     summary:
-      "A 6-day reward calendar loop with clear Claim, Locked, and Claimed visual treatments.",
+      "A retention calendar loop with clear Claim, Locked, and Claimed visual treatments and a Day 6 hero prize.",
     category: "Roblox UI",
     year: "2025",
-    role: "UI/UX Design, Visual Styling",
+    role: "UI/UX Design, Retention Design",
     tools: ["Figma", "Roblox Studio"],
     published: true,
-    featured: false,
+    featured: true,
     cover: {
       src: "/media/projects/DailyRewards.png",
       kind: "image",
@@ -336,15 +320,7 @@ export const projects: Project[] = [
     ],
     solution:
       "A clean 6-slot grid with high-contrast button states, subtle gradient backdrops, and bold typography.",
-    gallery: [
-      {
-        src: "/media/projects/DailyRewards.png",
-        kind: "image",
-        alt: "Daily Rewards System",
-        caption: "Daily Rewards Calendar — 6-day retention flow with prominent Day 6 grand prize slot.",
-        ratio: "4/3",
-      },
-    ],
+    gallery: [],
     outcome:
       "A proven retention driver designed to maximize recurring daily player engagement.",
     metrics: [
@@ -355,7 +331,7 @@ export const projects: Project[] = [
   },
 
   {
-    slug: "settings-system-controls",
+    slug: "settings-controls",
     title: "Settings & System Controls",
     summary:
       "A compact settings modal featuring high-contrast glowing toggle switches for audio and graphics.",
@@ -364,7 +340,7 @@ export const projects: Project[] = [
     role: "UI/UX Design, Interaction Design",
     tools: ["Figma", "Roblox Studio"],
     published: true,
-    featured: false,
+    featured: true,
     cover: {
       src: "/media/projects/Settings.png",
       kind: "image",
@@ -391,28 +367,60 @@ export const projects: Project[] = [
     ],
     solution:
       "A modern, tactile settings sheet with unmistakable switch states and quick-dismiss controls.",
-    gallery: [
-      {
-        src: "/media/projects/Settings.png",
-        kind: "image",
-        alt: "Settings Modal with toggle switches",
-        caption: "Settings Modal — Tactile glowing toggle switches for shadows and music.",
-        ratio: "2/3",
-      },
-      {
-        src: "/media/projects/LeftSideBar.png",
-        kind: "image",
-        alt: "Quick navigation left sidebar",
-        caption: "Left Sidebar Menu — Persistent quick-access bar for summoning settings and menus.",
-        ratio: "2/3",
-      },
-    ],
+    gallery: [],
     outcome:
       "A polished, accessible settings menu that elevates the overall quality feel of the game.",
     metrics: [
       { value: "Tactile", label: "Glow Switches" },
       { value: "Instant", label: "State Feedback" },
       { value: "Compact", label: "Mobile-First" },
+    ],
+  },
+
+  {
+    slug: "quicknav-sidebar",
+    title: "Quick-Access Navigation Sidebar",
+    summary:
+      "A compact vertical sidebar menu designed for immediate single-tap access to primary menus.",
+    category: "Roblox UI",
+    year: "2025",
+    role: "UI/UX Design, HUD Architecture",
+    tools: ["Figma", "Roblox Studio"],
+    published: true,
+    featured: true,
+    cover: {
+      src: "/media/projects/LeftSideBar.png",
+      kind: "image",
+      alt: "Quick Navigation Left Sidebar",
+      ratio: "2/3",
+    },
+    overview:
+      "Designed a persistent left-hand HUD sidebar allowing players to quickly toggle shop, settings, codes, and inventory modals during active gameplay.",
+    problem:
+      "Persistent HUD buttons can clutter the screen or collide with Roblox default touch controls. The sidebar needed to be compact, tactile, and non-intrusive.",
+    process: [
+      {
+        title: "Vertical stacking efficiency",
+        body: "Positioned icons vertically along the left screen edge within natural thumb reach.",
+      },
+      {
+        title: "Icon clarity & badges",
+        body: "Created high-contrast icon glyphs with distinct background pills for instant identification.",
+      },
+      {
+        title: "Subtle active state feedback",
+        body: "Designed glowing border responses when a menu is currently summoned.",
+      },
+    ],
+    solution:
+      "A clean, lightweight sidebar that preserves screen real estate while putting essential controls one tap away.",
+    gallery: [],
+    outcome:
+      "An unobtrusive HUD element that streamlines moment-to-moment game navigation.",
+    metrics: [
+      { value: "1-Tap", label: "Menu Summoning" },
+      { value: "Thumb-Zone", label: "Mobile Ergonomics" },
+      { value: "Lightweight", label: "HUD Footprint" },
     ],
   },
 ];

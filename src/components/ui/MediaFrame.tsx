@@ -31,8 +31,8 @@ export function MediaFrame({
     <figure className={cn("m-0", className)}>
       <div
         className={cn(
-          "relative w-full overflow-hidden border bg-ink-2",
-          empty ? "border-dashed border-rule" : "border-rule",
+          "relative w-full overflow-hidden bg-transparent",
+          empty && "border border-dashed border-rule bg-ink-2",
         )}
         style={{ aspectRatio: ratio }}
       >
@@ -48,7 +48,7 @@ export function MediaFrame({
             unoptimized
             sizes={sizes}
             priority={priority}
-            className="object-contain p-2 sm:p-4 transition-transform duration-300 group-hover:scale-[1.02]"
+            className="object-contain transition-transform duration-300 group-hover:scale-[1.02] drop-shadow-2xl"
           />
         )}
       </div>
