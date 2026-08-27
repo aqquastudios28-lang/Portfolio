@@ -30,7 +30,7 @@ export type Project = {
   /** One line shown under the title in the grid. */
   summary: string;
   /** Grouping used by the filter on /work. */
-  category: "Client work" | "Systems" | "Concept";
+  category: "UI Design" | "Client work" | "Systems" | "Concept" | string;
   year: string;
   role: string;
   /** Rendered as small mono chips. */

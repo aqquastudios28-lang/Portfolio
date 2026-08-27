@@ -45,9 +45,10 @@ export function MediaFrame({
             src={media.src}
             alt={media.alt}
             fill
+            unoptimized
             sizes={sizes}
             priority={priority}
-            className="object-cover"
+            className="object-contain p-2 sm:p-4 transition-transform duration-300 group-hover:scale-[1.02]"
           />
         )}
       </div>

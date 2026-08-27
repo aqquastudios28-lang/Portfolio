@@ -1,453 +1,418 @@
 import type { Project } from "./types";
 
-/* ============================================================================
-   EXAMPLE CONTENT — REPLACE BEFORE PUBLISHING
-   ----------------------------------------------------------------------------
-   Every project below is scaffolding: plausible structure with placeholder
-   copy and illustrative metrics. Swap in your real work, your real numbers,
-   and your real screenshots. Do not ship these figures as if they were yours.
-
-   ADDING MEDIA
-   1. Drop files in  public/media/projects/<slug>/
-   2. Set  src: "/media/projects/<slug>/hero.png"
-   3. Use  kind: "video"  for .mp4/.webm loops (convert GIFs to mp4 — far smaller)
-   Any slot left with  src: ""  renders a labelled placeholder frame instead.
-   ============================================================================ */
-
 export const projects: Project[] = [
   {
-    slug: "game-ui-suite",
-    title: "Simulator Game UI & Economy Suite",
+    slug: "roblox-interface-suite",
+    title: "Game Interface & Navigation Master Suite",
     summary:
-      "A complete cartoon-style Roblox UI system spanning vendor shop, gacha rolling, stat upgrades, daily rewards, and settings.",
-    category: "Systems",
+      "A complete modular Roblox UI design system featuring navigation hub, storefront, gacha rolls, stat upgrades, retention rewards, and settings.",
+    category: "Roblox UI",
     year: "2025",
-    role: "UI/UX Design, Visual Assets, Layout Architecture",
+    role: "UI/UX Design, Visual Direction, Figma Component System",
     tools: ["Figma", "Roblox Studio", "Photoshop", "Luau"],
     published: true,
     featured: true,
     cover: {
-      src: "/media/projects/game-ui-suite/vendor.png",
+      src: "/media/projects/Index.png",
       kind: "image",
-      alt: "Roblox Vendor hub modal displaying Gacha and Upgrades entry options",
-      ratio: "16/9",
+      alt: "Roblox Game UI navigation hub displaying core game portals and actions",
+      ratio: "4/3",
     },
     overview:
-      "A complete interface suite designed for a fast-paced Roblox simulator experience. The system encompasses core player engagement loops: economy interaction through the Vendor hub, randomized Gacha rolling with transparent odds, player stat upgrades with multi-purchase options, a 6-day retention daily rewards calendar, and accessible settings controls.",
+      "Designed and built a cohesive, production-ready interface suite for Roblox experiences. The design system covers every primary touchpoint in the player journey: high-level navigation, currency monetization, transparent RNG mechanics, progression loops, daily retention calendars, and player accessibility settings.",
     problem:
-      "Roblox simulator interfaces often suffer from visual clutter, unreadable drop rates, and clunky mobile touch targets. The design challenge was to establish high visual polish with bold silhouettes, high-contrast modal frames, and immediate tactile feedback while keeping every mechanic intuitive on both mobile and desktop screens.",
+      "Many Roblox game interfaces suffer from inconsistent visual styling, low legibility on small phone displays, and cluttered layouts that overwhelm players. The objective was to create a bold, vibrant, and tactile design language that maintains clear visual hierarchy, crisp readability, and satisfying feedback across all device form factors.",
     process: [
       {
-        title: "Built a cohesive cartoony design system",
-        body: "Defined consistent border weights, bevels, header ribbons, vibrant gradient fills, and comic typography across all five modal windows for instant visual recognition.",
+        title: "Established unified visual tokens",
+        body: "Standardized thick comic outlines, glossy gradient fills, bevel highlights, header ribbons, and consistent close buttons across all modal screens.",
       },
       {
-        title: "Engineered transparent odds & economy UX",
-        body: "Structured the Gacha interface with explicit drop rates and tiered pricing (Buy 1, Buy 3, Buy 10) so players always know their exact odds and costs.",
+        title: "Designed mobile-friendly touch targets",
+        body: "Sized all buttons, purchase triggers, and tab selectors generously to ensure comfortable interaction on mobile screens with zero miss-taps.",
       },
       {
-        title: "Designed high-efficiency upgrade menus",
-        body: "Built the Upgrades interface with dedicated 'Buy Max' and 'Buy 1' action buttons alongside distinct icons for Slots, Luck, and Mutation to streamline progression.",
+        title: "Engineered transparent monetization & odds UX",
+        body: "Structured shop and gacha interfaces with clear drop probabilities, tiered bundle pricing (Buy 1, Buy 3, Buy 10), and clear value props.",
       },
       {
-        title: "Implemented a 6-day retention calendar",
-        body: "Created a daily rewards loop with clear visual states for Claim, Locked, and Claimed days to drive recurring daily player logins.",
+        title: "Created multi-state retention & progression flows",
+        body: "Designed 6-day daily reward loops with distinct Claim, Locked, and Claimed visual treatments alongside fast-action Buy Max upgrade controls.",
       },
       {
-        title: "Polished tactile micro-interactions",
-        body: "Designed high-contrast glowing toggle switches for shadows and audio settings with unmistakable green/red status recognition.",
+        title: "Designed tactile feedback states",
+        body: "Created high-contrast glowing toggle switches and active button states that give immediate audio-visual confirmation.",
       },
     ],
     solution:
-      "A unified 5-part interface system featuring bold color-coding, high-contrast frames, clear typography hierarchies, and generous mobile touch targets. The Vendor hub serves as the master navigation layer, routing players seamlessly between luck-based Gacha rolls and deterministic stat Upgrades.",
+      "A 9-frame modular UI system built with reusable Figma auto-layout components. The unified design language ensures instant familiarity as players transition from the main navigation hub into specialized sub-menus.",
     gallery: [
       {
-        src: "/media/projects/game-ui-suite/gacha.png",
+        src: "/media/projects/Index.png",
         kind: "image",
-        alt: "Gacha roll interface showing normal roll, premium roll, and item drop probabilities",
-        caption: "Gacha Roll System — Transparent odds, multi-tier bulk rolling, and dual currency support.",
+        alt: "Main interface index modal showing navigation options",
+        caption: "Main Index Hub — Master navigation screen connecting core experience modes.",
         ratio: "4/3",
       },
       {
-        src: "/media/projects/game-ui-suite/upgrades.jpg",
+        src: "/media/projects/Vendor.png",
         kind: "image",
-        alt: "Upgrades menu showing stat boost cards, level counters, and Buy Max buttons",
-        caption: "Upgrades Menu — Fast level-ups with Buy 1 / Buy Max bulk purchase options and clear stat icons.",
+        alt: "Vendor modal splitting into Gacha and Upgrades portals",
+        caption: "Vendor Hub — Economy gateway directing players to Gacha rolls or Stat Upgrades.",
         ratio: "16/9",
       },
       {
-        src: "/media/projects/game-ui-suite/daily-rewards.png",
+        src: "/media/projects/Gacha.png",
         kind: "image",
-        alt: "Daily rewards calendar grid showing claimable and locked reward days",
-        caption: "Daily Rewards Loop — 6-day retention calendar with distinct Claim, Locked, and Claimed states.",
+        alt: "Gacha rolling modal with normal rolls, premium rolls, and drop odds",
+        caption: "Gacha Rolling System — Transparent odds display with multi-roll buy options.",
         ratio: "4/3",
       },
       {
-        src: "/media/projects/game-ui-suite/settings.png",
+        src: "/media/projects/GemsShop.png",
         kind: "image",
-        alt: "Settings modal showing graphic shadow toggles and audio toggles with glowing feedback",
-        caption: "Settings Modal — High-contrast glowing toggle switches for audio and visual preferences.",
-        ratio: "3/4",
+        alt: "Gems currency shop modal showing tiered gem packs and pricing",
+        caption: "Gems Currency Store — Tiered gem purchasing packs with clean pricing hierarchy.",
+        ratio: "4/3",
       },
       {
-        src: "/media/projects/game-ui-suite/vendor.png",
+        src: "/media/projects/Pass.png",
         kind: "image",
-        alt: "Vendor modal split between Gacha and Upgrades portals",
-        caption: "Vendor Hub — Primary gateway splitting core economy into Gacha and deterministic Upgrades.",
-        ratio: "16/9",
+        alt: "Gamepass and season pass shop modal",
+        caption: "Gamepass Store — Showcase for VIP perks, exclusive passes, and limited offers.",
+        ratio: "4/3",
+      },
+      {
+        src: "/media/projects/Upgrades@2x.png",
+        kind: "image",
+        alt: "Stat upgrades menu with Buy 1 and Buy Max bulk purchase options",
+        caption: "Stat Upgrades Menu — High-speed progression with dedicated Buy Max and Buy 1 triggers.",
+        ratio: "1/1",
+      },
+      {
+        src: "/media/projects/DailyRewards.png",
+        kind: "image",
+        alt: "6-day daily rewards calendar with claim and locked reward states",
+        caption: "Daily Retention Calendar — 6-day login progression with distinct visual claim states.",
+        ratio: "4/3",
+      },
+      {
+        src: "/media/projects/LeftSideBar.png",
+        kind: "image",
+        alt: "Left vertical sidebar navigation bar",
+        caption: "Left Quick-Nav Sidebar — Compact, persistent sidebar for fast modal summoning.",
+        ratio: "2/3",
+      },
+      {
+        src: "/media/projects/Settings.png",
+        kind: "image",
+        alt: "Settings modal with shadow and music glowing toggle switches",
+        caption: "Settings Menu — Tactile glowing toggle switches for visual and audio preferences.",
+        ratio: "2/3",
       },
     ],
     outcome:
-      "Delivered a complete, production-ready Figma UI kit with reusable components, responsive auto-layout structures, and clean visual assets ready for direct Luau implementation in Roblox Studio.",
+      "All frames were built with strict component architecture in Figma, ready for pixel-perfect slice export and Luau implementation in Roblox Studio.",
     metrics: [
-      { value: "5 Screens", label: "Core UI Modals" },
-      { value: "100%", label: "Figma Vector Assets" },
-      { value: "Mobile-First", label: "Touch Target Scaling" },
+      { value: "9 Frames", label: "Complete UI System" },
+      { value: "100%", label: "Vector Figma Assets" },
+      { value: "Mobile-Ready", label: "Touch-Optimized" },
     ],
   },
+
   {
-    slug: "ascend-tycoon-hud",
-    title: "Ascend Tycoon — HUD & progression",
+    slug: "storefront-gamepass-system",
+    title: "Storefront, Gems & Gamepass System",
     summary:
-      "Rebuilt the core heads-up display around a single readable progression loop.",
-    category: "Client work",
+      "A complete monetization storefront featuring currency packs, VIP gamepasses, and merchant hubs.",
+    category: "Roblox UI",
     year: "2025",
-    role: "UI/UX design, Luau implementation",
-    tools: ["Figma", "Roblox Studio", "Luau", "Fusion"],
+    role: "UI/UX Design, Asset Creation",
+    tools: ["Figma", "Photoshop", "Roblox Studio"],
     published: true,
     featured: true,
     cover: {
-      src: "",
+      src: "/media/projects/GemsShop.png",
       kind: "image",
-      alt: "Ascend Tycoon heads-up display showing cash counter, rebirth meter and quest tracker",
-      ratio: "16/9",
+      alt: "Gems Currency Storefront showing tiered packs",
+      ratio: "4/3",
     },
     overview:
-      "Ascend Tycoon had grown from a weekend prototype into a live experience with six progression systems competing for the same corner of the screen. Players could not tell what to do next, and the rebirth mechanic — the thing that drove long-term retention — was effectively invisible.",
+      "Designed a full storefront and economy interface system for Roblox. Covers currency bundles, gamepasses, and merchant vendor hubs, built to drive clear monetization without dark patterns.",
     problem:
-      "The HUD had accumulated eleven persistent elements. Nothing had priority, so everything shouted equally. On a phone in portrait, four of those elements overlapped the touch controls entirely. New players in playtests consistently missed the rebirth meter, and three of five could not say what their current objective was after two minutes of play.",
+      "Storefronts often suffer from confusing pricing tiers and messy layout hierarchy. The goal was to make item values instantly legible and purchase flows frictionless.",
     process: [
       {
-        title: "Audited every persistent element",
-        body: "Catalogued all eleven HUD items against how often a player actually needed them. Five turned out to be reference information that belonged in a menu, not permanently on screen.",
+        title: "Clear value visual hierarchy",
+        body: "Differentiated gem packs with distinct visual scaling, glowing borders, and bold currency values.",
       },
       {
-        title: "Mapped the real attention budget",
-        body: "Recorded playtest footage and marked where players actually looked. The top-left and bottom-centre were near-dead zones during active play; the top-right carried almost all the glances.",
+        title: "Prominent gamepass callouts",
+        body: "Designed distinct badges and benefit callouts for VIP and premium perks.",
       },
       {
-        title: "Rebuilt around one primary loop",
-        body: "Established a strict hierarchy: current objective first, currency second, everything else demoted to a summonable panel. One element gets to be loud at any moment.",
-      },
-      {
-        title: "Designed for the smallest screen first",
-        body: "Laid out the whole system at phone-portrait dimensions with the touch-control safe zones blocked out, then let it breathe upward to tablet and desktop rather than cramming a desktop layout down.",
-      },
-      {
-        title: "Shipped behind a flag and measured",
-        body: "Rolled the new HUD to a slice of live traffic alongside the old one so the progression numbers could be compared honestly rather than argued about.",
+        title: "Streamlined vendor routing",
+        body: "Built the vendor portal screen to split player intent cleanly between rolling and deterministic upgrades.",
       },
     ],
     solution:
-      "A three-tier hierarchy. Tier one is the active objective, anchored top-right where players already look, with a progress fill that reads at a glance without a number. Tier two is currency and rebirth, grouped into a single unit so they are understood as related rather than competing. Tier three is everything else, collapsed into one summonable panel. The rebirth meter became a persistent arc around the currency cluster — always visible, never in the way.",
+      "A high-contrast, colorful store design with distinct item frames, readable price tags, and clear purchase confirmations.",
     gallery: [
       {
-        src: "",
+        src: "/media/projects/GemsShop.png",
         kind: "image",
-        alt: "Before and after comparison of the Ascend Tycoon HUD layout",
-        caption: "Before and after — eleven persistent elements reduced to four.",
-        ratio: "16/9",
-      },
-      {
-        src: "",
-        kind: "video",
-        alt: "Screen recording of the rebirth meter filling and triggering its completion state",
-        caption:
-          "Rebirth arc feedback. The completion state had to feel earned without blocking play.",
-        ratio: "16/9",
-      },
-      {
-        src: "",
-        kind: "image",
-        alt: "The HUD laid out at phone portrait, tablet and desktop dimensions",
-        caption:
-          "Same system across three form factors. Phone portrait drove every decision.",
+        alt: "Gems Currency Shop",
+        caption: "Gems Shop — Multiple tiers with clear value propositions.",
         ratio: "4/3",
+      },
+      {
+        src: "/media/projects/Pass.png",
+        kind: "image",
+        alt: "Gamepass and VIP Shop",
+        caption: "Pass Store — Clear feature listing and immediate purchase triggers.",
+        ratio: "4/3",
+      },
+      {
+        src: "/media/projects/Vendor.png",
+        kind: "image",
+        alt: "Vendor Hub",
+        caption: "Vendor Gateway — Direct routing to Gacha and Upgrades.",
+        ratio: "16/9",
       },
     ],
     outcome:
-      "New players identified their current objective reliably in follow-up playtests, and the rebirth mechanic stopped being something players discovered by accident. The component library built for this rework now backs the other two titles at the studio.",
+      "Delivered clean, modular shop frames with easily swappable prices, icons, and bundle banners.",
     metrics: [
-      { value: "11 → 4", label: "Persistent HUD elements" },
-      { value: "+18%", label: "Day-1 retention" },
-      { value: "2.4×", label: "Rebirth discovery rate" },
+      { value: "3 Modals", label: "Storefront Screens" },
+      { value: "High Contrast", label: "Visual Legibility" },
+      { value: "100%", label: "Scalable Vector UI" },
     ],
   },
 
   {
-    slug: "modular-inventory",
-    title: "Modular inventory & loadout system",
-    summary: "A grid system that stays legible from six items to six hundred.",
-    category: "Systems",
+    slug: "gacha-rng-system",
+    title: "Gacha & RNG Rolling Interface",
+    summary:
+      "A transparent gacha roll system featuring normal & premium rolls, explicit odds, and bulk rolling.",
+    category: "Roblox UI",
     year: "2025",
-    role: "System design, component library",
-    tools: ["Figma", "Roblox Studio", "Luau", "Roact"],
+    role: "UI/UX Design, System Architecture",
+    tools: ["Figma", "Roblox Studio"],
     published: true,
     featured: true,
     cover: {
-      src: "",
+      src: "/media/projects/Gacha.png",
       kind: "image",
-      alt: "Modular inventory grid showing item tiles, rarity borders and an equipped loadout panel",
-      ratio: "16/9",
+      alt: "Gacha Rolling System UI",
+      ratio: "4/3",
     },
     overview:
-      "A reusable inventory system built to be dropped into multiple experiences. The brief was scale: it had to look deliberate holding six starter items and stay navigable holding several hundred after months of play.",
+      "Designed a complete Gacha rolling modal with dual currency support (in-game cash & premium robux/gems) and transparent odds breakdown.",
     problem:
-      "Most Roblox inventories are designed at the size they launch with. They work for a week. Then the item count triples, the grid becomes an undifferentiated wall of icons, and players resort to scrolling blindly. The failure is not visual — it is that nothing encodes relative importance, so every item costs the same amount of attention to skip.",
+      "Many gacha interfaces conceal drop rates or make multi-rolling clunky. Players need instant clarity on what they can win and how much rolls cost.",
     process: [
       {
-        title: "Stress-tested at realistic scale",
-        body: "Built the first prototype populated with four hundred items rather than a tidy dozen. Most layout ideas that looked good at twelve fell apart immediately.",
+        title: "Transparent drop rate table",
+        body: "Placed color-coded rarity tiers (Common to Celestial) directly beside the roll view.",
       },
       {
-        title: "Encoded rarity structurally, not just chromatically",
-        body: "Rarity drives border weight, corner treatment and tile density — not only colour. Roughly one in twelve players cannot rely on the colour channel alone, and colour also loses against busy item art.",
+        title: "Multi-tier bulk rolling",
+        body: "Designed 1x, 3x, and 10x roll buttons to accommodate both early-game and endgame players.",
       },
       {
-        title: "Made filtering the primary interaction",
-        body: "At scale, browsing is a lost cause. Filter and sort became the main affordance, sitting above the grid rather than hidden behind an icon.",
-      },
-      {
-        title: "Built it as tokens and components",
-        body: "Shipped as a documented library — tile, grid, filter bar, detail drawer, loadout slot — so the next game gets the system rather than a copy-paste of the screens.",
+        title: "Dual roll tracks",
+        body: "Separated standard in-game currency rolls from premium luck-boosted rolls.",
       },
     ],
     solution:
-      "A density-adaptive grid. Tile size responds to viewport and item count, so a sparse inventory renders large, generous tiles and a full one tightens without ever dropping below the minimum readable touch target. Rarity reads through border weight and corner geometry first, colour second. The filter bar is persistent and its active state is unmissable, because the most common failure mode is a player forgetting a filter is on.",
+      "A two-tier roll modal with prominent dice iconography, vivid cyber grid textures, and high-visibility action buttons.",
     gallery: [
       {
-        src: "",
+        src: "/media/projects/Gacha.png",
         kind: "image",
-        alt: "Inventory grid at sparse and dense item counts side by side",
-        caption: "Twelve items versus four hundred. Same system, adapted density.",
-        ratio: "16/9",
-      },
-      {
-        src: "",
-        kind: "video",
-        alt: "Screen recording of filtering and sorting the inventory grid",
-        caption: "Filtering is the primary interaction, not a hidden secondary one.",
-        ratio: "16/9",
-      },
-      {
-        src: "",
-        kind: "image",
-        alt: "Component library sheet showing tile states, rarity treatments and spacing tokens",
-        caption: "Shipped as a documented library rather than a set of screens.",
+        alt: "Gacha roll screen",
+        caption: "Gacha Roll System with transparent odds and multi-purchase triggers.",
         ratio: "4/3",
       },
     ],
     outcome:
-      "The system is running in three experiences. Because rarity is structural rather than purely chromatic, it survived a full art-direction change in one of them without any interface rework.",
+      "An engaging, fair, and high-energy roll interface tailored for maximum player satisfaction.",
     metrics: [
-      { value: "3", label: "Experiences running it" },
-      { value: "600+", label: "Items without redesign" },
-      { value: "WCAG AA", label: "Contrast across all tiers" },
+      { value: "7 Tiers", label: "Rarity Breakdown" },
+      { value: "1x / 3x / 10x", label: "Multi-Roll Options" },
+      { value: "Dual Currency", label: "In-Game & Premium" },
     ],
   },
 
   {
-    slug: "first-ninety-seconds",
-    title: "The first ninety seconds",
+    slug: "progression-stat-upgrades",
+    title: "Progression & Stat Upgrades System",
     summary:
-      "An onboarding flow that teaches by doing instead of by dialogue box.",
-    category: "Client work",
-    year: "2024",
-    role: "UX research, flow design, implementation",
-    tools: ["Figma", "Miro", "Roblox Studio", "Luau"],
-    published: true,
-    featured: true,
-    cover: {
-      src: "",
-      kind: "image",
-      alt: "Onboarding sequence showing a contextual prompt anchored to a world object",
-      ratio: "16/9",
-    },
-    overview:
-      "A rework of the first-time user experience for a live obby-adjacent experience that was losing most of its new players before they reached the first real mechanic.",
-    problem:
-      "Onboarding was four full-screen modals stacked back to back before the player could move. Session recordings showed the pattern clearly: players dismissed all four as fast as the buttons allowed, then stood still, because nothing had actually been taught. The information had been delivered and none of it had been learned.",
-    process: [
-      {
-        title: "Watched people fail",
-        body: "Sat through twenty first-session recordings without touching anything. The modals were not being read — median time on the longest one was under two seconds.",
-      },
-      {
-        title: "Separated must-know from nice-to-know",
-        body: "Of eleven things the modals explained, two were needed in the first ninety seconds. The rest were reference material that could surface on demand.",
-      },
-      {
-        title: "Anchored teaching to the world",
-        body: "Replaced full-screen modals with small prompts attached to the actual object the player needed to interact with, appearing when they were near it.",
-      },
-      {
-        title: "Made progress the only gate",
-        body: "Nothing advances on a timer or a dismiss button. The prompt clears when the player performs the action, so completing it and understanding it are the same event.",
-      },
-    ],
-    solution:
-      "Zero blocking modals. Two contextual prompts, each anchored in world space to the object it describes, each clearing only on successful interaction. Everything else moved into a help panel reachable at any time. The player is in control from the first frame — which is the only reliable way to make the first frame feel worth staying for.",
-    gallery: [
-      {
-        src: "",
-        kind: "video",
-        alt: "Screen recording of the full ninety-second onboarding flow from spawn to first mechanic",
-        caption: "The whole flow, spawn to first real mechanic.",
-        ratio: "16/9",
-      },
-      {
-        src: "",
-        kind: "image",
-        alt: "Flow diagram comparing the old modal sequence with the new contextual prompts",
-        caption: "Four blocking modals replaced by two contextual prompts.",
-        ratio: "16/9",
-      },
-    ],
-    outcome:
-      "New players reached the first real mechanic substantially more often, and the support questions that used to arrive daily about basic controls largely stopped.",
-    metrics: [
-      { value: "4 → 0", label: "Blocking modals" },
-      { value: "+31%", label: "Reached first mechanic" },
-      { value: "-62%", label: "Basic control questions" },
-    ],
-  },
-
-  {
-    slug: "shop-economy-ui",
-    title: "Shop & economy interface",
-    summary:
-      "Selling without nagging — a storefront built on clarity rather than pressure.",
-    category: "Client work",
-    year: "2024",
-    role: "UI/UX design, Luau implementation",
-    tools: ["Figma", "Roblox Studio", "Luau"],
+      "High-efficiency player upgrade menu with level counters, stat icons, and Buy Max shortcuts.",
+    category: "Roblox UI",
+    year: "2025",
+    role: "UI/UX Design, Iconography",
+    tools: ["Figma", "Photoshop"],
     published: true,
     featured: false,
     cover: {
-      src: "",
+      src: "/media/projects/Upgrades@2x.png",
       kind: "image",
-      alt: "Shop interface showing item cards, currency balance and a purchase confirmation state",
-      ratio: "16/9",
+      alt: "Stat Upgrades Menu",
+      ratio: "1/1",
     },
     overview:
-      "A full redesign of the storefront and currency presentation for a mid-sized simulator, with an explicit brief to raise conversion without adopting the dark patterns common in the category.",
+      "Designed a dedicated character upgrade and stat boost interface. Built for rapid upgrading with custom illustrative icons for inventory slots, luck boosts, and mutation modifiers.",
     problem:
-      "The existing shop used a countdown timer on a permanent offer, a pre-ticked bundle upsell, and a confirmation dialog where the confirm button was styled far louder than cancel. It converted acceptably and generated a steady stream of refund requests and negative comments. The pressure was working and costing more than it earned.",
+      "Upgrade menus often force players into repetitive clicking. Designing effective bulk-buy shortcuts while preserving clear progression state was essential.",
     process: [
       {
-        title: "Removed every false urgency signal",
-        body: "The permanent countdown went first. If a timer is always running, it is not information — and players who notice it stop trusting anything else the interface says.",
+        title: "Custom illustrative icons",
+        body: "Crafted detailed vectors for backpack slots, lucky clovers, and mutation rockets.",
       },
       {
-        title: "Made price and value legible",
-        body: "Every item states plainly what it does and what it costs, with no per-unit maths left as an exercise for the player.",
+        title: "Buy Max & Buy 1 dual actions",
+        body: "Gave players immediate choice between deliberate single upgrades and quick bulk investments.",
       },
       {
-        title: "Gave confirmation equal weight",
-        body: "Confirm and cancel got the same visual weight. An accidental purchase is a refund request and a lost player, which is worse than a slightly slower checkout.",
-      },
-      {
-        title: "Tested against the old shop honestly",
-        body: "Ran both live, on real traffic, and compared conversion alongside refund rate and sentiment rather than conversion alone.",
+        title: "Clear level progress indicators",
+        body: "Integrated explicit level limits (e.g. 1/24, 1/100, 1/10) to communicate endgame depth.",
       },
     ],
     solution:
-      "A calm storefront. Clear categories, honest pricing, real scarcity only where scarcity is real. The currency balance sits in a fixed position so players always know where they stand before they open anything. Purchase confirmation is a genuine decision point rather than a formality dressed as one.",
+      "An energizing green grid upgrade board with high-contrast item rows and bold purchase triggers.",
     gallery: [
       {
-        src: "",
+        src: "/media/projects/Upgrades@2x.png",
         kind: "image",
-        alt: "Shop grid showing item cards with pricing and category tabs",
-        caption: "Categories and honest pricing. No permanent countdown.",
-        ratio: "16/9",
-      },
-      {
-        src: "",
-        kind: "video",
-        alt: "Screen recording of the purchase confirmation flow",
-        caption: "Confirm and cancel carry equal visual weight.",
-        ratio: "16/9",
+        alt: "Stat Upgrades Full Resolution View",
+        caption: "Stat Upgrades — Illustrated badges, level counters, and Buy Max buttons.",
+        ratio: "1/1",
       },
     ],
     outcome:
-      "Conversion held roughly steady while refund requests dropped sharply and store sentiment in the comments improved — a materially better trade than the old numbers suggested.",
+      "A fast, clean stat enhancement interface that scales gracefully from early progression to max level.",
     metrics: [
-      { value: "-71%", label: "Refund requests" },
-      { value: "0", label: "Dark patterns" },
-      { value: "+4%", label: "Conversion" },
+      { value: "Buy Max", label: "Bulk Purchasing" },
+      { value: "Custom", label: "Handcrafted Icons" },
+      { value: "100%", label: "Retina 2x Assets" },
     ],
   },
 
   {
-    slug: "nightfall-concept",
-    title: "Nightfall — interface concept",
+    slug: "daily-rewards-retention",
+    title: "Daily Rewards & Retention Calendar",
     summary:
-      "A self-directed exploration of diegetic UI for a survival experience.",
-    category: "Concept",
-    year: "2024",
-    role: "Self-directed concept",
-    tools: ["Figma", "Blender", "After Effects"],
+      "A 6-day reward calendar loop with clear Claim, Locked, and Claimed visual treatments.",
+    category: "Roblox UI",
+    year: "2025",
+    role: "UI/UX Design, Visual Styling",
+    tools: ["Figma", "Roblox Studio"],
     published: true,
     featured: false,
     cover: {
-      src: "",
+      src: "/media/projects/DailyRewards.png",
       kind: "image",
-      alt: "Nightfall concept art showing a diegetic wrist-mounted interface",
-      ratio: "16/9",
+      alt: "Daily Rewards Calendar",
+      ratio: "4/3",
     },
     overview:
-      "An unbuilt concept exploring how far a Roblox survival experience can push diegetic interface — information living inside the world rather than floating above it.",
+      "Designed a 6-day daily login reward system to boost Day-1 through Day-7 player retention, featuring a grand finale Day 6 showcase slot.",
     problem:
-      "Survival experiences lean on dense overlays: hunger, temperature, stamina, inventory weight, all stacked in a corner. It is functional and it flattens the atmosphere the rest of the game works to build. The question was whether the same information could live in the world without becoming unreadable under pressure.",
+      "Daily calendars often look static or fail to make future rewards feel enticing. Players need clear state differentiation so they know what they've claimed and what's coming next.",
     process: [
       {
-        title: "Inventoried what genuinely needs to persist",
-        body: "Most survival stats only matter near their thresholds. Persistent display of a full hunger bar is wasted attention for the ninety percent of the time it is fine.",
+        title: "Three-state color coding",
+        body: "Green for ready to CLAIM, Red for LOCKED future days, and Grey for already CLAIMED.",
       },
       {
-        title: "Moved state onto objects",
-        body: "Condition reads off the equipped tool, warmth off the character's own animation and breath, inventory weight off how the pack sits. The world reports its own state.",
+        title: "Hero finale reward slot",
+        body: "Expanded the Day 6 card into a double-height feature slot to highlight the ultimate weekly prize.",
       },
       {
-        title: "Kept an escape hatch",
-        body: "Fully diegetic UI fails under time pressure. A held-button overlay surfaces exact numbers when a player needs precision, which keeps the ambient layer honest rather than precious.",
+        title: "Dynamic calendar header",
+        body: "Created a calendar badge icon with custom drop shadow to anchor the modal title.",
       },
     ],
     solution:
-      "A layered approach. Ambient state through world and character cues, a wrist-mounted panel for deliberate checks, and a conventional overlay on demand for moments that need precision. Atmosphere by default, clarity when it is asked for.",
+      "A clean 6-slot grid with high-contrast button states, subtle gradient backdrops, and bold typography.",
     gallery: [
       {
-        src: "",
+        src: "/media/projects/DailyRewards.png",
         kind: "image",
-        alt: "Concept frames showing the wrist panel at several states",
-        caption: "Wrist panel states — deliberate checks rather than persistent display.",
-        ratio: "16/9",
-      },
-      {
-        src: "",
-        kind: "video",
-        alt: "Motion study of the wrist panel opening and resolving",
-        caption:
-          "Motion study. The open has to be fast enough to not cost the player anything.",
-        ratio: "16/9",
+        alt: "Daily Rewards System",
+        caption: "Daily Rewards Calendar — 6-day retention flow with prominent Day 6 grand prize slot.",
+        ratio: "4/3",
       },
     ],
     outcome:
-      "Unbuilt, and kept here deliberately. The layered ambient-plus-on-demand pattern has since shaped how I handle secondary information in shipped work.",
+      "A proven retention driver designed to maximize recurring daily player engagement.",
     metrics: [
-      { value: "Concept", label: "Status" },
-      { value: "3", label: "Information layers" },
-      { value: "2024", label: "Explored" },
+      { value: "6 Days", label: "Retention Loop" },
+      { value: "3 States", label: "Claim / Lock / Done" },
+      { value: "High Impact", label: "Day 6 Hero Slot" },
+    ],
+  },
+
+  {
+    slug: "settings-system-controls",
+    title: "Settings & System Controls",
+    summary:
+      "A compact settings modal featuring high-contrast glowing toggle switches for audio and graphics.",
+    category: "Roblox UI",
+    year: "2025",
+    role: "UI/UX Design, Interaction Design",
+    tools: ["Figma", "Roblox Studio"],
+    published: true,
+    featured: false,
+    cover: {
+      src: "/media/projects/Settings.png",
+      kind: "image",
+      alt: "Settings Menu",
+      ratio: "2/3",
+    },
+    overview:
+      "Designed a clean, vertical settings modal allowing players to toggle graphics shadows and audio with satisfying glowing visual feedback.",
+    problem:
+      "Settings menus are often neglected and difficult to toggle on mobile. Clean tactile switches with immediate state feedback were required.",
+    process: [
+      {
+        title: "Glow switch mechanics",
+        body: "Designed vibrant green neon glows for ON states and subtle red glows for OFF states.",
+      },
+      {
+        title: "Gear iconography & header",
+        body: "Created custom 3D-styled gear vector icons framing the header ribbon.",
+      },
+      {
+        title: "Compact mobile layout",
+        body: "Structured the layout vertically to fit comfortably on phones without blocking background gameplay.",
+      },
+    ],
+    solution:
+      "A modern, tactile settings sheet with unmistakable switch states and quick-dismiss controls.",
+    gallery: [
+      {
+        src: "/media/projects/Settings.png",
+        kind: "image",
+        alt: "Settings Modal with toggle switches",
+        caption: "Settings Modal — Tactile glowing toggle switches for shadows and music.",
+        ratio: "2/3",
+      },
+      {
+        src: "/media/projects/LeftSideBar.png",
+        kind: "image",
+        alt: "Quick navigation left sidebar",
+        caption: "Left Sidebar Menu — Persistent quick-access bar for summoning settings and menus.",
+        ratio: "2/3",
+      },
+    ],
+    outcome:
+      "A polished, accessible settings menu that elevates the overall quality feel of the game.",
+    metrics: [
+      { value: "Tactile", label: "Glow Switches" },
+      { value: "Instant", label: "State Feedback" },
+      { value: "Compact", label: "Mobile-First" },
     ],
   },
 ];
