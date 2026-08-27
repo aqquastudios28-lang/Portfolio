@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { CopyButton } from "@/components/ui/CopyButton";
+import { AnimatedShinyText } from "@/components/ui/AnimatedShinyText";
 import { publishedProjects } from "@/content/projects";
 import { site } from "@/content/site";
 
@@ -26,11 +27,14 @@ export function Hero() {
 
         <h1 className="t-display mt-10 max-w-[16ch] sm:mt-14 tracking-tight">
           {site.headline.map((line, idx) => (
-            <span
-              key={line}
-              className={idx === 1 ? "block text-transparent bg-clip-text bg-gradient-to-r from-bone via-bone to-bone-dim" : "block"}
-            >
-              {line}
+            <span key={line} className="block">
+              {idx === 1 ? (
+                <AnimatedShinyText className="from-accent via-bone to-accent">
+                  {line}
+                </AnimatedShinyText>
+              ) : (
+                line
+              )}
             </span>
           ))}
         </h1>
@@ -41,7 +45,7 @@ export function Hero() {
             <div className="flex flex-wrap items-center gap-3">
               <Link
                 href="/work"
-                className="inline-flex items-center gap-2 border border-accent bg-accent/10 px-4 py-2 text-xs font-mono font-medium tracking-wider text-accent uppercase transition-all hover:bg-accent hover:text-ink active:scale-95"
+                className="inline-flex items-center gap-2 border border-accent bg-accent/10 px-4 py-2 text-xs font-mono font-medium tracking-wider text-accent uppercase transition-all hover:bg-accent hover:text-ink active:scale-95 shadow-lg shadow-accent/5"
               >
                 <span>Explore All Frames</span>
                 <span aria-hidden>&rarr;</span>
