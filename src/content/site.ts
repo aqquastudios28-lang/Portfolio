@@ -19,7 +19,7 @@ export const site = {
     "I design and build interface systems for Roblox experiences — HUDs, shops, inventories and onboarding flows that stay readable at speed, scale across devices, and hand off clean to engineers.",
 
   /** Live production URL. Used for canonical tags, sitemap and Open Graph. */
-  url: "https://example.com",
+  url: "https://cerbis.xyz",
 
   email: "cerbi@cerbis.xyz",
 
