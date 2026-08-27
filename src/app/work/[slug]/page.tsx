@@ -56,16 +56,22 @@ export default async function CaseStudyPage({ params }: Params) {
   ];
 
   return (
-    <article>
+    <article className="relative pb-16">
+      {/* Ambient background glow */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute top-20 left-1/2 -z-10 h-96 w-[700px] -translate-x-1/2 rounded-full bg-accent/5 blur-3xl"
+      />
+
       <Container>
-        {/* Running head — index position and a way back, in the same bar
-            every other page uses. */}
+        {/* Navigation Breadcrumb & Index position */}
         <div className="flex items-baseline justify-between border-b border-rule pt-10 pb-4">
           <Link
             href="/work"
-            className="t-label transition-colors hover:text-accent"
+            className="group inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-bone-dim transition-colors hover:text-accent"
           >
-            &larr; Index
+            <span aria-hidden className="transition-transform group-hover:-translate-x-1">&larr;</span>
+            <span>All Work</span>
           </Link>
           <p className="t-label">
             {String(index + 1).padStart(2, "0")} /{" "}
@@ -74,14 +80,14 @@ export default async function CaseStudyPage({ params }: Params) {
         </div>
 
         <header className="py-12 sm:py-16">
-          <h1 className="t-h1 max-w-[20ch]">{project.title}</h1>
-          <p className="t-lead mt-6 max-w-[52ch]">{project.summary}</p>
+          <h1 className="t-h1 max-w-[22ch]">{project.title}</h1>
+          <p className="t-lead mt-6 max-w-[54ch]">{project.summary}</p>
 
           <dl className="mt-12 grid gap-6 border-t border-rule pt-6 sm:grid-cols-3">
             {meta.map((m) => (
               <div key={m.label}>
                 <dt className="t-label">{m.label}</dt>
-                <dd className="mt-2 text-sm text-bone">{m.value}</dd>
+                <dd className="mt-2 text-sm font-medium text-bone">{m.value}</dd>
               </div>
             ))}
           </dl>
@@ -95,27 +101,41 @@ export default async function CaseStudyPage({ params }: Params) {
           </ul>
         </header>
 
-        <MediaFrame
-          media={project.cover}
-          priority
-          sizes="(max-width: 1280px) 100vw, 80rem"
-          dropPath={`/media/projects/${project.slug}/cover.png`}
-        />
+        {/* Hero showcase frame */}
+        <div className="relative">
+          <MediaFrame
+            media={project.cover}
+            priority
+            sizes="(max-width: 1280px) 100vw, 80rem"
+            dropPath={`/media/projects/${project.slug}/cover.png`}
+          />
+          <div className="mt-2 flex items-center justify-end">
+            <span className="font-mono text-[10px] text-bone-faint uppercase tracking-wider flex items-center gap-1.5">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                <line x1="11" y1="8" x2="11" y2="14" />
+                <line x1="8" y1="11" x2="14" y2="11" />
+              </svg>
+              Click image to inspect at 100% resolution
+            </span>
+          </div>
+        </div>
 
         <div className="mt-16">
           <CaseSection label="Overview">
             <p className="t-lead text-bone">{project.overview}</p>
           </CaseSection>
 
-          <CaseSection label="Problem" title="What was going wrong">
+          <CaseSection label="Problem" title="Design Challenge">
             <p className="t-body">{project.problem}</p>
           </CaseSection>
 
-          <CaseSection label="Process" title="How I worked through it">
+          <CaseSection label="Process" title="Design & UX Workflow">
             <ProcessList steps={project.process} />
           </CaseSection>
 
-          <CaseSection label="Solution" title="What I built">
+          <CaseSection label="Solution" title="Final Interface System">
             <p className="t-body">{project.solution}</p>
           </CaseSection>
         </div>
@@ -136,7 +156,7 @@ export default async function CaseStudyPage({ params }: Params) {
           </div>
         ) : null}
 
-        <CaseSection label="Outcome" title="What changed">
+        <CaseSection label="Outcome" title="Impact & Specifications">
           <p className="t-body">{project.outcome}</p>
           <MetricRow metrics={project.metrics} />
         </CaseSection>

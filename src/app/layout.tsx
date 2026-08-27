@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Archivo, JetBrains_Mono } from "next/font/google";
 import { Footer } from "@/components/layout/Footer";
 import { Nav } from "@/components/layout/Nav";
+import { ToastProvider } from "@/components/ui/Toast";
+import { LightboxProvider } from "@/components/ui/Lightbox";
 import { seo, site } from "@/content/site";
 import "./globals.css";
 
@@ -92,9 +94,13 @@ export default function RootLayout({
           Skip to content
         </a>
 
-        <Nav />
-        <main id="main">{children}</main>
-        <Footer />
+        <LightboxProvider>
+          <ToastProvider>
+            <Nav />
+            <main id="main">{children}</main>
+            <Footer />
+          </ToastProvider>
+        </LightboxProvider>
 
         <script
           type="application/ld+json"

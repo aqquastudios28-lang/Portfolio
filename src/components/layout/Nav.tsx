@@ -17,14 +17,25 @@ export function Nav() {
   const pathname = usePathname();
   const scrolled = useScrolled(12);
   const [open, setOpen] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
-  // Close the sheet on navigation. Adjusting during render rather than in an
-  // effect avoids a frame where the new page shows behind an open menu.
+  // Close the sheet on navigation
   const [menuPath, setMenuPath] = useState(pathname);
   if (menuPath !== pathname) {
     setMenuPath(pathname);
     setOpen(false);
   }
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      if (total > 0) {
+        setScrollProgress((window.scrollY / total) * 100);
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -45,22 +56,31 @@ export function Nav() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 border-b transition-colors duration-200",
-        scrolled ? "border-rule bg-ink/90 backdrop-blur-sm" : "border-transparent",
+        "sticky top-0 z-50 transition-all duration-300",
+        scrolled
+          ? "border-b border-rule/80 bg-ink/85 backdrop-blur-md shadow-lg shadow-black/20"
+          : "border-b border-transparent bg-transparent",
       )}
     >
+      {/* Subtle reading progress bar */}
+      <div
+        className="absolute bottom-0 left-0 h-[1.5px] bg-gradient-to-r from-accent via-amber-400 to-accent transition-all duration-150"
+        style={{ width: `${scrollProgress}%` }}
+      />
+
       <nav
         aria-label="Primary"
         className="mx-auto flex w-full max-w-[80rem] items-center justify-between px-5 py-4 sm:px-8"
       >
         <Link
           href="/"
-          className="font-display text-[15px] font-semibold tracking-[-0.01em] transition-colors hover:text-accent"
+          className="group flex items-center gap-2 font-display text-[15px] font-semibold tracking-[-0.01em] transition-colors hover:text-accent"
         >
-          {site.name}
+          <span className="flex h-2 w-2 rounded-full bg-accent transition-transform group-hover:scale-125" />
+          <span>{site.name}</span>
         </Link>
 
-        {/* Desktop. Current page is marked with a rule, not a colour block. */}
+        {/* Desktop Navigation */}
         <div className="hidden items-center gap-10 md:flex">
           <ul className="flex items-center gap-8">
             {NAV.map((item) => {
@@ -72,32 +92,43 @@ export function Nav() {
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "border-b py-0.5 text-[13px] transition-colors",
+                      "relative py-1 text-[13px] font-medium transition-colors",
                       active
-                        ? "border-bone text-bone"
-                        : "border-transparent text-bone-dim hover:border-accent hover:text-bone",
+                        ? "text-bone font-semibold"
+                        : "text-bone-dim hover:text-bone",
                     )}
                   >
                     {item.label}
+                    {active && (
+                      <span className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-accent" />
+                    )}
                   </Link>
                 </li>
               );
             })}
           </ul>
 
-          <p className="t-label">
-            {site.availability.open
-              ? site.availability.label
-              : site.availability.closedLabel}
-          </p>
+          {/* Live pulsing status badge */}
+          <div className="flex items-center gap-2.5 border border-rule/70 bg-ink-2/70 px-3 py-1.5 backdrop-blur-md">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+            </span>
+            <span className="font-mono text-[10px] tracking-wider uppercase text-bone-dim">
+              {site.availability.open
+                ? site.availability.label
+                : site.availability.closedLabel}
+            </span>
+          </div>
         </div>
 
+        {/* Mobile menu trigger */}
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-controls="mobile-menu"
-          className="-mr-1 flex h-9 w-9 items-center justify-center text-bone md:hidden"
+          className="-mr-1 flex h-9 w-9 items-center justify-center border border-rule bg-ink-2/50 text-bone md:hidden"
         >
           <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
           <svg
@@ -114,7 +145,8 @@ export function Nav() {
         </button>
       </nav>
 
-      <div id="mobile-menu" hidden={!open} className="border-t border-rule bg-ink md:hidden">
+      {/* Mobile sheet */}
+      <div id="mobile-menu" hidden={!open} className="border-t border-rule bg-ink/95 backdrop-blur-lg md:hidden">
         <ul className="px-5">
           {NAV.map((item, i) => (
             <li key={item.href} className="border-b border-rule last:border-0">
@@ -127,11 +159,17 @@ export function Nav() {
             </li>
           ))}
         </ul>
-        <p className="t-label px-5 py-5">
-          {site.availability.open
-            ? site.availability.label
-            : site.availability.closedLabel}
-        </p>
+        <div className="px-5 py-5 border-t border-rule/50 flex items-center gap-2.5">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+          </span>
+          <span className="font-mono text-[11px] tracking-wider uppercase text-bone-dim">
+            {site.availability.open
+              ? site.availability.label
+              : site.availability.closedLabel}
+          </span>
+        </div>
       </div>
     </header>
   );
