@@ -21,7 +21,7 @@ export const site = {
   /** Live production URL. Used for canonical tags, sitemap and Open Graph. */
   url: "https://example.com",
 
-  email: "matteo.bux@outlook.it",
+  email: "cerbi@cerbis.xyz",
 
   /** Availability pill in the nav. Set `open: false` to switch it to closed. */
   availability: {
