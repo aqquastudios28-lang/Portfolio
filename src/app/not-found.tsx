@@ -6,10 +6,7 @@ export default function NotFound() {
     <section className="flex min-h-[62vh] items-center py-24">
       <Container>
         <p className="t-label mb-6">404</p>
-        <h1 className="t-h1 max-w-[14ch]">
-          This screen doesn&rsquo;t exist
-          
-        </h1>
+        <h1 className="t-h1 max-w-[14ch]">This screen doesn&rsquo;t exist</h1>
         <p className="t-lead mt-6 max-w-md">
           The page you were after has moved or never shipped.
         </p>

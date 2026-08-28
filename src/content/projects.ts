@@ -1,427 +1,407 @@
 import type { Project } from "./types";
 
+/* One game's worth of UI, screen by screen. Everything in this file is
+   describable from the screens themselves — no invented conversion figures,
+   no retention claims I cannot back up. Where a screen has a number worth
+   printing it gets a spec row; where it does not, it gets prose. */
+
 export const projects: Project[] = [
   {
     slug: "navigation-hub",
-    title: "Main Navigation Hub & Interface",
+    title: "Main menu",
     summary:
-      "A bold, high-contrast modal connecting players directly to core game modes, shops, and progression portals.",
-    category: "Roblox UI",
+      "The screen players land on, and the router for everything else in the game.",
+    category: "Menu",
     year: "2025",
-    role: "UI/UX Design, Visual Styling",
+    role: "UI design, art direction",
     tools: ["Figma", "Photoshop", "Roblox Studio"],
     published: true,
     featured: true,
     cover: {
       src: "/media/projects/Index.png",
       kind: "image",
-      alt: "Main Navigation Hub Modal",
+      alt: "Main menu modal with portal buttons to game modes, shops and inventory",
       ratio: "4/3",
     },
     overview:
-      "Designed the primary navigation hub that greets players and acts as the central router for experience activities, portals, and inventory systems.",
+      "The hub that opens on join and sends players out to modes, shops and the inventory. It gets more traffic than anything else in the game, so it got drawn first and argued about longest.",
     problem:
-      "Main menus in Roblox often get buried or cluttered with secondary buttons. The goal was to build a clean, instantly readable index modal that directs player attention without hesitation.",
+      "The brief was a menu with eight destinations on it. The obvious version is a grid of eight identical buttons. That technically works and tells a new player nothing about where to go first.",
     process: [
       {
-        title: "Standardized visual frame language",
-        body: "Established thick black outlines, metallic bevels, and vibrant gradient backdrops that set the art direction for the entire game.",
+        title: "Set the frame language here, before anything else",
+        body: "Thick black outline, metal bevel, a bright gradient behind. Every later menu inherits it, so it was worth getting the borders and shadow depth right on one screen rather than nine.",
       },
       {
-        title: "Optimized mobile touch targets",
-        body: "Engineered large interactive portals and clear close triggers for seamless thumb reach on phones and tablets.",
+        title: "Sized the buttons by how often they get used",
+        body: "The two destinations people actually open got the large portals. The rest are smaller. Not democratic, but it means a new player's thumb lands somewhere useful.",
       },
       {
-        title: "Consistent brand header treatment",
-        body: "Created custom comic typography with high-contrast drop shadows and signature header badges.",
+        title: "Built the header as a reusable part",
+        body: "Comic lettering with a hard drop shadow, sitting on a badge. The same header carries every modal in the set with a different object on it, so players can tell at a glance what kind of screen they opened.",
       },
     ],
     solution:
-      "A central command modal with vivid visual cues, clear portal buttons, and responsive auto-layout scaling.",
+      "One modal, a real hierarchy of destinations, and auto layout that holds up on an ultrawide monitor and a five-inch phone.",
     gallery: [],
     outcome:
-      "An intuitive launchpad that guides new and veteran players to active gameplay loops in seconds.",
-    metrics: [
-      { value: "Figma Vector", label: "Asset Format" },
-      { value: "Mobile-First", label: "Touch Design" },
-      { value: "High Contrast", label: "Visual Hierarchy" },
-    ],
+      "Most of this screen's value is that it set the rules for the other eight. Everything after it was faster to draw and did not need re-deciding.",
+    metrics: [],
   },
 
   {
     slug: "vendor-gateway",
-    title: "Vendor & Merchant Hub",
+    title: "Vendor hub",
     summary:
-      "A dual-portal merchant gateway routing player economy into randomized rolls and deterministic stat upgrades.",
-    category: "Roblox UI",
+      "The merchant screen that splits spending into two paths: random rolls, or flat stat upgrades.",
+    category: "Menu",
     year: "2025",
-    role: "UI/UX Design, System Architecture",
+    role: "UI design",
     tools: ["Figma", "Roblox Studio"],
     published: true,
     featured: true,
     cover: {
       src: "/media/projects/Vendor.png",
       kind: "image",
-      alt: "Vendor Hub Interface",
+      alt: "Vendor hub with two large cards routing to gacha rolls and stat upgrades",
       ratio: "16/9",
     },
     overview:
-      "Designed the primary merchant interface that cleanly divides player currency spend between luck-based Gacha rolls and deterministic stat Upgrades.",
+      "One merchant with two very different economies behind him. This screen only exists to decide which one you are walking into.",
     problem:
-      "Consolidating multiple progression systems into one NPC without creating a confusing, multi-tabbed monster menu.",
+      "Both systems were originally going to sit under tabs on the same screen. Tabs make the player pick before they understand what either does, and the second tab goes unread.",
     process: [
       {
-        title: "Split intent into two clear pillars",
-        body: "Divided the interface into two bold, distinct cards (Blue for Gacha, Green for Upgrades) with representative iconography.",
+        title: "Two cards instead of two tabs",
+        body: "Blue for rolls, green for upgrades, each with its own icon and a single line saying what it does. You choose after reading rather than before.",
       },
       {
-        title: "Shopping bag header badge",
-        body: "Crafted a 3D-styled shopping bag vector anchor to give the NPC modal clear thematic identity.",
+        title: "Made the whole card the hit target",
+        body: "Not a button inside a card. On a phone that is the difference between one tap and two, and it removes the dead zone around the label.",
       },
       {
-        title: "Immediate call-to-actions",
-        body: "Gave each portal high-visibility typography and glowing interior borders for quick touch selection.",
+        title: "Kept the shared header",
+        body: "Same title bar as the main menu with a shopping bag on it. Cheap way to keep nine screens feeling like one product.",
       },
     ],
     solution:
-      "A streamlined two-choice gateway that reduces decision fatigue and speeds up in-game economy interactions.",
+      "A two-choice screen. Read, tap, gone. It is the shortest screen in the set and it should be.",
     gallery: [],
     outcome:
-      "Players instantly recognize where to spend in-game currency based on their immediate progression goals.",
-    metrics: [
-      { value: "2 Choices", label: "Core Economy Paths" },
-      { value: "100%", label: "Scalable Vector UI" },
-      { value: "Zero Friction", label: "Navigation Flow" },
-    ],
+      "Nothing surprising here: two options beat a tab bar. Worth saying that I argued for the tabs first and was wrong about it.",
+    metrics: [],
   },
 
   {
     slug: "gacha-rng-system",
-    title: "Gacha & RNG Roll System",
+    title: "Gacha rolls",
     summary:
-      "A transparent roll system featuring normal & premium rolls, explicit odds breakdown, and bulk purchasing.",
-    category: "Roblox UI",
+      "Roll screen with the drop rates printed on it, two currencies, and 1x / 3x / 10x pulls.",
+    category: "Economy",
     year: "2025",
-    role: "UI/UX Design, Economy Architecture",
+    role: "UI design, economy UX",
     tools: ["Figma", "Roblox Studio"],
     published: true,
     featured: true,
     cover: {
       src: "/media/projects/Gacha.png",
       kind: "image",
-      alt: "Gacha Roll System UI",
+      alt: "Gacha roll screen with a rarity odds table beside the roll buttons",
       ratio: "4/3",
     },
     overview:
-      "Designed a complete Gacha rolling modal with dual currency support (in-game cash & premium robux/gems) and transparent odds breakdown from Common to Celestial.",
+      "The roll screen, with the odds panel deliberately on the same view as the roll button instead of hidden behind an info icon.",
     problem:
-      "Many Roblox gacha interfaces hide drop rates or make multi-rolling tedious. Players need instant clarity on odds, pricing, and roll quantities.",
+      "Plenty of Roblox gachas bury their drop rates or leave them out. That is a short-term win. The players who spend the most are the ones doing the maths, and hiding the numbers from them reads as a reason not to trust the game.",
     process: [
       {
-        title: "Dedicated odds transparency panel",
-        body: "Placed color-coded rarity tiers directly beside the roll view so players never have to guess drop probabilities.",
+        title: "Put the odds next to the button",
+        body: "Seven rarity tiers, colour-coded, on the same panel as the roll. No modal, no info icon. It costs vertical space and it is worth the space.",
       },
       {
-        title: "Multi-tier bulk rolling",
-        body: "Designed 1x, 3x, and 10x roll buttons to accommodate both early-game and endgame rolling loops.",
+        title: "Added a 3x between the 1x and the 10x",
+        body: "Singles for early game when currency is tight, tens for late game when it is not. The three exists because the jump from one to ten is too big for the middle of the run.",
       },
       {
-        title: "Dual currency tracks",
-        body: "Clearly separated standard in-game currency rolls from premium luck-boosted rolls with distinct yellow/blue color palettes.",
+        title: "Split the currencies onto separate rows",
+        body: "Soft currency in yellow, premium in blue, never adjacent. Nobody should be able to spend the paid one by accident.",
       },
     ],
     solution:
-      "A high-energy two-tier roll modal with prominent 3D dice iconography, cyber grid textures, and high-visibility action buttons.",
+      "A two-tier roll panel with the odds table permanently visible, dice artwork on the header, and a grid texture behind the roll area to separate it from the numbers.",
     gallery: [],
-    outcome:
-      "An engaging, fair, and high-converting roll interface tailored for player excitement and clarity.",
+    outcome: "The odds panel was the whole argument on this one. It stayed.",
     metrics: [
-      { value: "7 Tiers", label: "Rarity Breakdown" },
-      { value: "1x / 3x / 10x", label: "Multi-Roll Options" },
-      { value: "Dual Currency", label: "In-Game & Premium" },
+      { value: "7", label: "Rarity tiers" },
+      { value: "1x / 3x / 10x", label: "Pull sizes" },
+      { value: "2", label: "Currencies" },
     ],
   },
 
   {
     slug: "gems-currency-shop",
-    title: "Gems Currency Storefront",
+    title: "Gem shop",
     summary:
-      "A clean in-game economy store offering tiered gem packages with prominent value scaling.",
-    category: "Roblox UI",
+      "Premium currency packs, laid out so you can compare them without doing arithmetic.",
+    category: "Shop",
     year: "2025",
-    role: "UI/UX Design, Monetization UX",
+    role: "UI design",
     tools: ["Figma", "Photoshop"],
     published: true,
-    featured: true,
+    featured: false,
     cover: {
       src: "/media/projects/GemsShop.png",
       kind: "image",
-      alt: "Gems Currency Shop",
+      alt: "Gem shop with tiered currency packs and price pills",
       ratio: "4/3",
     },
     overview:
-      "Designed the primary premium currency shop displaying tiered gem bundles, pricing badges, and purchase triggers without misleading dark patterns.",
+      "Gem bundles, each showing its Robux price and its gem count at the same weight. No countdown timers, no struck-through prices.",
     problem:
-      "Currency shops often feel cluttered and fail to communicate per-pack value effectively.",
+      "Currency shops usually make you work out value per pack yourself, then push you at the big one with a badge reading BEST VALUE whether or not it is.",
     process: [
       {
-        title: "Distinct pack scaling",
-        body: "Created visual differentiation between small starter packs and high-value bulk chests.",
+        title: "Told the story in the artwork",
+        body: "Small pouch through to a full chest, so the ordering reads before you reach the numbers.",
       },
       {
-        title: "Legible price tags",
-        body: "Ensured Robux costs and gem quantities read immediately on both mobile and desktop screens.",
+        title: "Matched price and quantity weight",
+        body: "Both legible at phone size, and the gem count is not set larger than the price. That size mismatch is the usual trick and it is easy to spot once you know.",
       },
       {
-        title: "Clean checkout triggers",
-        body: "Designed high-contrast purchase buttons with green action states and clear confirmation affordance.",
+        title: "One button per pack, identical every time",
+        body: "Same shape, same size, same position on every card. Nothing in the layout steers you toward a particular row.",
       },
     ],
     solution:
-      "A vibrant storefront with organized product cards, high-contrast price pills, and custom gem chest artwork.",
+      "A card grid with the price pill under each pack and no dark patterns in it.",
     gallery: [],
     outcome:
-      "A trustworthy and high-converting storefront that makes currency acquisition clear and rewarding.",
-    metrics: [
-      { value: "Transparent", label: "Pricing Structure" },
-      { value: "Mobile-Ready", label: "Touch Targets" },
-      { value: "Custom", label: "Illustrative Badges" },
-    ],
+      "The studio asked for a flashing limited-time banner across the top. I left it out. It has not come back up.",
+    metrics: [],
   },
 
   {
     slug: "gamepass-vip-store",
-    title: "Gamepass & VIP Perks Store",
+    title: "Gamepass store",
     summary:
-      "A showcase modal highlighting VIP benefits, permanent multipliers, and exclusive abilities.",
-    category: "Roblox UI",
+      "Permanent perks listed by what they do rather than what they are called.",
+    category: "Shop",
     year: "2025",
-    role: "UI/UX Design, Visual Styling",
+    role: "UI design",
     tools: ["Figma", "Photoshop"],
     published: true,
-    featured: true,
+    featured: false,
     cover: {
       src: "/media/projects/Pass.png",
       kind: "image",
-      alt: "Gamepass and VIP Shop",
+      alt: "Gamepass store with perk cards and buy buttons",
       ratio: "4/3",
     },
     overview:
-      "Designed a dedicated Gamepass and Season Pass modal showcasing perks, auto-features, and exclusive gameplay boosts.",
+      "One card per pass, each with the benefit written out in plain terms and a buy button that hands straight off to the Roblox purchase prompt.",
     problem:
-      "Communicating the tangible gameplay benefit of multiple gamepasses in a compact, readable interface.",
+      "Gamepasses get sold by name — VIP, Lucky, Elite — which leaves the player guessing at what they actually get. Names are for after you own the thing.",
     process: [
       {
-        title: "Feature callout cards",
-        body: "Structured each pass card with bold title, benefit description, and direct Buy button.",
+        title: "Led with the effect, not the name",
+        body: "The card opens with what the pass does, in a sentence. The pass name is the small text underneath.",
       },
       {
-        title: "Thematic header illustration",
-        body: "Designed custom vector header ribbons with golden star accents to denote premium status.",
+        title: "Kept the premium treatment to the header",
+        body: "A gold ribbon on the title bar marks this as the paid screen. The cards themselves use the same frame as everything else, so nothing inside is shouting.",
       },
       {
-        title: "Single-tap acquisition flow",
-        body: "Ensured pass buttons trigger standard Roblox marketplace purchase prompts smoothly.",
+        title: "Went straight to the purchase prompt",
+        body: "One tap to Roblox's own dialog. No confirmation step of mine in front of it — that step only ever exists to pad a funnel.",
       },
     ],
     solution:
-      "A polished VIP showcase with rich card borders, distinctive iconography, and effortless purchase interactions.",
+      "A stack of pass cards, each legible on its own, with the gold kept above them.",
     gallery: [],
     outcome:
-      "Elevated premium gamepass presentation resulting in high player trust and clear value understanding.",
-    metrics: [
-      { value: "VIP Perks", label: "Benefit Focus" },
-      { value: "Retina 2x", label: "Vector Assets" },
-      { value: "High Contrast", label: "Visual Clarity" },
-    ],
+      "Rewriting the pass descriptions took longer than drawing the screen did.",
+    metrics: [],
   },
 
   {
     slug: "stat-upgrades",
-    title: "Stat Upgrades & Level Progression",
+    title: "Upgrade menu",
     summary:
-      "High-efficiency player upgrade menu with level counters, custom stat icons, and Buy Max shortcuts.",
-    category: "Roblox UI",
+      "Stat upgrades with level caps, drawn icons, and a Buy Max so you are not tapping forty times.",
+    category: "Economy",
     year: "2025",
-    role: "UI/UX Design, Iconography",
+    role: "UI design, icon work",
     tools: ["Figma", "Photoshop"],
     published: true,
-    featured: true,
+    featured: false,
     cover: {
       src: "/media/projects/Upgrades@2x.png",
       kind: "image",
-      alt: "Stat Upgrades Menu",
+      alt: "Upgrade menu rows showing level caps with Buy 1 and Buy Max buttons",
       ratio: "1/1",
     },
     overview:
-      "Designed a dedicated character upgrade and stat boost interface. Built for rapid upgrading with custom illustrative icons for inventory slots, luck boosts, and mutation modifiers.",
+      "The upgrade board: backpack slots, luck, mutation chance. Each row shows its current level against its ceiling.",
     problem:
-      "Upgrade menus often force players into repetitive single-clicking. Providing bulk-buy shortcuts while preserving clear progression state was essential.",
+      "Upgrade menus in this genre are usually a column of identical rows you tap over and over. By level 30 the player is pressing a button forty times to spend currency they already decided to spend.",
     process: [
       {
-        title: "Custom illustrative icons",
-        body: "Crafted detailed vectors for backpack slots, lucky clovers, and mutation rockets.",
+        title: "Buy 1 and Buy Max on every row",
+        body: "Both, always. Buy 1 for pacing yourself against a cap, Buy Max for the currency dump after a good run.",
       },
       {
-        title: "Buy Max & Buy 1 dual actions",
-        body: "Gave players immediate choice between deliberate single upgrades and quick bulk investments.",
+        title: "Drew the icons rather than picking them",
+        body: "Backpack, clover, rocket. There are only three things on this screen, so they have to carry it — a generic icon set would have made all three rows read the same.",
       },
       {
-        title: "Clear level progress indicators",
-        body: "Integrated explicit level limits (e.g. 1/24, 1/100, 1/10) to communicate depth.",
+        title: "Showed the ceiling next to the level",
+        body: "1/24, 1/100, 1/10. Seeing the cap early is what makes the number underneath it mean anything.",
       },
     ],
     solution:
-      "An energizing green grid upgrade board with high-contrast item rows and bold purchase triggers.",
+      "A green grid board, one row per stat, level and cap on the left, the two buy buttons on the right.",
     gallery: [],
     outcome:
-      "A fast, clean stat enhancement interface that scales gracefully from early progression to max level.",
+      "Buy Max was the point of the whole redesign. The rest of the layout is in service of fitting two buttons per row without crowding the level counter.",
     metrics: [
-      { value: "Buy Max", label: "Bulk Purchasing" },
-      { value: "Custom", label: "Handcrafted Icons" },
-      { value: "100%", label: "Retina 2x Assets" },
+      { value: "3", label: "Upgrade tracks" },
+      { value: "Buy 1 / Max", label: "Actions per row" },
+      { value: "24 / 100 / 10", label: "Level caps" },
     ],
   },
 
   {
     slug: "daily-rewards",
-    title: "6-Day Daily Rewards Calendar",
+    title: "Daily rewards",
     summary:
-      "A retention calendar loop with clear Claim, Locked, and Claimed visual treatments and a Day 6 hero prize.",
-    category: "Roblox UI",
+      "A six-day login loop with the states colour-coded and a last day worth showing up for.",
+    category: "Popup",
     year: "2025",
-    role: "UI/UX Design, Retention Design",
+    role: "UI design",
     tools: ["Figma", "Roblox Studio"],
     published: true,
     featured: true,
     cover: {
       src: "/media/projects/DailyRewards.png",
       kind: "image",
-      alt: "Daily Rewards Calendar",
+      alt: "Six-day daily reward calendar with claim, locked and claimed states",
       ratio: "4/3",
     },
     overview:
-      "Designed a 6-day daily login reward system to boost Day-1 through Day-7 player retention, featuring a grand finale Day 6 showcase slot.",
+      "A six-slot calendar. Green means claim it now, red means locked, grey means done. Day six is a double-height card because it is the reason to come back on day five.",
     problem:
-      "Daily calendars often look static or fail to make future rewards feel enticing. Players need clear state differentiation so they know what they've claimed and what's coming next.",
+      "A daily calendar is only doing its job if a player opening it on day two can see what day six holds. Most of them show six identical boxes, and after the second day the player stops opening it.",
     process: [
       {
-        title: "Three-state color coding",
-        body: "Green for ready to CLAIM, Red for LOCKED future days, and Grey for already CLAIMED.",
+        title: "Three states, three colours",
+        body: "Claim, locked, claimed. No ambiguity about which is which, and no relying on the button label alone to carry it.",
       },
       {
-        title: "Hero finale reward slot",
-        body: "Expanded the Day 6 card into a double-height feature slot to highlight the ultimate weekly prize.",
+        title: "Made day six twice the size",
+        body: "It is the card that has to be visible from day one. Giving it a double slot cost me a tidy grid, which was the right trade.",
       },
       {
-        title: "Dynamic calendar header",
-        body: "Created a calendar badge icon with custom drop shadow to anchor the modal title.",
+        title: "Reused the modal header",
+        body: "Calendar badge on the shared title bar. Same part as everywhere else in the set.",
       },
     ],
     solution:
-      "A clean 6-slot grid with high-contrast button states, subtle gradient backdrops, and bold typography.",
+      "A six-slot grid, five standard cards and one double, with the state colours doing the explaining.",
     gallery: [],
     outcome:
-      "A proven retention driver designed to maximize recurring daily player engagement.",
+      "I do not have retention numbers for this, and I would not publish them if I did — one calendar in one game is not evidence. What I can say is that day six is legible from day one, which is what it was drawn for.",
     metrics: [
-      { value: "6 Days", label: "Retention Loop" },
-      { value: "3 States", label: "Claim / Lock / Done" },
-      { value: "High Impact", label: "Day 6 Hero Slot" },
+      { value: "6", label: "Day loop" },
+      { value: "3", label: "Card states" },
+      { value: "2x", label: "Day six slot" },
     ],
   },
 
   {
     slug: "settings-controls",
-    title: "Settings & System Controls",
+    title: "Settings",
     summary:
-      "A compact settings modal featuring high-contrast glowing toggle switches for audio and graphics.",
-    category: "Roblox UI",
+      "Two toggles and a close button. Mostly an exercise in making a switch feel switched.",
+    category: "Menu",
     year: "2025",
-    role: "UI/UX Design, Interaction Design",
+    role: "UI design",
     tools: ["Figma", "Roblox Studio"],
     published: true,
-    featured: true,
+    featured: false,
     cover: {
       src: "/media/projects/Settings.png",
       kind: "image",
-      alt: "Settings Menu",
+      alt: "Settings panel with glowing toggle switches for shadows and audio",
       ratio: "2/3",
     },
     overview:
-      "Designed a clean, vertical settings modal allowing players to toggle graphics shadows and audio with satisfying glowing visual feedback.",
+      "Graphics and audio, on or off, in a narrow panel that does not cover the game behind it.",
     problem:
-      "Settings menus are often neglected and difficult to toggle on mobile. Clean tactile switches with immediate state feedback were required.",
+      "Settings screens get built last and it shows. The specific failure on mobile is a toggle whose state you cannot read at a glance, so you tap it twice and end up back where you started.",
     process: [
       {
-        title: "Glow switch mechanics",
-        body: "Designed vibrant green neon glows for ON states and subtle red glows for OFF states.",
+        title: "Made the glow the state, not the knob",
+        body: "Green glow on, red glow off. Knob position alone is too small to read on a phone held at arm's length in daylight.",
       },
       {
-        title: "Gear iconography & header",
-        body: "Created custom 3D-styled gear vector icons framing the header ribbon.",
+        title: "Kept it narrow instead of full screen",
+        body: "A vertical strip, so the game stays visible behind it. You can hear the audio setting change while the panel is still open.",
       },
       {
-        title: "Compact mobile layout",
-        body: "Structured the layout vertically to fit comfortably on phones without blocking background gameplay.",
+        title: "Stopped at two settings",
+        body: "Shadows and audio. Everything else is either handled by Roblox's own menu or does not need to be player-facing.",
       },
     ],
     solution:
-      "A modern, tactile settings sheet with unmistakable switch states and quick-dismiss controls.",
+      "A narrow sheet with two switches and a close button, sized to sit over live gameplay.",
     gallery: [],
     outcome:
-      "A polished, accessible settings menu that elevates the overall quality feel of the game.",
-    metrics: [
-      { value: "Tactile", label: "Glow Switches" },
-      { value: "Instant", label: "State Feedback" },
-      { value: "Compact", label: "Mobile-First" },
-    ],
+      "Nobody is ever going to screenshot this screen. It still has to work the first time.",
+    metrics: [],
   },
 
   {
     slug: "quicknav-sidebar",
-    title: "Quick-Access Navigation Sidebar",
+    title: "HUD sidebar",
     summary:
-      "A compact vertical sidebar menu designed for immediate single-tap access to primary menus.",
-    category: "Roblox UI",
+      "The column of buttons down the left edge. Always on screen, so it had the least room to be wrong.",
+    category: "HUD",
     year: "2025",
-    role: "UI/UX Design, HUD Architecture",
+    role: "UI design, HUD",
     tools: ["Figma", "Roblox Studio"],
     published: true,
-    featured: true,
+    featured: false,
     cover: {
       src: "/media/projects/LeftSideBar.png",
       kind: "image",
-      alt: "Quick Navigation Left Sidebar",
+      alt: "Vertical HUD sidebar with icon buttons for shop, settings, codes and inventory",
       ratio: "2/3",
     },
     overview:
-      "Designed a persistent left-hand HUD sidebar allowing players to quickly toggle shop, settings, codes, and inventory modals during active gameplay.",
+      "A persistent vertical strip: shop, settings, codes, inventory. The only thing in this set that is on screen during play.",
     problem:
-      "Persistent HUD buttons can clutter the screen or collide with Roblox default touch controls. The sidebar needed to be compact, tactile, and non-intrusive.",
+      "Anything permanent on a Roblox screen is competing with the default touch controls and with the game itself. The sidebar had to be inside thumb reach without sitting where the thumb already lives.",
     process: [
       {
-        title: "Vertical stacking efficiency",
-        body: "Positioned icons vertically along the left screen edge within natural thumb reach.",
+        title: "Left edge, middle height",
+        body: "Roblox puts the movement stick bottom-left and jump bottom-right. Middle-left is the strip that is genuinely free.",
       },
       {
-        title: "Icon clarity & badges",
-        body: "Created high-contrast icon glyphs with distinct background pills for instant identification.",
+        title: "Colour before glyph",
+        body: "Each button is an icon on its own coloured pill. At this size the colour is what players recognise; the glyph is confirmation, not identification.",
       },
       {
-        title: "Subtle active state feedback",
-        body: "Designed glowing border responses when a menu is currently summoned.",
+        title: "Active state on the border",
+        body: "The open menu's button gets a lit border. Cheap to implement, and it is the only feedback this element needs to give.",
       },
     ],
     solution:
-      "A clean, lightweight sidebar that preserves screen real estate while putting essential controls one tap away.",
+      "A compact strip of four buttons, clear of the default controls, with one unambiguous active state.",
     gallery: [],
     outcome:
-      "An unobtrusive HUD element that streamlines moment-to-moment game navigation.",
-    metrics: [
-      { value: "1-Tap", label: "Menu Summoning" },
-      { value: "Thumb-Zone", label: "Mobile Ergonomics" },
-      { value: "Lightweight", label: "HUD Footprint" },
-    ],
+      "This is the piece I would revisit first. Four buttons is already close to the limit for the space, and the game has since asked for a fifth.",
+    metrics: [],
   },
 ];
 
@@ -431,11 +411,6 @@ export const projects: Project[] = [
 export const publishedProjects = projects.filter((p) => p.published);
 
 export const featuredProjects = publishedProjects.filter((p) => p.featured);
-
-export const categories = [
-  "All",
-  ...Array.from(new Set(publishedProjects.map((p) => p.category))),
-];
 
 export function getProject(slug: string): Project | undefined {
   return publishedProjects.find((p) => p.slug === slug);

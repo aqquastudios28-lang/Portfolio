@@ -1,61 +1,45 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { motion } from "motion/react";
+import { rise, transition, viewport } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
+const TAGS = {
+  div: motion.div,
+  li: motion.li,
+  section: motion.section,
+  article: motion.article,
+} as const;
+
 /**
- * Fades and lifts its children into view once, on first intersection.
+ * Lifts its children into view once, on first intersection.
  *
- * The reveal is a one-way DOM class rather than React state: nothing else
- * depends on whether it has fired, so there is no reason to re-render the
- * subtree for it. Falls back to visible immediately where
- * IntersectionObserver is unavailable, and globals.css disables the whole
- * effect under prefers-reduced-motion.
+ * No reduced-motion branch here on purpose — MotionProvider handles that
+ * globally so the server and the client always render the same tree.
  */
 export function Reveal({
   children,
   delay = 0,
   className,
-  as: Tag = "div",
+  as = "div",
 }: {
   children: React.ReactNode;
   /** Stagger in milliseconds. */
   delay?: number;
   className?: string;
-  as?: "div" | "li" | "section" | "article";
+  as?: keyof typeof TAGS;
 }) {
-  const ref = useRef<HTMLElement | null>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    if (typeof IntersectionObserver === "undefined") {
-      el.classList.add("is-in");
-      return;
-    }
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-in");
-            io.disconnect();
-          }
-        }
-      },
-      { rootMargin: "0px 0px -12% 0px", threshold: 0.05 },
-    );
-
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+  const Tag = TAGS[as];
 
   return (
     <Tag
-      ref={ref as React.Ref<never>}
-      className={cn("reveal", className)}
-      style={{ ["--reveal-delay" as string]: `${delay}ms` }}
+      data-motion
+      className={cn(className)}
+      variants={rise}
+      initial="hidden"
+      whileInView="shown"
+      viewport={viewport}
+      transition={{ ...transition, delay: delay / 1000 }}
     >
       {children}
     </Tag>

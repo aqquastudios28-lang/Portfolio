@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { MediaFrame } from "@/components/ui/MediaFrame";
+import { Reveal } from "@/components/ui/Reveal";
 import type { Project } from "@/content/types";
 
 /**
@@ -19,7 +20,7 @@ export function ProjectRow({
   priority?: boolean;
 }) {
   return (
-    <li className="border-b border-rule">
+    <Reveal as="li" delay={index * 40} className="border-b border-rule">
       <Link
         href={`/work/${project.slug}`}
         className="group grid gap-5 py-8 sm:py-10 lg:grid-cols-[3rem_1fr_18rem] lg:gap-10"
@@ -34,6 +35,7 @@ export function ProjectRow({
             priority={priority}
             sizes="(max-width: 1024px) 100vw, 18rem"
             dropPath={`/media/projects/${project.slug}/cover.png`}
+            allowLightbox={false}
           />
         </div>
 
@@ -58,6 +60,6 @@ export function ProjectRow({
           </p>
         </div>
       </Link>
-    </li>
+    </Reveal>
   );
 }

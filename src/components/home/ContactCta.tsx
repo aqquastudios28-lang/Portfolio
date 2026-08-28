@@ -1,43 +1,43 @@
+import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { CopyButton } from "@/components/ui/CopyButton";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { BlurFade } from "@/components/ui/BlurFade";
+import { BorderBeam } from "@/components/ui/BorderBeam";
+import { Magnetic } from "@/components/ui/Magnetic";
 import { site } from "@/content/site";
 
 export function ContactCta() {
   return (
-    <section className="relative overflow-hidden border-t border-rule py-20 sm:py-28">
-      {/* Subtle ambient lighting */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute bottom-0 right-0 -z-10 h-72 w-96 rounded-full bg-accent/5 blur-3xl"
-      />
-
+    <section className="py-20 sm:py-28 border-t border-white/10">
       <Container>
-        <div className="rail">
-          <div className="flex items-center gap-2 lg:pt-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-            <p className="t-label">Contact</p>
-          </div>
+        <BlurFade delay={0.05} inView>
+          <SpotlightCard className="relative overflow-hidden p-8 sm:p-14">
+            <BorderBeam size={250} duration={12} colorFrom="#ffffff" colorTo="transparent" />
 
-          <div>
-            <h2 className="t-h1 max-w-[18ch]">
-              Got an interface that needs work?
-            </h2>
+            <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
+              <div className="max-w-2xl">
+                <span className="font-mono text-xs font-medium uppercase tracking-wider text-text-dim">
+                  Direct Inquiries
+                </span>
+                <h2 className="t-h1 mt-3 text-white">Working on a game?</h2>
+                <p className="t-lead mt-3 text-text-muted">
+                  Send me the experience details, current screens, and what you are looking to build or rework.
+                </p>
+              </div>
 
-            <p className="t-lead mt-6 max-w-[48ch]">
-              Tell me about your Roblox experience, what interface systems you need, and roughly your timeline. I reply to every commission inquiry.
-            </p>
-
-            <div className="mt-10 flex flex-wrap items-center gap-4">
-              <a
-                href={`mailto:${site.email}`}
-                className="inline-block border-b border-rule-strong pb-1 font-display text-xl font-medium tracking-[-0.02em] transition-colors hover:border-accent hover:text-accent sm:text-2xl"
-              >
-                {site.email}
-              </a>
-              <CopyButton text={site.email} label="Copy Email" />
+              <div className="flex flex-wrap items-center gap-3.5">
+                <Magnetic intensity={0.25}>
+                  <Link href="/contact" className="uiverse-btn-shimmer">
+                    <span>Start a Project</span>
+                    <span className="ml-2">&rarr;</span>
+                  </Link>
+                </Magnetic>
+                <CopyButton text={site.email} label="Copy Email" />
+              </div>
             </div>
-          </div>
-        </div>
+          </SpotlightCard>
+        </BlurFade>
       </Container>
     </section>
   );

@@ -1,29 +1,19 @@
 "use client";
 
-import { CSSProperties, ReactNode } from "react";
+import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+
+interface AnimatedShinyTextProps {
+  children: ReactNode;
+  className?: string;
+}
 
 export function AnimatedShinyText({
   children,
   className,
-  shimmerWidth = 100,
-}: {
-  children: ReactNode;
-  className?: string;
-  shimmerWidth?: number;
-}) {
+}: AnimatedShinyTextProps) {
   return (
-    <span
-      style={
-        {
-          "--shimmer-width": `${shimmerWidth}px`,
-        } as CSSProperties
-      }
-      className={cn(
-        "inline-block bg-clip-text text-transparent bg-gradient-to-r from-bone/60 via-bone via-50% to-bone/60 animate-shimmer bg-[length:200%_100%]",
-        className,
-      )}
-    >
+    <span className={cn("shiny-text-badge font-medium", className)}>
       {children}
     </span>
   );

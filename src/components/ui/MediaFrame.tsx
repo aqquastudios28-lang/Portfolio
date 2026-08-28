@@ -1,14 +1,21 @@
 "use client";
 
 import Image from "next/image";
+import { motion } from "motion/react";
 import type { Media } from "@/content/types";
+import { viewport, wipe } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import { VideoLoop } from "./VideoLoop";
 import { useLightbox } from "./Lightbox";
 
 /**
- * One media slot: image, looping video, or - when `src` is empty - a labelled
+ * One media slot: image, looping video, or — when `src` is empty — a labelled
  * placeholder telling you exactly what to drop in and where.
+ *
+ * The work is uncovered by a wipe on first view and then left alone. It does
+ * not scale under the cursor: these are screenshots of interfaces, and an
+ * interface that drifts when you point at it is the opposite of the argument
+ * this site is making. `cursor-zoom-in` is the whole affordance.
  */
 export function MediaFrame({
   media,
@@ -30,56 +37,57 @@ export function MediaFrame({
   const empty = !media.src;
   const { openLightbox } = useLightbox();
 
+  const zoomable = allowLightbox && !empty && media.kind !== "video";
+
   const handleClick = (e: React.MouseEvent) => {
-    if (allowLightbox && !empty && media.kind !== "video") {
-      e.preventDefault();
-      e.stopPropagation();
-      openLightbox(media.src, media.alt);
-    }
+    if (!zoomable) return;
+    e.preventDefault();
+    e.stopPropagation();
+    openLightbox(media.src, media.alt);
   };
+
+  const inner = (
+    <>
+      {empty ? (
+        <Placeholder media={media} ratio={ratio} dropPath={dropPath} />
+      ) : media.kind === "video" ? (
+        <VideoLoop media={media} />
+      ) : (
+        <Image
+          src={media.src}
+          alt={media.alt}
+          fill
+          unoptimized
+          sizes={sizes}
+          priority={priority}
+          className="object-contain"
+        />
+      )}
+    </>
+  );
 
   return (
     <figure className={cn("m-0", className)}>
-      <div
+      <motion.div
+        data-motion
         onClick={handleClick}
         className={cn(
-          "relative w-full overflow-hidden bg-transparent group/frame",
+          "relative w-full overflow-hidden",
           empty && "border border-dashed border-rule bg-ink-2",
-          !empty && allowLightbox && "cursor-zoom-in",
+          zoomable && "cursor-zoom-in",
         )}
         style={{ aspectRatio: ratio }}
+        {...(empty
+          ? {}
+          : {
+              variants: wipe,
+              initial: "hidden",
+              whileInView: "shown",
+              viewport,
+            })}
       >
-        {empty ? (
-          <Placeholder media={media} ratio={ratio} dropPath={dropPath} />
-        ) : media.kind === "video" ? (
-          <VideoLoop media={media} />
-        ) : (
-          <>
-            <Image
-              src={media.src}
-              alt={media.alt}
-              fill
-              unoptimized
-              sizes={sizes}
-              priority={priority}
-              className="object-contain transition-transform duration-300 group-hover/frame:scale-[1.03] drop-shadow-2xl"
-            />
-            {allowLightbox && (
-              <div
-                title="Click to view full resolution"
-                className="absolute top-2 right-2 opacity-0 transition-opacity duration-200 group-hover/frame:opacity-100 bg-ink/80 border border-rule p-1.5 backdrop-blur-sm text-bone-dim hover:text-accent rounded-xs"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polyline points="15 3 21 3 21 9" />
-                  <polyline points="9 21 3 21 3 15" />
-                  <line x1="21" y1="3" x2="14" y2="10" />
-                  <line x1="3" y1="21" x2="10" y2="14" />
-                </svg>
-              </div>
-            )}
-          </>
-        )}
-      </div>
+        {inner}
+      </motion.div>
 
       {media.caption ? (
         <figcaption className="mt-3 max-w-[64ch] text-[13px] leading-relaxed text-bone-faint">

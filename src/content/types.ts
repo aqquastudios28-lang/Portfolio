@@ -14,6 +14,7 @@ export type Media = {
   poster?: string;
 };
 
+/** One checkable fact about the screen. Not a KPI. */
 export type Metric = {
   value: string;
   label: string;
@@ -29,8 +30,8 @@ export type Project = {
   title: string;
   /** One line shown under the title in the grid. */
   summary: string;
-  /** Grouping used by the filter on /work. */
-  category: "UI Design" | "Client work" | "Systems" | "Concept" | string;
+  /** What kind of screen this is. Shown in the index and on the case study. */
+  category: "Menu" | "Shop" | "Economy" | "Popup" | "HUD" | (string & {});
   year: string;
   role: string;
   /** Rendered as small mono chips. */
@@ -52,6 +53,9 @@ export type Project = {
   /** Gallery beneath the solution section. Mix images and video loops freely. */
   gallery: Media[];
   outcome: string;
-  /** Shown as a stat row. Keep to three or four. */
+  /**
+   * Shown as a spec row under the closing section. Leave empty when there is
+   * no honest number to print — an empty array renders nothing.
+   */
   metrics: Metric[];
 };

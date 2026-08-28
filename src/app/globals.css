@@ -1,225 +1,261 @@
 @import "tailwindcss";
 
 /* ============================================================
-   DESIGN TOKENS
-
-   Direction: technical editorial. Ink and bone, a visible
-   hairline grid, mono metadata, square corners.
-
-   ONE RULE, held everywhere: colour is interaction.
-   Orange marks hover, focus and current state. Nothing
-   decorative is allowed to use it — no glows, no coloured
-   punctuation, no accent for its own sake. The resting page
-   is achromatic so the work supplies every bit of colour.
+   DESIGN TOKENS — Uiverse-Inspired Modern Glass & Spotlight Theme
+   Deep dark surfaces, spotlight borders, shimmer buttons,
+   and crisp typography.
    ============================================================ */
 :root {
-  /* Surfaces — warm-shifted, not neutral grey */
-  --ink: #0b0b0c;
-  --ink-2: #101011;
-  --ink-3: #161618;
+  --bg-dark: #0a0b0e;
+  --bg-card: rgba(18, 20, 26, 0.7);
+  --bg-card-hover: rgba(24, 27, 36, 0.85);
+  
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.15);
+  --border-strong: rgba(255, 255, 255, 0.3);
 
-  /* The grid, made visible */
-  --rule: rgb(237 235 231 / 0.12);
-  --rule-strong: rgb(237 235 231 / 0.28);
+  --text-white: #ffffff;
+  --text-muted: #8e929e;
+  --text-dim: #5c606c;
 
-  /* Type */
-  --bone: #edebe7;
-  --bone-dim: #928e87;
-  --bone-faint: #605d58;
-
-  /* Interaction only */
   --accent: #ff4a1c;
-
-  /* Square. Print has no rounded corners. */
-  --radius: 0px;
+  --accent-glow: rgba(255, 74, 28, 0.35);
 }
 
 @theme inline {
-  --color-ink: var(--ink);
-  --color-ink-2: var(--ink-2);
-  --color-ink-3: var(--ink-3);
-  --color-rule: var(--rule);
-  --color-rule-strong: var(--rule-strong);
-  --color-bone: var(--bone);
-  --color-bone-dim: var(--bone-dim);
-  --color-bone-faint: var(--bone-faint);
+  --color-bg-dark: var(--bg-dark);
+  --color-bg-card: var(--bg-card);
+  --color-bg-card-hover: var(--bg-card-hover);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-medium: var(--border-medium);
+  --color-border-strong: var(--border-strong);
+  --color-text-white: var(--text-white);
+  --color-text-muted: var(--text-muted);
+  --color-text-dim: var(--text-dim);
   --color-accent: var(--accent);
 
-  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-mono-jb), ui-monospace, SFMono-Regular, monospace;
+  --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, monospace;
 }
 
-/* ============================================================
-   BASE
-   ============================================================ */
-/* Must live in @layer base. Unlayered CSS outranks Tailwind's layered
-   utilities, so an unlayered reset here would silently kill every
-   border-bone / border-accent / border-transparent on the site. */
 @layer base {
   * {
-    border-color: var(--rule);
+    border-color: var(--border-subtle);
   }
 }
 
 html {
   -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  color-scheme: dark;
 }
 
 body {
-  background: var(--ink);
-  color: var(--bone);
+  background-color: var(--bg-dark);
+  color: var(--text-white);
   font-family: var(--font-sans);
-  font-synthesis-weight: none;
+  overflow-x: hidden;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 ::selection {
-  background: var(--accent);
-  color: var(--ink);
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid rgba(255, 255, 255, 0.5);
   outline-offset: 2px;
 }
 
-/* ============================================================
-   TYPE
+/* Background Dots Grid */
+.bg-grid-dots {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
 
-   Two families only: Archivo across display and text, JetBrains
-   Mono for metadata. Size and spacing carry the hierarchy, not
-   a third typeface.
+/* ============================================================
+   UIVERSE-INSPIRED COMPONENTS
    ============================================================ */
-/* In @layer components so Tailwind utilities can still override any of
-   these — an unlayered .t-label would beat normal-case, lowercase, etc. */
+
+/* Spotlight Container */
+.spotlight-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.spotlight-card:hover {
+  border-color: var(--border-medium);
+  background: var(--bg-card-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+/* Uiverse Shimmer Button */
+.uiverse-btn-shimmer {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 22px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.03) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.uiverse-btn-shimmer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+.uiverse-btn-shimmer:hover {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.06) 100%);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.uiverse-btn-shimmer:hover::before {
+  left: 100%;
+}
+
+.uiverse-btn-shimmer:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Secondary Ghost Button */
+.uiverse-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.uiverse-btn-ghost:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--border-medium);
+}
+
+/* Uiverse Input styling */
+.uiverse-input {
+  width: 100%;
+  background: rgba(18, 20, 26, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #ffffff;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.uiverse-input:focus {
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(24, 27, 36, 0.8);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
+}
+
+.uiverse-input::placeholder {
+  color: var(--text-dim);
+}
+
+/* Typography Classes */
 @layer components {
   .t-display {
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: clamp(2.9rem, 9.5vw, 8rem);
-    line-height: 0.86;
-    letter-spacing: -0.045em;
+    font-size: clamp(2.5rem, 6vw, 5.25rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
   }
 
   .t-h1 {
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: clamp(2.25rem, 5.6vw, 4.25rem);
-    line-height: 0.94;
-    letter-spacing: -0.04em;
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
   }
 
   .t-h2 {
     font-family: var(--font-display);
     font-weight: 600;
-    font-size: clamp(1.6rem, 3vw, 2.25rem);
-    line-height: 1.04;
-    letter-spacing: -0.03em;
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
   }
 
   .t-h3 {
     font-family: var(--font-display);
     font-weight: 600;
     font-size: 1.15rem;
-    line-height: 1.25;
+    line-height: 1.35;
     letter-spacing: -0.015em;
   }
 
   .t-lead {
-    font-size: clamp(1.0625rem, 1.4vw, 1.1875rem);
-    line-height: 1.58;
-    color: var(--bone-dim);
-    text-wrap: pretty;
+    font-size: clamp(1.05rem, 1.25vw, 1.1875rem);
+    line-height: 1.65;
+    color: var(--text-muted);
   }
 
   .t-body {
     font-size: 0.9375rem;
-    line-height: 1.72;
-    color: var(--bone-dim);
-    text-wrap: pretty;
+    line-height: 1.68;
+    color: var(--text-muted);
   }
 
-  /* Metadata. Every label, index number and running head on the site. */
   .t-label {
     font-family: var(--font-mono);
     font-size: 0.6875rem;
-    font-weight: 400;
+    font-weight: 500;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--bone-faint);
-    font-variant-numeric: tabular-nums;
+    color: var(--text-dim);
   }
 }
 
 /* ============================================================
-   MOTION
-
-   One feel, used everywhere: a short rise with no fade-in blur,
-   no scale, no bounce. Scoped to .js so a script failure leaves
-   the page plainly readable rather than blank.
+   ANIMATE-UI KEYFRAMES
    ============================================================ */
-.js .reveal {
-  opacity: 0;
-  transform: translateY(10px);
-  transition:
-    opacity 0.5s cubic-bezier(0.32, 0.72, 0, 1),
-    transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
-  transition-delay: var(--reveal-delay, 0ms);
-}
-
-.js .reveal.is-in {
-  opacity: 1;
-  transform: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .js .reveal {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-  }
-}
-
-/* ============================================================
-   GRID
-
-   The rules are structure, not ornament. A vertical hairline
-   marks the metadata column on wide screens.
-   ============================================================ */
-.rail {
-  display: grid;
-  gap: 1.25rem;
-}
-
-@media (min-width: 1024px) {
-  .rail {
-    grid-template-columns: 9rem 1fr;
-    gap: 0 3.5rem;
-  }
-}
-
-/* ============================================================
-   ANIMATE UI KEYFRAMES & UTILITIES
-   ============================================================ */
-@keyframes marquee {
-  0% {
-    transform: translateX(0%);
-  }
+@keyframes border-beam {
   100% {
-    transform: translateX(-50%);
+    offset-distance: 100%;
   }
 }
 
-@keyframes shimmer {
+@keyframes shiny-text {
   0% {
     background-position: 200% 0;
   }
@@ -228,15 +264,28 @@ body {
   }
 }
 
-.animate-marquee {
-  animation: marquee 30s linear infinite;
+.shiny-text-badge {
+  background: linear-gradient(
+    110deg,
+    #a1a1aa 0%,
+    #a1a1aa 35%,
+    #ffffff 50%,
+    #a1a1aa 65%,
+    #a1a1aa 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: #a1a1aa;
+  display: inline-block;
+  animation: shiny-text 4s linear infinite;
 }
 
-.animate-marquee:hover {
-  animation-play-state: paused;
+.animate-border-beam {
+  animation: border-beam calc(var(--duration, 10) * 1s) infinite linear;
 }
 
-.animate-shimmer {
-  animation: shimmer 6s ease-in-out infinite;
+.animate-shiny-text {
+  animation: shiny-text 5s linear infinite;
 }
-

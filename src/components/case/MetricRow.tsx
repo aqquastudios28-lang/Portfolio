@@ -1,11 +1,14 @@
 import type { Metric } from "@/content/types";
 
 /**
- * Outcome stats. DOM order stays term-then-definition for assistive tech;
- * flex-col-reverse lifts the value above its label visually.
+ * Spec row, not an achievement row. These are facts you could check against
+ * the screenshot above — tier counts, states, caps — rather than conversion
+ * figures nobody can verify.
  *
- * The number/label ratio is deliberate: the figure is the content, the
- * label is the caption.
+ * DOM order stays term-then-definition for assistive tech; flex-col-reverse
+ * lifts the value above its label visually. The value clamps rather than
+ * sitting at a fixed size, because "7" and "24 / 100 / 10" both have to live
+ * in the same column.
  */
 export function MetricRow({ metrics }: { metrics: Metric[] }) {
   if (metrics.length === 0) return null;

@@ -1,7 +1,17 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import Image from "next/image";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { DUR, EASE } from "@/lib/motion";
+
+type Shot = { src: string; alt: string };
 
 type LightboxContextType = {
   openLightbox: (src: string, alt: string) => void;
@@ -14,15 +24,13 @@ const LightboxContext = createContext<LightboxContextType>({
 });
 
 export function LightboxProvider({ children }: { children: ReactNode }) {
-  const [current, setCurrent] = useState<{ src: string; alt: string } | null>(null);
+  const [current, setCurrent] = useState<Shot | null>(null);
 
-  const openLightbox = (src: string, alt: string) => {
+  const openLightbox = useCallback((src: string, alt: string) => {
     setCurrent({ src, alt });
-  };
+  }, []);
 
-  const closeLightbox = () => {
-    setCurrent(null);
-  };
+  const closeLightbox = useCallback(() => setCurrent(null), []);
 
   useEffect(() => {
     if (!current) return;
@@ -38,51 +46,61 @@ export function LightboxProvider({ children }: { children: ReactNode }) {
       document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
     };
-  }, [current]);
+  }, [current, closeLightbox]);
 
   return (
     <LightboxContext.Provider value={{ openLightbox, closeLightbox }}>
       {children}
-      {current && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label={current.alt}
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-ink/90 p-4 sm:p-8 backdrop-blur-md animate-in fade-in duration-200"
-          onClick={closeLightbox}
-        >
-          {/* Close button */}
-          <button
-            type="button"
+
+      <AnimatePresence>
+        {current && (
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-label={current.alt}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: DUR.fast, ease: EASE }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-ink/95 p-4 backdrop-blur-md sm:p-8"
             onClick={closeLightbox}
-            className="absolute top-6 right-6 z-10 flex h-10 w-10 items-center justify-center border border-rule bg-ink-2/80 text-bone transition-colors hover:border-accent hover:text-accent"
-            aria-label="Close fullscreen preview"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M18 6L6 18M6 6l12 12" />
-            </svg>
-          </button>
+            <button
+              type="button"
+              onClick={closeLightbox}
+              className="absolute top-6 right-6 z-10 flex h-10 w-10 items-center justify-center border border-rule text-bone transition-colors hover:border-accent hover:text-accent"
+              aria-label="Close"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
 
-          <div
-            className="relative flex max-h-[90vh] max-w-[90vw] items-center justify-center"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="relative max-h-[85vh] max-w-[85vw] flex items-center justify-center">
-              <img
-                src={current.src}
-                alt={current.alt}
-                className="max-h-[85vh] max-w-[85vw] object-contain drop-shadow-2xl select-none"
-              />
-            </div>
-          </div>
+            <motion.img
+              key={current.src}
+              src={current.src}
+              alt={current.alt}
+              initial={{ opacity: 0, scale: 0.985 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.985 }}
+              transition={{ duration: DUR.base, ease: EASE }}
+              onClick={(e) => e.stopPropagation()}
+              className="max-h-[85vh] max-w-[85vw] object-contain select-none"
+            />
 
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 rounded-full border border-rule bg-ink-2/90 px-4 py-1.5 backdrop-blur-sm">
-            <p className="font-mono text-[11px] uppercase tracking-wider text-bone-dim">
-              {current.alt} • Click anywhere to close
+            <p className="absolute bottom-6 left-1/2 -translate-x-1/2 border border-rule bg-ink/90 px-4 py-1.5 font-mono text-[11px] tracking-wider uppercase text-bone-dim">
+              {current.alt}
             </p>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </LightboxContext.Provider>
   );
 }

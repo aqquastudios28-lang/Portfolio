@@ -1,61 +1,54 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Archivo, JetBrains_Mono } from "next/font/google";
 import { Footer } from "@/components/layout/Footer";
 import { Nav } from "@/components/layout/Nav";
-import { ToastProvider } from "@/components/ui/Toast";
 import { LightboxProvider } from "@/components/ui/Lightbox";
+import { MotionProvider } from "@/components/ui/MotionProvider";
 import { seo, site } from "@/content/site";
 import "./globals.css";
 
-/* Two families. Archivo carries display and text; the mono carries
-   metadata. A third face would be decoration. */
 const archivo = Archivo({
-  variable: "--font-archivo",
+  variable: "--font-display",
   subsets: ["latin"],
   display: "swap",
 });
 
 const mono = JetBrains_Mono({
-  variable: "--font-mono-jb",
+  variable: "--font-mono",
   subsets: ["latin"],
+  weight: ["400", "500"],
   display: "swap",
-  weight: ["400"],
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: seo.defaultTitle,
-    template: seo.titleTemplate,
+    default: `${site.name} — ${site.role}`,
+    template: `%s — ${site.name}`,
   },
-  description: seo.description,
+  description: site.intro,
   keywords: [...seo.keywords],
   authors: [{ name: site.name }],
   creator: site.name,
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
-    locale: "en_GB",
+    locale: "en_US",
     url: site.url,
     siteName: site.name,
-    title: seo.defaultTitle,
-    description: seo.description,
+    title: `${site.name} — ${site.role}`,
+    description: site.intro,
   },
   twitter: {
     card: "summary_large_image",
-    title: seo.defaultTitle,
-    description: seo.description,
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+    title: `${site.name} — ${site.role}`,
+    description: site.intro,
   },
 };
 
-export const viewport = {
-  themeColor: "#0b0b0c",
-  colorScheme: "dark" as const,
+export const viewport: Viewport = {
+  themeColor: "#0c0d0f",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({
@@ -71,22 +64,16 @@ export default function RootLayout({
     url: site.url,
     email: `mailto:${site.email}`,
     sameAs: site.links.map((l) => l.href),
-    knowsAbout: [...seo.keywords],
   };
 
   return (
     <html lang="en" className={`${archivo.variable} ${mono.variable}`}>
       <head>
-        {/* Marks the document as scripted before first paint, which is what
-            arms the reveals. If this never runs the reveal styles stay inert
-            and every section renders plainly visible. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `document.documentElement.classList.add('js')`,
-          }}
-        />
+        <noscript>
+          <style>{`[data-motion]{opacity:1!important;transform:none!important;clip-path:none!important}`}</style>
+        </noscript>
       </head>
-      <body className="min-h-dvh">
+      <body className="min-h-dvh bg-ink text-bone antialiased">
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[70] focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-ink"
@@ -94,13 +81,17 @@ export default function RootLayout({
           Skip to content
         </a>
 
-        <LightboxProvider>
-          <ToastProvider>
-            <Nav />
-            <main id="main">{children}</main>
-            <Footer />
-          </ToastProvider>
-        </LightboxProvider>
+        <MotionProvider>
+          <LightboxProvider>
+            <div className="flex min-h-screen flex-col justify-between">
+              <Nav />
+              <main id="main" className="flex-1">
+                {children}
+              </main>
+              <Footer />
+            </div>
+          </LightboxProvider>
+        </MotionProvider>
 
         <script
           type="application/ld+json"

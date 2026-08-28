@@ -11,15 +11,11 @@ npm run lint
 
 ---
 
-## ⚠️ Before you publish
+## ⚠️ Still stubbed
 
-The case studies in `src/content/projects.ts` are **example scaffolding** — plausible structure with invented metrics. Replace them with your real work and your real numbers. Do not ship those figures as if they were yours.
+- `site.links` in `src/content/site.ts` — the Roblox, X and Discord URLs are empty stubs and currently point nowhere useful.
 
-Also update:
-
-- `site.url` in `src/content/site.ts` — currently `https://example.com`, which breaks canonical tags, Open Graph and the sitemap until it points at your real domain.
-- `site.links` — the social URLs are empty stubs.
-- `site.facts` — "Remote", "4 years", "Interface systems" are placeholders. They are claims about you; set them or delete the entries.
+Everything else in `content/` is real copy. The `metrics` rows deliberately hold only facts you could check against the screenshot above them — tier counts, states, level caps. If you add a metric, hold it to the same standard: no conversion rates, no retention percentages, nothing you cannot show.
 
 ---
 
@@ -32,20 +28,22 @@ You edit content. You should rarely need to touch components.
 | `src/content/site.ts` | Name, role, headline, intro, email, availability, links, capabilities, About page copy, SEO defaults |
 | `src/content/projects.ts` | Every case study |
 | `src/content/types.ts` | The shape of a project — read this to see every available field |
-| `src/app/globals.css` | Design tokens: colour, type scale, motion |
+| `src/app/globals.css` | Design tokens: colour and type scale |
+| `src/lib/motion.ts` | Motion tokens: one curve, three durations, shared variants |
 
 ```
 src/
   app/            routes — /, /work, /work/[slug], /about, /contact
   components/
     layout/       Nav, Footer
-    ui/           Container, Reveal, MediaFrame, VideoLoop, Chip, ArrowLink
+    ui/           Container, Reveal, Lines, Rule, MediaFrame, VideoLoop,
+                  Lightbox, CopyButton, Chip, ArrowLink
     home/         Hero, SelectedWork, Capabilities, ContactCta
-    work/         ProjectRow, WorkGrid
+    work/         ProjectRow
     case/         CaseSection, ProcessList, MetricRow, NextProject
     contact/      ContactForm
   content/        ← you edit these
-  lib/            cn(), useScrolled(), usePrefersReducedMotion()
+  lib/            cn(), useScrolled(), usePrefersReducedMotion(), motion tokens
 ```
 
 ---
@@ -55,7 +53,7 @@ src/
 Append an object to the `projects` array in `src/content/projects.ts`. Routes, the sitemap and the work grid all pick it up automatically — there is nothing to register.
 
 - `published: false` hides it without deleting it.
-- `featured: true` surfaces it on the homepage. Three works best; the first renders full-width.
+- `featured: true` surfaces it on the homepage. Three or four works best; they render full-width, so prefer landscape covers there.
 
 ## Adding images and video
 
@@ -108,7 +106,7 @@ If you add a component, ask whether the colour you are reaching for marks someth
 - **Square corners.** `--radius: 0`. Print has no rounded corners, and a mix of pill buttons against soft cards is the fastest way to look generated.
 - **Two families.** Archivo carries display and text; JetBrains Mono carries metadata. A third face would be decoration.
 - **Rules, not cards.** Sections are separated by hairlines and share one left rail (`.rail`, a 9rem metadata column). Almost nothing is boxed.
-- **One motion.** A 10px rise over 500ms, used everywhere. No fades-with-blur, no hover scale, no parallax.
+- **One motion.** Every animation on the site pulls its curve and duration from `src/lib/motion.ts`: a single hard ease-out, three durations, nothing that loops. Display type rises from behind a mask, images are uncovered by a wipe, section rules draw in from the left. No hover scale, no parallax, no shimmer, no perpetual animation — anything still moving after you have stopped scrolling is decoration.
 
 Use `.t-display`, `.t-h1`, `.t-h2`, `.t-h3`, `.t-lead`, `.t-body`, `.t-label` rather than ad-hoc sizes.
 
@@ -117,9 +115,9 @@ Use `.t-display`, `.t-h1`, `.t-h2`, `.t-h3`, `.t-lead`, `.t-body`, `.t-label` ra
 ## What is already handled
 
 - **SEO** — per-route metadata, canonical URLs, Open Graph, Twitter cards, `sitemap.xml`, `robots.txt`, Person JSON-LD, and a generated share card (`opengraph-image.tsx`) that rebuilds itself from `site.ts`.
-- **Accessibility** — skip link, one `<h1>` per page, semantic landmarks, labelled form fields, visible focus rings, `aria-current` on the active nav item, live region on the work filter.
-- **Reduced motion** — scroll reveals and video autoplay both respect `prefers-reduced-motion`.
-- **No-JS resilience** — reveal animations are scoped to `.js`, so if scripts fail the page renders plainly visible rather than blank.
+- **Accessibility** — skip link, one `<h1>` per page, semantic landmarks, labelled form fields, visible focus rings, `aria-current` on the active nav item.
+- **Reduced motion** — every animated component checks `useReducedMotion()` and renders its final state directly. A visitor who asked for no motion gets a static page, not a fast one.
+- **No-JS resilience** — Motion writes its "hidden" state into the prerendered HTML, so animated elements carry `data-motion` and a `<noscript>` rule in `layout.tsx` restores them. If scripts never run, the page renders plainly visible rather than blank.
 
 ## Contact form
 
@@ -133,4 +131,4 @@ Static output, so anywhere works. Vercel:
 npx vercel
 ```
 
-Set `site.url` to the real domain first, or canonical tags and the sitemap will point at `example.com`.
+`site.url` is already set to `https://cerbis.xyz`; change it there if the domain moves, and canonical tags, Open Graph and the sitemap follow.
