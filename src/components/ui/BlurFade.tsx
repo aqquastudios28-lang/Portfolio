@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useInView, Variants } from "motion/react";
+import { motion, useInView, Variants, UseInViewOptions } from "motion/react";
 
 interface BlurFadeProps {
   children: React.ReactNode;
@@ -14,7 +14,7 @@ interface BlurFadeProps {
   delay?: number;
   yOffset?: number;
   inView?: boolean;
-  inViewMargin?: string;
+  inViewMargin?: UseInViewOptions["margin"];
   blur?: string;
 }
 
@@ -30,7 +30,7 @@ export function BlurFade({
   blur = "6px",
 }: BlurFadeProps) {
   const ref = useRef(null);
-  const inViewResult = useInView(ref, { once: true, margin: inViewMargin as any });
+  const inViewResult = useInView(ref, { once: true, margin: inViewMargin });
   const isShown = !inView || inViewResult;
 
   const defaultVariants: Variants = {
