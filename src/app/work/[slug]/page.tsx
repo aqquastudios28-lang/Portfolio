@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/Container";
-import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { PlateZoom } from "@/components/work/PlateZoom";
 import {
   getNextProject,
   getProject,
@@ -35,6 +34,22 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   };
 }
 
+/** Label in the margin, prose in the column. Used for every body section. */
+function Section({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="grid gap-4 border-t border-rule py-10 sm:grid-cols-12 sm:gap-8">
+      <h2 className="annot sm:col-span-3">{label}</h2>
+      <div className="sm:col-span-9 sm:max-w-3xl">{children}</div>
+    </section>
+  );
+}
+
 export default async function CaseStudyPage({ params }: Params) {
   const { slug } = await params;
   const project = getProject(slug);
@@ -42,181 +57,159 @@ export default async function CaseStudyPage({ params }: Params) {
   if (!project) notFound();
 
   const next = getNextProject(slug);
+  const index = publishedProjects.findIndex((p) => p.slug === slug);
 
   return (
-    <article className="py-12 sm:py-20">
+    <article className="py-10 sm:py-16">
       <Container>
-        {/* Navigation Breadcrumb */}
-        <div className="flex items-center justify-between border-b border-white/10 pb-6">
+        <div className="flex items-baseline justify-between gap-4 border-b border-rule pb-3">
           <Link
             href="/work"
-            className="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-text-muted transition-colors hover:text-white"
+            className="group annot inline-flex items-center gap-2 transition-colors hover:text-paper"
           >
-            <span className="transition-transform group-hover:-translate-x-1">&larr;</span>
-            <span>Back to Work</span>
+            <span
+              aria-hidden
+              className="inline-block transition-transform group-hover:-translate-x-1"
+            >
+              &larr;
+            </span>
+            Work index
           </Link>
-          <span className="rounded-full border border-white/15 bg-white/5 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-white">
+          <span className="annot">
+            {String(index + 1).padStart(2, "0")} /{" "}
+            {String(publishedProjects.length).padStart(2, "0")} —{" "}
             {project.category}
           </span>
         </div>
 
-        {/* Header */}
-        <header className="py-10 max-w-3xl">
-          <h1 className="t-h1 text-white">{project.title}</h1>
-          <p className="t-lead mt-4 text-text-muted">
-            {project.summary}
-          </p>
-
-          {/* Specs */}
-          <div className="mt-8 grid grid-cols-2 gap-4 rounded-2xl border border-white/10 bg-bg-card p-5 backdrop-blur-md sm:grid-cols-4 sm:gap-6">
-            <div>
-              <span className="font-mono text-[10px] uppercase tracking-wider text-text-dim">
-                Role
-              </span>
-              <p className="mt-1 font-display text-sm font-semibold text-white">{project.role}</p>
-            </div>
-            <div>
-              <span className="font-mono text-[10px] uppercase tracking-wider text-text-dim">
-                Year
-              </span>
-              <p className="mt-1 font-display text-sm font-semibold text-white">{project.year}</p>
-            </div>
-            <div>
-              <span className="font-mono text-[10px] uppercase tracking-wider text-text-dim">
-                Platform
-              </span>
-              <p className="mt-1 font-display text-sm font-semibold text-white">Crossplay</p>
-            </div>
-            <div>
-              <span className="font-mono text-[10px] uppercase tracking-wider text-text-dim">
-                Stack
-              </span>
-              <div className="mt-1 flex flex-wrap gap-1">
-                {project.tools.map((t) => (
-                  <span
-                    key={t}
-                    className="rounded bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-text-muted"
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
+        <header className="pt-12 pb-10">
+          <h1 className="t-h1 max-w-4xl text-paper">{project.title}</h1>
+          <p className="t-lead mt-5 max-w-2xl">{project.summary}</p>
         </header>
+      </Container>
 
-        {/* Primary Showcase Image */}
-        <div className="relative my-8 aspect-[16/9] w-full flex items-center justify-center">
-          {project.cover.src ? (
-            <Image
-              src={project.cover.src}
-              alt={project.title}
-              fill
-              priority
-              unoptimized
-              className="object-contain drop-shadow-2xl"
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center font-mono text-sm text-text-dim">
-              Screenshot Preview
-            </div>
-          )}
-        </div>
+      <Container>
+        {project.cover.src ? (
+          <PlateZoom
+            src={project.cover.src}
+            alt={project.cover.alt}
+            tag={project.category}
+          />
+        ) : (
+          <div className="frame flex aspect-[16/9] items-center justify-center">
+            <span className="annot">No screenshot</span>
+          </div>
+        )}
 
-        {/* Case Study Sections */}
-        <div className="mt-16 space-y-10 max-w-4xl">
-          {/* Overview */}
-          <SpotlightCard className="p-6 sm:p-8">
-            <span className="font-mono text-xs uppercase tracking-wider text-text-dim">
-              Overview
-            </span>
-            <p className="mt-3 text-base leading-relaxed text-white">
+        <dl className="mt-6 grid grid-cols-2 gap-x-8 gap-y-5 sm:grid-cols-4">
+          <div>
+            <dt className="annot">Role</dt>
+            <dd className="mt-1.5 text-sm text-paper">{project.role}</dd>
+          </div>
+          <div>
+            <dt className="annot">Year</dt>
+            <dd className="mt-1.5 font-mono text-sm text-paper">
+              {project.year}
+            </dd>
+          </div>
+          <div>
+            <dt className="annot">Type</dt>
+            <dd className="mt-1.5 text-sm text-paper">{project.category}</dd>
+          </div>
+          <div>
+            <dt className="annot">Tools</dt>
+            <dd className="mt-1.5 text-sm text-paper">
+              {project.tools.join(", ")}
+            </dd>
+          </div>
+        </dl>
+      </Container>
+
+      <Container>
+        <div className="mt-16">
+          <Section label="Overview">
+            <p className="text-base leading-relaxed text-paper">
               {project.overview}
             </p>
-          </SpotlightCard>
+          </Section>
 
-          {/* Problem */}
-          <SpotlightCard className="p-6 sm:p-8">
-            <span className="font-mono text-xs uppercase tracking-wider text-text-dim">
-              Design Challenge
-            </span>
-            <p className="mt-3 text-sm leading-relaxed text-text-muted">
-              {project.problem}
-            </p>
-          </SpotlightCard>
+          <Section label="The problem">
+            <p className="t-body">{project.problem}</p>
+          </Section>
 
-          {/* Process Breakdown */}
           {project.process.length > 0 && (
-            <SpotlightCard className="p-6 sm:p-8">
-              <span className="font-mono text-xs uppercase tracking-wider text-text-dim">
-                Process & Execution
-              </span>
-              <div className="mt-6 space-y-4">
+            <Section label="Process">
+              <ol className="space-y-0">
                 {project.process.map((step, i) => (
-                  <div
+                  <li
                     key={step.title}
-                    className="flex flex-col gap-2 rounded-xl border border-white/5 bg-white/[0.02] p-4 sm:flex-row sm:items-baseline sm:gap-6"
+                    className="grid gap-2 border-b border-rule-soft py-5 first:pt-0 last:border-0 sm:grid-cols-[3rem_minmax(0,1fr)] sm:gap-6"
                   >
-                    <span className="font-mono text-xs font-bold text-text-dim">
-                      0{i + 1}
+                    <span className="idx">
+                      {String(i + 1).padStart(2, "0")}
                     </span>
                     <div>
-                      <h3 className="font-display text-sm font-semibold text-white">
-                        {step.title}
-                      </h3>
-                      <p className="mt-1 text-xs leading-relaxed text-text-muted">
-                        {step.body}
-                      </p>
+                      <h3 className="t-h3 text-paper">{step.title}</h3>
+                      <p className="t-body mt-2 text-sm">{step.body}</p>
                     </div>
-                  </div>
+                  </li>
                 ))}
-              </div>
-            </SpotlightCard>
+              </ol>
+            </Section>
           )}
 
-          {/* Solution */}
-          <SpotlightCard className="p-6 sm:p-8">
-            <span className="font-mono text-xs uppercase tracking-wider text-text-dim">
-              Shipped Outcome
-            </span>
-            <p className="mt-3 text-sm leading-relaxed text-white">
+          <Section label="Solution">
+            <p className="text-base leading-relaxed text-paper">
               {project.solution}
             </p>
             {project.outcome && (
-              <p className="mt-4 border-t border-white/10 pt-4 text-xs italic text-text-dim">
-                &ldquo;{project.outcome}&rdquo;
+              <p className="t-body mt-6 rounded-r-[18px] border-l-4 border-accent pl-5 text-sm">
+                {project.outcome}
               </p>
             )}
-          </SpotlightCard>
+          </Section>
+
+          {project.metrics.length > 0 && (
+            <Section label="Spec">
+              <dl className="grid grid-cols-1 gap-x-8 sm:grid-cols-3">
+                {project.metrics.map((metric) => (
+                  <div
+                    key={metric.label}
+                    className="border-t border-rule-soft py-4 sm:border-t-0 sm:py-0"
+                  >
+                    <dd className="font-display text-2xl font-semibold tracking-tight text-paper">
+                      {metric.value}
+                    </dd>
+                    <dt className="annot mt-2">{metric.label}</dt>
+                  </div>
+                ))}
+              </dl>
+            </Section>
+          )}
         </div>
 
-        {/* Next Project Link */}
         {next && (
-          <div className="mt-20 border-t border-white/10 pt-10">
-            <span className="font-mono text-xs uppercase tracking-wider text-text-dim">
-              Next Case Study
+          <Link
+            href={`/work/${next.slug}`}
+            className="group mt-10 grid items-center gap-4 border-t border-rule pt-8 sm:grid-cols-12 sm:gap-8"
+          >
+            <span className="annot sm:col-span-3">Next screen</span>
+            <div className="sm:col-span-6">
+              <h2 className="t-h2 text-paper transition-colors group-hover:text-accent">
+                {next.title}
+              </h2>
+              <p className="t-body mt-2 text-sm">{next.summary}</p>
+            </div>
+            <span className="annot sm:col-span-3 sm:text-right">
+              {next.category}
+              <span
+                aria-hidden
+                className="ml-3 inline-block transition-transform group-hover:translate-x-1"
+              >
+                &rarr;
+              </span>
             </span>
-            <Link
-              href={`/work/${next.slug}`}
-              className="group mt-4 block"
-            >
-              <SpotlightCard className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 p-6 sm:p-8">
-                <div>
-                  <span className="rounded bg-white/10 px-2 py-0.5 font-mono text-[10px] uppercase text-text-dim">
-                    {next.category}
-                  </span>
-                  <h3 className="mt-2 font-display text-xl font-bold text-white transition-colors group-hover:text-text-muted">
-                    {next.title}
-                  </h3>
-                  <p className="mt-1 text-xs text-text-muted">{next.summary}</p>
-                </div>
-
-                <span className="font-mono text-xs font-semibold text-white transition-transform group-hover:translate-x-2">
-                  View Next &rarr;
-                </span>
-              </SpotlightCard>
-            </Link>
-          </div>
+          </Link>
         )}
       </Container>
     </article>

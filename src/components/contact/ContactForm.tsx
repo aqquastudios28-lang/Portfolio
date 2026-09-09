@@ -109,54 +109,54 @@ export function ContactForm({ email }: { email: string }) {
           >
             {/* Success Header */}
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/20 border border-accent/40 text-accent">
+              <div className="flex h-10 w-10 items-center justify-center border border-accent text-accent">
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
               <div>
-                <h3 className="font-display font-semibold text-lg text-white">
+                <h3 className="font-display font-semibold text-lg text-paper">
                   Commission Request Sent
                 </h3>
-                <p className="font-mono text-xs text-text-muted mt-0.5">
+                <p className="font-mono text-xs text-paper-2 mt-0.5">
                   I will review your project details and get back to you shortly.
                 </p>
               </div>
             </div>
 
             {/* Brief Summary Box */}
-            <div className="w-full rounded-xl border border-white/10 bg-white/[0.02] p-4 text-xs font-mono space-y-2 text-text-muted">
-              <div className="flex justify-between border-b border-white/5 pb-2">
-                <span className="text-text-dim">Project Scope:</span>
-                <span className="text-white font-medium">{selectedScope}</span>
+            <div className="w-full border border-rule p-4 text-xs font-mono space-y-2 text-paper-2">
+              <div className="flex justify-between border-b border-rule-soft pb-2">
+                <span className="text-paper-3">Project Scope:</span>
+                <span className="text-paper font-medium">{selectedScope}</span>
               </div>
-              <div className="flex justify-between border-b border-white/5 pb-2">
-                <span className="text-text-dim">Client / Handle:</span>
-                <span className="text-white font-medium">{name}</span>
+              <div className="flex justify-between border-b border-rule-soft pb-2">
+                <span className="text-paper-3">Client / Handle:</span>
+                <span className="text-paper font-medium">{name}</span>
               </div>
               {experience && (
-                <div className="flex justify-between border-b border-white/5 pb-2">
-                  <span className="text-text-dim">Game / Link:</span>
-                  <span className="text-white font-medium truncate max-w-[220px]">{experience}</span>
+                <div className="flex justify-between border-b border-rule-soft pb-2">
+                  <span className="text-paper-3">Game / Link:</span>
+                  <span className="text-paper font-medium truncate max-w-[220px]">{experience}</span>
                 </div>
               )}
-              <div className="pt-1 text-text-dim text-[11px] leading-relaxed line-clamp-3">
+              <div className="pt-1 text-paper-3 text-[11px] leading-relaxed line-clamp-3">
                 &ldquo;{message}&rdquo;
               </div>
             </div>
 
             {/* Quick Actions */}
             <div className="w-full space-y-3">
-              <span className="font-mono text-xs uppercase tracking-wider text-text-dim block">
+              <span className="annot block">
                 Quick Action
               </span>
               <div className="flex flex-wrap gap-3">
                 <button
                   type="button"
                   onClick={handleCopy}
-                  className="uiverse-btn-ghost text-xs gap-2 py-2 px-3.5 cursor-pointer text-white hover:bg-white/[0.08]"
+                  className="btn-ghost text-xs gap-2 py-2 px-3.5 cursor-pointer text-paper "
                 >
-                  <svg className="h-3.5 w-3.5 text-text-dim" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg className="h-3.5 w-3.5 text-paper-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
                   <span>{copied ? "Copied to Clipboard!" : "Copy Brief for Discord"}</span>
@@ -168,7 +168,7 @@ export function ContactForm({ email }: { email: string }) {
               <button
                 type="button"
                 onClick={handleReset}
-                className="text-xs font-mono text-text-dim hover:text-white underline underline-offset-4 transition-colors cursor-pointer"
+                className="text-xs font-mono text-paper-3 hover:text-paper underline underline-offset-4 transition-colors cursor-pointer"
               >
                 &larr; Send another request
               </button>
@@ -198,7 +198,7 @@ export function ContactForm({ email }: { email: string }) {
 
             {/* Scope Chips */}
             <div>
-              <label className="font-mono text-xs uppercase tracking-wider text-text-dim mb-2.5 block">
+              <label className="annot mb-3 block">
                 Project Scope
               </label>
               <div className="flex flex-wrap gap-2">
@@ -208,10 +208,10 @@ export function ContactForm({ email }: { email: string }) {
                     type="button"
                     onClick={() => setSelectedScope(scope)}
                     className={cn(
-                      "rounded-lg px-3 py-1.5 font-mono text-xs transition-all cursor-pointer",
+                      "pill cursor-pointer transition-colors",
                       selectedScope === scope
-                        ? "bg-white text-black font-semibold shadow-sm"
-                        : "border border-white/10 bg-white/[0.03] text-text-muted hover:border-white/20 hover:text-white"
+                        ? "pill-accent"
+                        : "hover:border-paper-3 hover:text-paper"
                     )}
                   >
                     {scope}
@@ -222,7 +222,7 @@ export function ContactForm({ email }: { email: string }) {
 
             {/* Name / Handle Input */}
             <div>
-              <label htmlFor="cf-name" className="font-mono text-xs uppercase tracking-wider text-text-dim mb-2 block">
+              <label htmlFor="cf-name" className="annot mb-2 block">
                 Your Name / Discord / Email
               </label>
               <input
@@ -233,14 +233,14 @@ export function ContactForm({ email }: { email: string }) {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Alex (@alex_studio / alex@domain.com)"
                 autoComplete="name"
-                className="uiverse-input"
+                className="field"
                 required
               />
             </div>
 
             {/* Game Link */}
             <div>
-              <label htmlFor="cf-exp" className="font-mono text-xs uppercase tracking-wider text-text-dim mb-2 block">
+              <label htmlFor="cf-exp" className="annot mb-2 block">
                 Game Name / Roblox Link
               </label>
               <input
@@ -250,14 +250,14 @@ export function ContactForm({ email }: { email: string }) {
                 maxLength={200}
                 onChange={(e) => setExperience(e.target.value)}
                 placeholder="Game title or Roblox experience URL"
-                className="uiverse-input"
+                className="field"
                 required
               />
             </div>
 
             {/* Message */}
             <div>
-              <label htmlFor="cf-msg" className="font-mono text-xs uppercase tracking-wider text-text-dim mb-2 block">
+              <label htmlFor="cf-msg" className="annot mb-2 block">
                 Details & Scope
               </label>
               <textarea
@@ -267,13 +267,13 @@ export function ContactForm({ email }: { email: string }) {
                 maxLength={3000}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Describe what screens you need, target timeline, and any specific mechanics."
-                className="uiverse-input resize-y"
+                className="field"
                 required
               />
             </div>
 
             {errorMessage && (
-              <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-3 font-mono text-xs text-red-400">
+              <div className="border border-[#e5484d] bg-[#e5484d]/10 p-3 font-mono text-xs text-[#ff8085]">
                 {errorMessage}
               </div>
             )}
@@ -284,11 +284,11 @@ export function ContactForm({ email }: { email: string }) {
                 <button
                   type="submit"
                   disabled={status === "submitting"}
-                  className="uiverse-btn-shimmer w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed group cursor-pointer"
+                  className="btn w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed group cursor-pointer"
                 >
                   {status === "submitting" ? (
                     <span className="flex items-center gap-2">
-                      <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24" fill="none">
+                      <svg className="animate-spin h-4 w-4 text-current" viewBox="0 0 24 24" fill="none">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                       </svg>
@@ -302,10 +302,10 @@ export function ContactForm({ email }: { email: string }) {
                 <button
                   type="button"
                   onClick={handleCopy}
-                  className="uiverse-btn-ghost text-xs gap-1.5 py-2.5 px-3.5 cursor-pointer"
+                  className="btn-ghost text-xs gap-1.5 py-2.5 px-3.5 cursor-pointer"
                   title="Copy full commission brief to clipboard"
                 >
-                  <svg className="h-3.5 w-3.5 text-text-dim" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg className="h-3.5 w-3.5 text-paper-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
                   <span>{copied ? "Copied Brief!" : "Copy Brief"}</span>

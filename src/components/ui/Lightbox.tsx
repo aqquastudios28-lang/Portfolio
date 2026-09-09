@@ -68,7 +68,7 @@ export function LightboxProvider({ children }: { children: ReactNode }) {
             <button
               type="button"
               onClick={closeLightbox}
-              className="absolute top-6 right-6 z-10 flex h-10 w-10 items-center justify-center border border-rule text-bone transition-colors hover:border-accent hover:text-accent"
+              className="absolute top-6 right-6 z-10 flex h-12 w-12 items-center justify-center rounded-full border-2 border-rule bg-surface text-paper transition-colors hover:border-accent hover:text-accent"
               aria-label="Close"
             >
               <svg
@@ -92,10 +92,10 @@ export function LightboxProvider({ children }: { children: ReactNode }) {
               exit={{ opacity: 0, scale: 0.985 }}
               transition={{ duration: DUR.base, ease: EASE }}
               onClick={(e) => e.stopPropagation()}
-              className="max-h-[85vh] max-w-[85vw] object-contain select-none"
+              className="max-h-[85vh] max-w-[85vw] rounded-[20px] object-contain select-none"
             />
 
-            <p className="absolute bottom-6 left-1/2 -translate-x-1/2 border border-rule bg-ink/90 px-4 py-1.5 font-mono text-[11px] tracking-wider uppercase text-bone-dim">
+            <p className="pill absolute bottom-6 left-1/2 max-w-[80vw] -translate-x-1/2 overflow-hidden text-ellipsis">
               {current.alt}
             </p>
           </motion.div>

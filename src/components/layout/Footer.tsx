@@ -1,42 +1,44 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { site } from "@/content/site";
+
+const PAGES = [
+  { href: "/work", label: "Work" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
+];
+
+const LEGAL = [
+  { href: "/privacy", label: "Privacy" },
+  { href: "/cookies", label: "Cookies" },
+  { href: "/terms", label: "Terms" },
+];
 
 export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-white/10 py-12">
+    <footer className="mt-8 border-t border-rule">
       <Container>
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <span className="block font-mono text-xs font-medium uppercase tracking-wider text-text-dim">
-              Contact
-            </span>
+            <span className="annot">Contact</span>
             <a
               href={`mailto:${site.email}`}
-              className="mt-3 inline-block border-b border-white/20 pb-0.5 text-sm text-white transition-colors hover:border-white"
+              className="link-rule mt-4 inline-block text-sm"
             >
               {site.email}
             </a>
           </div>
 
           <div>
-            <span className="block font-mono text-xs font-medium uppercase tracking-wider text-text-dim">
-              Navigation
-            </span>
-            <ul className="mt-3 space-y-2 text-sm text-text-muted">
-              {[
-                { href: "/", label: "Index" },
-                { href: "/work", label: "Work" },
-                { href: "/about", label: "About" },
-                { href: "/contact", label: "Contact" },
-              ].map((link) => (
+            <span className="annot">Pages</span>
+            <ul className="mt-4 space-y-2.5">
+              {PAGES.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="transition-colors hover:text-white"
+                    className="text-sm text-paper-2 transition-colors hover:text-paper"
                   >
                     {link.label}
                   </Link>
@@ -46,55 +48,44 @@ export function Footer() {
           </div>
 
           <div>
-            <span className="block font-mono text-xs font-medium uppercase tracking-wider text-text-dim">
-              Channels
-            </span>
-            <ul className="mt-3 space-y-2 text-sm text-text-muted">
+            <span className="annot">Elsewhere</span>
+            <ul className="mt-4 space-y-2.5">
               {site.links.map((link) => (
                 <li key={link.label}>
                   <a
                     href={link.href}
                     target="_blank"
                     rel="noreferrer noopener"
-                    className="group flex items-center justify-between text-text-muted transition-colors hover:text-white"
+                    className="text-sm text-paper-2 transition-colors hover:text-paper"
                   >
-                    <span>{link.label}</span>
-                    <svg
-                      className="h-3.5 w-3.5 text-text-dim transition-all group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M7 17L17 7M17 7H7M17 7V17"
-                      />
-                    </svg>
+                    {link.label}
                   </a>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="lg:flex lg:flex-col lg:items-end">
-            <Image
-              src="/media/logo.png"
-              alt={site.name}
-              width={140}
-              height={36}
-              className="h-7 w-auto object-contain"
-            />
-            <p className="mt-2 text-xs leading-relaxed text-text-muted">
-              UI design & Luau builds for Roblox experiences.
-            </p>
+          <div>
+            <span className="annot">Legal</span>
+            <ul className="mt-4 space-y-2.5">
+              {LEGAL.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-paper-2 transition-colors hover:text-paper"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
-        <div className="mt-12 border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-text-dim">
-          <p>&copy; {year} {site.name}. All rights reserved.</p>
-          <p className="font-mono text-[11px]">Crafted for mobile touch hitboxes & high retention</p>
+        <div className="border-t border-rule-soft py-6">
+          <p className="annot">
+            {site.name} {year} — game names and logos belong to their owners
+          </p>
         </div>
       </Container>
     </footer>

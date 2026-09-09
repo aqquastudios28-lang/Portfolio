@@ -6,7 +6,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { site } from "@/content/site";
-import { useScrolled } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -15,13 +14,15 @@ const NAV = [
   { href: "/contact", label: "Contact" },
 ];
 
+/**
+ * A masthead rule, not a floating pill. It stays flush to the top and to the
+ * page rails at every scroll position — the previous version morphed between
+ * two different shapes on scroll, which meant the page never settled.
+ */
 export function Nav() {
   const pathname = usePathname();
-  const scrolled = useScrolled(24);
   const [open, setOpen] = useState(false);
-  const [hoveredPath, setHoveredPath] = useState<string | null>(null);
 
-  // Close mobile drawer on route change
   const [menuPath, setMenuPath] = useState(pathname);
   if (menuPath !== pathname) {
     setMenuPath(pathname);
@@ -44,103 +45,59 @@ export function Nav() {
     };
   }, [open]);
 
+  const isActive = (href: string) =>
+    pathname === href || (href !== "/" && pathname.startsWith(href + "/"));
+
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-50 w-full transition-all duration-300",
-        scrolled ? "pt-3 sm:pt-4 px-3 sm:px-6" : "pt-0 px-4 sm:px-8 border-b border-white/5 bg-bg-dark/40 backdrop-blur-sm"
-      )}
-    >
-      <motion.nav
+    <header className="sticky top-0 z-50 w-full border-b border-rule bg-ink/85 backdrop-blur-md">
+      <nav
         aria-label="Primary"
-        layout
-        transition={{
-          type: "spring",
-          stiffness: 280,
-          damping: 26,
-        }}
-        className={cn(
-          "mx-auto flex items-center justify-between transition-all duration-300",
-          scrolled
-            ? "max-w-4xl rounded-full border border-white/15 bg-black/80 px-4 sm:px-6 py-2 shadow-[0_8px_32px_rgba(0,0,0,0.6)] backdrop-blur-2xl"
-            : "w-full max-w-6xl rounded-none border border-transparent bg-transparent py-4 shadow-none"
-        )}
+        className="mx-auto flex w-full max-w-[78rem] items-center justify-between px-5 py-3 sm:px-8"
       >
-        {/* Brand Logo */}
-        <Link
-          href="/"
-          className="group flex items-center gap-2 transition-transform duration-200 hover:scale-105 active:scale-95"
-        >
+        <Link href="/" className="flex items-center gap-3">
           <Image
             src="/media/logo.png"
             alt={site.name}
             width={140}
             height={36}
             priority
-            className={cn(
-              "w-auto object-contain transition-all duration-300",
-              scrolled ? "h-7 sm:h-8" : "h-8 sm:h-9"
-            )}
+            className="h-7 w-auto object-contain"
           />
+          <span className="annot hidden sm:block">{site.role}</span>
         </Link>
 
-        {/* Desktop Navigation Links with Smooth Sliding Pill */}
-        <div className="hidden items-center gap-4 md:flex">
-          <ul
-            onMouseLeave={() => setHoveredPath(null)}
-            className="flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.03] p-1 backdrop-blur-md"
-          >
-            {NAV.map((item) => {
-              const active =
-                pathname === item.href ||
-                (item.href !== "/" && pathname.startsWith(item.href + "/"));
-              const isSelected =
-                hoveredPath === item.href || (!hoveredPath && active);
-
-              return (
-                <li key={item.href} className="relative">
-                  <Link
-                    href={item.href}
-                    onMouseEnter={() => setHoveredPath(item.href)}
-                    aria-current={active ? "page" : undefined}
-                    className={cn(
-                      "relative block rounded-full px-4 py-1.5 text-xs font-medium transition-colors duration-200",
-                      active ? "text-white font-semibold" : "text-text-muted hover:text-white"
-                    )}
-                  >
-                    {isSelected && (
-                      <motion.span
-                        layoutId="nav-pill"
-                        className="absolute inset-0 rounded-full border border-white/20 bg-white/15 shadow-sm"
-                        transition={{
-                          type: "spring",
-                          stiffness: 400,
-                          damping: 32,
-                        }}
-                      />
-                    )}
-                    <span className="relative z-10">{item.label}</span>
-                  </Link>
-                </li>
-              );
-            })}
+        <div className="hidden items-center md:flex">
+          <ul className="flex items-center gap-7">
+            {NAV.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  aria-current={isActive(item.href) ? "page" : undefined}
+                  className={cn(
+                    "annot relative py-1 transition-colors hover:text-paper",
+                    isActive(item.href) && "text-paper",
+                  )}
+                >
+                  {item.label}
+                  {isActive(item.href) && (
+                    <motion.span
+                      layoutId="nav-underline"
+                      className="absolute -bottom-1 left-0 h-[3px] w-full rounded-full bg-accent"
+                      transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                    />
+                  )}
+                </Link>
+              </li>
+            ))}
           </ul>
-
-          <Link
-            href="/contact"
-            className="uiverse-btn-shimmer text-xs py-2 px-4 shadow-sm"
-          >
-            <span>Get in Touch</span>
-          </Link>
         </div>
 
-        {/* Mobile menu trigger */}
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-controls="mobile-menu"
-          className="flex h-8 w-8 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white transition-all hover:bg-white/15 md:hidden"
+          className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-rule bg-surface text-paper transition-colors hover:border-paper-3 md:hidden"
         >
           <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
           <svg
@@ -150,59 +107,46 @@ export function Nav() {
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            strokeWidth="2.2"
+            strokeWidth="2"
             strokeLinecap="round"
-            strokeLinejoin="round"
           >
-            {open ? (
-              <path d="M6 6l12 12M18 6L6 18" />
-            ) : (
-              <path d="M4 7h16M4 12h16M4 17h16" />
-            )}
+            {open ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M3 8h18M3 16h18" />}
           </svg>
         </button>
-      </motion.nav>
+      </nav>
 
-      {/* Mobile Menu Drawer */}
       <AnimatePresence>
         {open && (
           <motion.div
             id="mobile-menu"
-            initial={{ opacity: 0, y: -8, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -8, scale: 0.96 }}
-            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="mx-auto mt-2 w-full max-w-4xl rounded-2xl border border-white/15 bg-black/95 p-5 shadow-2xl backdrop-blur-2xl md:hidden"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden border-t border-rule bg-ink md:hidden"
           >
-            <ul className="space-y-1">
-              {NAV.map((item) => {
-                const active =
-                  pathname === item.href ||
-                  (item.href !== "/" && pathname.startsWith(item.href + "/"));
-                return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className={cn(
-                        "block rounded-xl px-4 py-3 text-base font-medium transition-colors",
-                        active
-                          ? "bg-white/10 text-white font-semibold"
-                          : "text-text-muted hover:bg-white/5 hover:text-white"
-                      )}
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                );
-              })}
+            <ul className="px-5 py-2 sm:px-8">
+              {NAV.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      "flex items-baseline justify-between border-b border-rule-soft py-4",
+                      isActive(item.href) ? "text-accent" : "text-paper",
+                    )}
+                  >
+                    <span className="t-h3">{item.label}</span>
+                    <span aria-hidden className="annot">
+                      &rarr;
+                    </span>
+                  </Link>
+                </li>
+              ))}
             </ul>
-            <div className="mt-4 pt-3 border-t border-white/10">
-              <Link
-                href="/contact"
-                className="uiverse-btn-shimmer w-full text-center py-2.5 text-sm"
-              >
-                Get in Touch &rarr;
-              </Link>
+            <div className="px-5 pb-5 sm:px-8">
+              <a href={`mailto:${site.email}`} className="annot">
+                {site.email}
+              </a>
             </div>
           </motion.div>
         )}

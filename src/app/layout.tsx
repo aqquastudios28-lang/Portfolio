@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, JetBrains_Mono } from "next/font/google";
+import { Fredoka, JetBrains_Mono, Outfit } from "next/font/google";
 import { Footer } from "@/components/layout/Footer";
 import { Nav } from "@/components/layout/Nav";
 import { LightboxProvider } from "@/components/ui/Lightbox";
@@ -7,8 +7,18 @@ import { MotionProvider } from "@/components/ui/MotionProvider";
 import { seo, site } from "@/content/site";
 import "./globals.css";
 
-const archivo = Archivo({
+/* Fredoka is the rounded, chunky face the headlines need; Outfit is a soft
+   geometric that stays readable at body size; mono handles every caps label.
+   --font-sans was declared in the theme but never bound to a family, so body
+   text had been falling through to system-ui. */
+const display = Fredoka({
   variable: "--font-display",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const sans = Outfit({
+  variable: "--font-sans",
   subsets: ["latin"],
   display: "swap",
 });
@@ -67,13 +77,16 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className={`${archivo.variable} ${mono.variable}`}>
+    <html
+      lang="en"
+      className={`${display.variable} ${sans.variable} ${mono.variable}`}
+    >
       <head>
         <noscript>
           <style>{`[data-motion]{opacity:1!important;transform:none!important;clip-path:none!important}`}</style>
         </noscript>
       </head>
-      <body className="min-h-dvh bg-ink text-bone antialiased">
+      <body className="min-h-dvh bg-ink text-paper antialiased">
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[70] focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-ink"

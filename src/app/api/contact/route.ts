@@ -10,9 +10,43 @@ function escapeHtml(str: string): string {
     .replace(/'/g, "&#039;");
 }
 
+/**
+ * Anything that ends up in a mail header has to lose its line breaks first,
+ * otherwise a submitted value containing CR/LF can append headers of its own
+ * (a Bcc, a different reply-to) to the outgoing message.
+ */
+function headerSafe(str: string): string {
+  return str.replace(/[\r\n\t]+/g, " ").trim();
+}
+
+const EMAIL_RE = /^[^\s@<>",;]+@[^\s@<>",;.]+\.[^\s@<>",;]{2,}$/;
+
+/**
+ * Only accept posts that a browser initiated from this site. Does not stop a
+ * scripted client, which is what the honeypot and rate limit are for, but it
+ * does close off drive-by cross-site submissions.
+ */
+function sameOrigin(req: Request): boolean {
+  const origin = req.headers.get("origin");
+  if (!origin) return true; // non-browser client; other checks still apply
+
+  const host = req.headers.get("host");
+  if (!host) return false;
+
+  try {
+    return new URL(origin).host === host;
+  } catch {
+    return false;
+  }
+}
+
 export async function POST(req: Request) {
   try {
     const ip = getClientIp(req);
+
+    if (!sameOrigin(req)) {
+      return NextResponse.json({ error: "Bad request" }, { status: 403 });
+    }
 
     // 1. Production Rate Limiting (5 requests per 10 minutes per IP)
     const rateLimit = checkRateLimit(`contact_${ip}`, {
@@ -74,17 +108,23 @@ export async function POST(req: Request) {
       );
     }
 
+    /* No inbox is hardcoded here — a fallback address in the source is a
+       personal address published to anyone who reads the repo. Set
+       NOTIFICATION_EMAIL in the environment instead. */
     const targetEmail =
-      process.env.NOTIFICATION_EMAIL ||
-      process.env.CONTACT_EMAIL ||
-      "setsnewacc@gmail.com";
+      process.env.NOTIFICATION_EMAIL || process.env.CONTACT_EMAIL;
 
     const resendApiKey = process.env.RESEND_API_KEY;
+
+    if (!targetEmail) {
+      console.error(
+        "Contact form: NOTIFICATION_EMAIL is not set, cannot deliver enquiry.",
+      );
+    }
     let emailDelivered = false;
-    let deliveryError = "";
 
     // 5. Send via Resend API
-    if (resendApiKey) {
+    if (resendApiKey && targetEmail) {
       const escapedName = escapeHtml(cleanName);
       const escapedGame = escapeHtml(cleanGame || "Not specified");
       const escapedScope = escapeHtml(cleanScope);
@@ -152,7 +192,7 @@ export async function POST(req: Request) {
               <div style="height: 1px; background-color: rgba(255,255,255,0.08); margin-bottom: 16px;"></div>
               <div style="font-size: 11px; color: #5c606c; line-height: 1.5;">
                 Sent directly via Cerbis Portfolio (<a href="https://cerbis.xyz" style="color: #8e929e; text-decoration: none;">cerbis.xyz</a>)<br>
-                Timestamp: ${submissionDate} • Client IP: ${ip}
+                Timestamp: ${submissionDate}
               </div>
             </td>
           </tr>
@@ -163,6 +203,11 @@ export async function POST(req: Request) {
 </body>
 </html>
       `;
+
+      /* Only pass a reply-to when the value really is an address, and only
+         after stripping anything that could break out into a new header. */
+      const candidate = headerSafe(cleanName);
+      const replyTo = EMAIL_RE.test(candidate) ? candidate : undefined;
 
       // Helper function to send email via Resend
       const sendWithResend = async (fromAddress: string) => {
@@ -175,8 +220,10 @@ export async function POST(req: Request) {
           body: JSON.stringify({
             from: fromAddress,
             to: [targetEmail],
-            reply_to: cleanName.includes("@") ? cleanName : undefined,
-            subject: `🎨 Commission Request [${cleanScope}] — ${cleanName}`,
+            reply_to: replyTo,
+            subject: headerSafe(
+              `Commission request [${cleanScope}] - ${cleanName}`,
+            ).slice(0, 180),
             html: emailHtml,
           }),
         });
@@ -200,7 +247,6 @@ export async function POST(req: Request) {
         emailDelivered = true;
       } else {
         const errJson = await resendResponse.json().catch(() => ({}));
-        deliveryError = errJson.message || "Resend API rejected request";
         console.error("Resend delivery failed:", errJson);
       }
     }
@@ -227,7 +273,6 @@ export async function POST(req: Request) {
                     inline: false,
                   },
                 ],
-                footer: { text: `Target: ${targetEmail}` },
                 timestamp: new Date().toISOString(),
               },
             ],
@@ -244,7 +289,6 @@ export async function POST(req: Request) {
         game: cleanGame,
         scope: cleanScope,
         message: cleanMessage,
-        ip,
       });
     }
 
@@ -252,7 +296,6 @@ export async function POST(req: Request) {
       {
         success: true,
         delivered: emailDelivered,
-        deliveryError: deliveryError || undefined,
         message: "Commission request submitted successfully",
       },
       {
