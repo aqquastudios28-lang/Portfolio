@@ -5,6 +5,104 @@ import type { Project } from "./types";
 
 export const projects: Project[] = [
   {
+    slug: "art-deco-main-menu",
+    title: "Main Menu",
+    summary:
+      "Gold-on-black title screen with a four-way portal cluster and a single obvious start action.",
+    category: "Menu",
+    year: "2025",
+    role: "UI design, art direction",
+    tools: ["Figma", "Photoshop", "Roblox Studio"],
+    published: true,
+    featured: true,
+    cover: {
+      src: "/media/projects/MainMenu.png",
+      kind: "image",
+      alt: "Art deco main menu with Shop, Servers, Inventory and Play buttons around a centred logo lockup",
+      ratio: "16/9",
+    },
+    overview:
+      "The first screen of a premium-styled experience: logo lockup on top, four faceted menu plates below, and a quiet hint line telling the player exactly what to do next.",
+    problem:
+      "Menu screens with four equal buttons give the player no idea which one starts the game, so the first tap becomes a guess.",
+    process: [
+      {
+        title: "Diamond layout around one primary",
+        body: "Shop sits above, Servers and Inventory flank the middle, and Play anchors the bottom of the cluster — the eye finishes on the action that starts the run.",
+      },
+      {
+        title: "Warm gold on true black",
+        body: "Bevelled plates, hairline flourishes and a brushed sheen carry the whole theme, so no background art is needed to make the screen feel expensive.",
+      },
+      {
+        title: "Utility icons off the main path",
+        body: "Settings and rewards live as ornate icon buttons in the top-right corner, reachable but never competing with the menu stack.",
+      },
+    ],
+    solution:
+      "A centred menu cluster with one unmistakable primary action, a reusable plate component, and a 'Press play to start' hint under the fold of the buttons.",
+    gallery: [],
+    outcome:
+      "Set the gold art-deco component kit — plates, ribbons, icon frames — that the rest of the game's screens are built from.",
+    metrics: [
+      { value: "4", label: "Menu destinations" },
+      { value: "1", label: "Primary action" },
+      { value: "16:9", label: "Built at 4K" },
+    ],
+  },
+
+  {
+    slug: "tactical-loadout-stash",
+    title: "Loadout & Stash",
+    summary:
+      "Extraction-shooter equip screen: body slots, grid containers, and a full stash on one page.",
+    category: "Menu",
+    year: "2025",
+    role: "UI design, systems layout",
+    tools: ["Figma", "Roblox Studio"],
+    published: true,
+    featured: true,
+    cover: {
+      src: "/media/projects/LoadoutStash.png",
+      kind: "image",
+      alt: "Tactical loadout screen with character equipment slots, tactical rig and backpack grids, and a stash panel with three currency counters",
+      ratio: "16/9",
+    },
+    overview:
+      "A three-column inventory screen that puts what you are wearing, what you are carrying, and what you own side by side, with no sub-menus in between.",
+    problem:
+      "Loot-and-extract inventories are dense by nature. Split them across tabs and players lose track of what is equipped while they are packing.",
+    process: [
+      {
+        title: "Three columns, three questions",
+        body: "Left answers 'what am I wearing', middle 'what am I carrying', right 'what do I own' — drag targets stay visible from any column.",
+      },
+      {
+        title: "Silhouette as the map",
+        body: "Slot frames sit on a character silhouette so head, chest and back gear read positionally before the label is read.",
+      },
+      {
+        title: "Labelled slot chips and keybinds",
+        body: "Every slot carries a small caps tag, and weapon slots print their bind (1, 2, V) directly in the frame.",
+      },
+      {
+        title: "Hatched states for blocked slots",
+        body: "Diagonal hatching marks slots that are locked or blocked by current gear, so an empty square never reads as an available one.",
+      },
+    ],
+    solution:
+      "A monochrome, high-contrast loadout page with a persistent tab rail, uniform grid cells across rig, backpack, container and stash, and three currency counters in the stash header.",
+    gallery: [],
+    outcome:
+      "One screen covers equip, pack and stash management, with the grid cell as a single reusable unit across every container.",
+    metrics: [
+      { value: "8", label: "Body slots" },
+      { value: "4", label: "Container types" },
+      { value: "3", label: "Currencies tracked" },
+    ],
+  },
+
+  {
     slug: "navigation-hub",
     title: "Index",
     summary:

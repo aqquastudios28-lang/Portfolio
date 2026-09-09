@@ -45,10 +45,10 @@ export function CopyButton({
       onClick={handleCopy}
       aria-live="polite"
       className={cn(
-        "relative inline-flex items-center gap-2 border px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider transition-colors",
+        "relative inline-flex min-h-11 items-center justify-center gap-2 rounded-full border px-4 py-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.18em] backdrop-blur-md transition-all",
         copied
-          ? "border-accent text-accent"
-          : "border-rule text-bone-dim hover:border-rule-strong hover:text-bone",
+          ? "border-accent bg-[rgba(255,122,24,0.12)] text-white shadow-[0_10px_24px_-18px_rgba(255,122,24,0.95)]"
+          : "border-white/12 bg-white/[0.04] text-text-muted hover:border-white/24 hover:bg-white/[0.08] hover:text-white",
         className,
       )}
     >
