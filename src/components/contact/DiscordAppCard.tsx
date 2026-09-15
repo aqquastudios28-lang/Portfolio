@@ -58,7 +58,7 @@ export function DiscordAppCard({
               </span>
             </div>
             <p className="mt-1 text-xs text-paper-2">
-              Send your game link and menus in DM. Bot logs the specs, I answer directly from Studio.
+              Run /brief for a short form, or just DM. I read everything and reply myself.
             </p>
           </div>
         </div>
@@ -82,7 +82,7 @@ export function DiscordAppCard({
               Instant receipt
             </span>
             <span className="text-[11px] text-paper-3">
-              Confirms handoff specs the second you send the brief.
+              A copy of your brief lands in your DMs the moment you send it.
             </span>
           </div>
         </div>
@@ -94,7 +94,7 @@ export function DiscordAppCard({
               Human replies
             </span>
             <span className="text-[11px] text-paper-3">
-              Green badge when I answer from Studio so you know it is me.
+              My own replies carry a green bar, so you always know it is me.
             </span>
           </div>
         </div>
@@ -153,7 +153,7 @@ export function DiscordAppCard({
         <code className="rounded bg-ink-3 px-1.5 py-0.5 font-mono text-[11px] text-[#7983f5]">
           /brief
         </code>{" "}
-        in any Discord chat or DM, or click{" "}
+        in any chat for a short form (game link, screens, budget, references), or click{" "}
         <a
           href="https://discord.com/users/1549424708292837438"
           target="_blank"

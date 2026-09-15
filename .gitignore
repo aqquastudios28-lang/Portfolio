@@ -44,6 +44,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# discord relay bot state (client threads, brief numbers)
+/.data/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

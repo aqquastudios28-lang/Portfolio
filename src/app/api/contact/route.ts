@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
-import { buildAdminBriefEmbed } from "@/lib/discord-embeds";
+import { IS_COMPONENTS_V2, buildWebsiteBriefCard } from "@/lib/discord-messages";
 
 function escapeHtml(str: string): string {
   return str
@@ -255,25 +255,33 @@ export async function POST(req: Request) {
     // 6. Optional Discord Webhook / Channel Dispatch
     if (process.env.DISCORD_WEBHOOK_URL) {
       try {
-        const clientDiscordId = typeof discord_id === "string" ? discord_id : undefined;
-        const displayName = typeof discord_user === "string" && discord_user ? `${cleanName} (@${discord_user})` : cleanName;
-        const adminEmbed = buildAdminBriefEmbed({
-          name: displayName,
-          scope: cleanScope,
-          game: cleanGame,
-          message: cleanMessage,
-          discordId: clientDiscordId,
-        });
+        // Components V2 on a plain webhook needs with_components=true.
+        const webhookUrl = new URL(process.env.DISCORD_WEBHOOK_URL);
+        webhookUrl.searchParams.set("with_components", "true");
 
-        await fetch(process.env.DISCORD_WEBHOOK_URL, {
+        const discordRes = await fetch(webhookUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            username: "Cerbis Client Hub",
+            username: "Cerbis Website",
             avatar_url: "https://cerbis.xyz/icon.png",
-            embeds: [adminEmbed],
+            flags: IS_COMPONENTS_V2,
+            allowed_mentions: { parse: [] },
+            components: buildWebsiteBriefCard({
+              name: cleanName,
+              scope: cleanScope,
+              game: cleanGame || undefined,
+              message: cleanMessage,
+              discordId: typeof discord_id === "string" ? discord_id : undefined,
+              discordUser:
+                typeof discord_user === "string" && discord_user ? discord_user.slice(0, 40) : undefined,
+            }),
           }),
         });
+
+        if (!discordRes.ok) {
+          console.error(`Discord webhook rejected the brief (${discordRes.status}):`, await discordRes.text());
+        }
       } catch (err) {
         console.error("Discord backup webhook error:", err);
       }

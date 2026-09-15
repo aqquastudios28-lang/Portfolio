@@ -1,50 +1,109 @@
 try {
-  if (typeof (process as unknown as { loadEnvFile?: (path: string) => void }).loadEnvFile === "function") {
-    (process as unknown as { loadEnvFile: (path: string) => void }).loadEnvFile(".env.local");
-  }
+  (process as unknown as { loadEnvFile?: (path: string) => void }).loadEnvFile?.(".env.local");
 } catch {
-  // .env.local may already be loaded via CLI flag
+  // No .env.local, or the variables were already passed in by the shell.
 }
 
 import {
-  Client,
-  GatewayIntentBits,
-  Partials,
+  ApplicationIntegrationType,
   ChannelType,
-  EmbedBuilder,
-  ThreadChannel,
-  TextChannel,
-  Message,
-  REST,
-  Routes,
-  SlashCommandBuilder,
+  Client,
+  Events,
+  GatewayIntentBits,
+  InteractionContextType,
   MessageFlags,
+  Partials,
+  SlashCommandBuilder,
+  ThreadAutoArchiveDuration,
+  WebhookClient,
+  type Attachment,
+  type ButtonInteraction,
+  type ChatInputCommandInteraction,
+  type Interaction,
+  type Message,
+  type MessageCreateOptions,
+  type ModalSubmitInteraction,
+  type TextChannel,
+  type ThreadChannel,
+  type Typing,
+  type User,
+  type Webhook,
 } from "discord.js";
 import {
-  buildAutomatedFirstResponseEmbed,
-  buildHumanResponseEmbed,
-  buildAiResponseEmbed,
-  DISCORD_COLORS,
-} from "../src/lib/discord-embeds.ts";
+  IDS,
+  STATUS_LABELS,
+  buildAdminBriefCard,
+  buildAdminIntroCard,
+  buildAdminNote,
+  buildAutomatedAnswer,
+  buildBriefFailedNotice,
+  buildBriefReceipt,
+  buildBriefSentNotice,
+  buildDmWelcome,
+  buildHumanReply,
+  buildNotice,
+  buildStatusNotice,
+  buildStudioStatus,
+  escapeMarkdown,
+  formatBriefNo,
+  parseStatusButtonId,
+  splitText,
+  type ClientRef,
+  type ConversationStatus,
+  type LinkRef,
+  type MediaRef,
+} from "../src/lib/discord-messages.ts";
+import { buildBriefModal, readBriefSubmission } from "./discord/brief-form.ts";
+import { lookupRobloxGame } from "./discord/roblox.ts";
+import {
+  activeBriefCount,
+  addBrief,
+  findConversationByThread,
+  flushStore,
+  getConversation,
+  nextBriefNo,
+  saveConversation,
+  upsertConversation,
+  type Conversation,
+  type StoredBrief,
+} from "./discord/store.ts";
 
 /**
- * Cerbis Discord Relay & Automated Response Bot
+ * Cerbis relay bot.
  *
- * Capabilities:
- * 1. Global User-App Slash Commands (/brief and /status).
- * 2. Instant [AUTOMATED] receipt embed delivered to client (ephemeral — only they see it).
- * 3. Relays user briefs to Cerbis's private Discord channel via webhook.
- * 4. When Cerbis replies in a thread, delivers a [HUMAN RESPONSE • Cerbis (Verified)] embed to the user.
+ *   /brief   opens the commission form and files it into the client's private thread
+ *   /status  availability, turnaround and handoff
+ *   DMs      are mirrored into the client's thread, under their own name and avatar
+ *   Thread   replies go back to the client's DM; `//` notes stay in the thread
+ *
+ * Which thread belongs to which client lives in .data/discord-relay.json, so a
+ * restart no longer strands conversations.
+ *
+ * Admin channel permissions the bot needs: View Channel, Send Messages, Create
+ * Public Threads, Send Messages in Threads, Manage Threads, Attach Files, and
+ * Manage Webhooks (optional, for showing clients under their own name).
  */
 
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
-const CLIENT_ID = process.env.DISCORD_CLIENT_ID || "1549424708292837438";
-const GUILD_ID = process.env.DISCORD_GUILD_ID;
 const ADMIN_CHANNEL_ID = process.env.DISCORD_ADMIN_CHANNEL_ID;
 const WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
+const ADMIN_USER_IDS = new Set(
+  (process.env.DISCORD_ADMIN_USER_IDS ?? "")
+    .split(",")
+    .map((id) => id.trim())
+    .filter(Boolean),
+);
+
+/** A client who has been quiet this long gets the welcome message again. */
+const GREETING_GAP_MS = 12 * 60 * 60 * 1000;
+const BRIEF_COOLDOWN_MS = 30 * 1000;
+const TYPING_RELAY_GAP_MS = 8 * 1000;
+/** Bots can upload 10 MiB per file outside boosted servers. */
+const MAX_FILE_BYTES = 10 * 1024 * 1024;
+const MAX_REQUEST_BYTES = 25 * 1024 * 1024;
 
 if (!BOT_TOKEN) {
-  console.error("❌ DISCORD_BOT_TOKEN is missing in environment. Set it in .env.local.");
+  console.error("❌ DISCORD_BOT_TOKEN is missing. Set it in .env.local.");
   process.exit(1);
 }
 
@@ -52,357 +111,645 @@ const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageTyping,
     GatewayIntentBits.DirectMessages,
+    GatewayIntentBits.MessageContent,
   ],
-  partials: [Partials.Channel, Partials.Message, Partials.User],
+  partials: [Partials.Channel, Partials.Message],
+  // Client text is relayed into a server; nothing it contains should ping anyone.
+  allowedMentions: { parse: [] },
 });
 
-// Map user ID -> Thread ID in Cerbis's admin channel
-const activeThreads = new Map<string, string>();
-// Track if user received the automated first response in this session
-const greetedUsers = new Set<string>();
+/* ---------------------------------------------------------------------------
+   Small helpers
+   --------------------------------------------------------------------------- */
+
+type FileLike = Pick<Attachment, "url" | "name" | "size" | "contentType">;
+
+const isAdmin = (userId: string) => ADMIN_USER_IDS.size === 0 || ADMIN_USER_IDS.has(userId);
+
+const profileOf = (user: User) => ({
+  id: user.id,
+  name: user.displayName,
+  avatarUrl: user.displayAvatarURL({ size: 256 }),
+});
+
+const clientRef = (conversation: Conversation): ClientRef => ({
+  id: conversation.userId,
+  name: conversation.userName,
+  avatarUrl: conversation.avatarUrl,
+});
+
+/** Webhook names may not contain "discord" or "clyde". */
+const webhookName = (name: string) => (name.replace(/discord|clyde/gi, "").trim() || "Client").slice(0, 80);
+
+const toLink = (file: FileLike): LinkRef => ({ name: file.name, url: file.url });
+
+function errorCode(err: unknown) {
+  return typeof err === "object" && err !== null && "code" in err ? (err as { code: unknown }).code : undefined;
+}
+
+function whyUndelivered(err: unknown) {
+  switch (errorCode(err)) {
+    case 50007:
+      return "their DMs are closed to apps";
+    case 10013:
+      return "that account no longer exists";
+    case 40005:
+      return "the files are too large";
+    default:
+      return err instanceof Error ? err.message : "unknown error";
+  }
+}
+
+/** Re-uploads files (attachment CDN links expire) and records how to reference them. */
+function prepareFiles(attachments: readonly FileLike[]) {
+  const files: { attachment: string; name: string }[] = [];
+  const media: MediaRef[] = [];
+  const oversized: LinkRef[] = [];
+  let total = 0;
+
+  attachments.forEach((file, index) => {
+    if (file.size > MAX_FILE_BYTES || total + file.size > MAX_REQUEST_BYTES) {
+      oversized.push(toLink(file));
+      return;
+    }
+    total += file.size;
+    const name = `${index + 1}-${file.name.replace(/[^\w.-]+/g, "_").slice(-80)}`;
+    const image = file.contentType
+      ? /^image\/(png|jpe?g|gif|webp)$/i.test(file.contentType)
+      : /\.(png|jpe?g|gif|webp)$/i.test(file.name);
+    files.push({ attachment: file.url, name });
+    media.push({ url: `attachment://${name}`, image });
+  });
+
+  return { files, media, oversized };
+}
+
+type DmResult = { ok: true; message: Message } | { ok: false; reason: string };
+
+async function sendDm(userId: string, payloads: MessageCreateOptions | MessageCreateOptions[]): Promise<DmResult> {
+  try {
+    const user = await client.users.fetch(userId);
+    let last: Message | null = null;
+    for (const payload of Array.isArray(payloads) ? payloads : [payloads]) {
+      last = await user.send(payload);
+    }
+    return last ? { ok: true, message: last } : { ok: false, reason: "nothing to send" };
+  } catch (err) {
+    return { ok: false, reason: whyUndelivered(err) };
+  }
+}
+
+let fallbackWebhook: WebhookClient | null = null;
+
+function getFallbackWebhook() {
+  if (!WEBHOOK_URL) return null;
+  fallbackWebhook ??= new WebhookClient({ url: WEBHOOK_URL }, { allowedMentions: { parse: [] } });
+  return fallbackWebhook;
+}
+
+/* ---------------------------------------------------------------------------
+   Admin channel and client threads
+   --------------------------------------------------------------------------- */
+
+async function getAdminChannel(): Promise<TextChannel | null> {
+  if (!ADMIN_CHANNEL_ID) return null;
+  try {
+    const channel = await client.channels.fetch(ADMIN_CHANNEL_ID);
+    if (channel?.type === ChannelType.GuildText) return channel;
+    console.warn(`⚠️ DISCORD_ADMIN_CHANNEL_ID (${ADMIN_CHANNEL_ID}) is not a text channel.`);
+  } catch (err) {
+    console.warn("⚠️ Can't reach the admin channel:", (err as Error).message);
+  }
+  return null;
+}
+
+async function fetchThread(threadId: string): Promise<ThreadChannel | null> {
+  try {
+    const channel = await client.channels.fetch(threadId);
+    if (!channel?.isThread()) return null;
+    if (channel.archived && !channel.locked) await channel.setArchived(false, "New relay activity");
+    return channel;
+  } catch {
+    return null;
+  }
+}
+
+/** The client's thread, created if it doesn't exist or was deleted. */
+async function openThread(
+  conversation: Conversation,
+  reason: string,
+): Promise<{ thread: ThreadChannel; created: boolean } | null> {
+  if (conversation.threadId) {
+    const existing = await fetchThread(conversation.threadId);
+    if (existing) return { thread: existing, created: false };
+  }
+
+  const channel = await getAdminChannel();
+  if (!channel) return null;
+
+  try {
+    const name = conversation.userName.replace(/\s+/g, " ").trim().slice(0, 80) || "client";
+    const thread = await channel.threads.create({
+      name: `${name} · ${conversation.userId.slice(-4)}`,
+      autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
+      reason,
+    });
+    conversation.threadId = thread.id;
+    conversation.introMessageId = undefined;
+    saveConversation(conversation);
+    return { thread, created: true };
+  } catch (err) {
+    console.warn("⚠️ Couldn't open a client thread:", (err as Error).message);
+    return null;
+  }
+}
+
+const channelWebhooks = new Map<string, Promise<Webhook | null>>();
+
+/** A bot-owned webhook on the admin channel, used to post as the client. */
+function getThreadWebhook(thread: ThreadChannel): Promise<Webhook | null> {
+  const parent = thread.parent;
+  if (parent?.type !== ChannelType.GuildText) return Promise.resolve(null);
+
+  let pending = channelWebhooks.get(parent.id);
+  if (!pending) {
+    pending = (async () => {
+      try {
+        const hooks = await parent.fetchWebhooks();
+        const own = hooks.find((hook) => hook.owner?.id === client.user?.id && hook.token);
+        return own ?? (await parent.createWebhook({ name: "Cerbis Relay", reason: "Show clients under their own name" }));
+      } catch (err) {
+        console.warn("⚠️ No Manage Webhooks in the admin channel; client messages will be posted by the bot.", (err as Error).message);
+        return null;
+      }
+    })();
+    channelWebhooks.set(parent.id, pending);
+  }
+  return pending;
+}
+
+/* ---------------------------------------------------------------------------
+   Briefs
+   --------------------------------------------------------------------------- */
+
+function briefCooldown(conversation: Conversation | undefined) {
+  return conversation?.lastBriefAt ? conversation.lastBriefAt + BRIEF_COOLDOWN_MS - Date.now() : 0;
+}
+
+function cooldownNotice(waitMs: number) {
+  const at = Math.floor((Date.now() + waitMs) / 1000);
+  return buildNotice("One moment", `You just sent a brief. You can send another <t:${at}:R>.`);
+}
 
 /**
- * Register Global User-App Slash Commands
+ * Posts the brief card. Tries the client's thread first, then the fallback
+ * webhook; each with files re-uploaded, then with files as links if the upload
+ * is what failed. Returns where it landed.
  */
-async function registerSlashCommands() {
-  try {
-    const rest = new REST({ version: "10" }).setToken(BOT_TOKEN!);
+async function fileBrief(conversation: Conversation, brief: StoredBrief, uploads: FileLike[]) {
+  const prepared = prepareFiles(uploads);
+  const variants = [{ files: prepared.files, media: prepared.media, oversized: prepared.oversized }];
+  if (prepared.files.length) variants.push({ files: [], media: [], oversized: uploads.map(toLink) });
 
-    const briefCommand = new SlashCommandBuilder()
-      .setName("brief")
-      .setDescription("Send a Roblox UI commission brief directly to Cerbis")
-      .addStringOption((opt) =>
-        opt
-          .setName("game")
-          .setDescription("Roblox game link or title")
-          .setRequired(true)
-      )
-      .addStringOption((opt) =>
-        opt
-          .setName("screens")
-          .setDescription("Screens needed (e.g. Shop, HUD, Daily Rewards, Inventory)")
-          .setRequired(true)
-      )
-      .addStringOption((opt) =>
-        opt
-          .setName("notes")
-          .setDescription("Budget, timeline, or style reference")
-          .setRequired(false)
-      )
-      .addAttachmentOption((opt) =>
-        opt
-          .setName("reference")
-          .setDescription("Screenshot, mockup, or style reference image")
-          .setRequired(false)
-      )
-      .setIntegrationTypes([0, 1]) // Guild & User Install
-      .setContexts([0, 1, 2]); // Guild, Bot DM, Private Channels
+  const opened = await openThread(conversation, `Brief ${formatBriefNo(brief.no)} from ${conversation.userName}`);
+  if (opened) {
+    for (const variant of variants) {
+      Object.assign(brief, { media: variant.media, oversized: variant.oversized });
+      try {
+        const sent = await opened.thread.send({
+          components: buildAdminBriefCard({ client: clientRef(conversation), brief, status: conversation.status, interactive: true }),
+          files: variant.files,
+          flags: MessageFlags.IsComponentsV2,
+        });
+        brief.messageId = sent.id;
+        return "thread" as const;
+      } catch (err) {
+        console.error(`Posting brief ${formatBriefNo(brief.no)} to its thread failed:`, err);
+      }
+    }
+  }
 
-    const statusCommand = new SlashCommandBuilder()
-      .setName("status")
-      .setDescription("Check Cerbis UI queue and commission availability")
-      .setIntegrationTypes([0, 1])
-      .setContexts([0, 1, 2]);
+  const webhook = getFallbackWebhook();
+  if (webhook) {
+    for (const variant of variants) {
+      Object.assign(brief, { media: variant.media, oversized: variant.oversized });
+      try {
+        await webhook.send({
+          components: buildAdminBriefCard({ client: clientRef(conversation), brief, status: conversation.status, interactive: false }),
+          files: variant.files,
+          flags: MessageFlags.IsComponentsV2,
+          withComponents: true,
+          username: webhookName(conversation.userName),
+          avatarURL: conversation.avatarUrl,
+        });
+        console.warn(`⚠️ Brief ${formatBriefNo(brief.no)} went to the webhook; thread replies won't reach this client.`);
+        return "webhook" as const;
+      } catch (err) {
+        console.error(`Posting brief ${formatBriefNo(brief.no)} to the webhook failed:`, err);
+      }
+    }
+  }
 
-    console.log("⚡ Registering User-App slash commands (/brief, /status)...");
-    await rest.put(Routes.applicationCommands(CLIENT_ID), {
-      body: [briefCommand.toJSON(), statusCommand.toJSON()],
+  return null;
+}
+
+async function openBriefForm(interaction: ChatInputCommandInteraction | ButtonInteraction) {
+  const conversation = getConversation(interaction.user.id);
+  const wait = briefCooldown(conversation);
+  if (wait > 0) {
+    await interaction.reply({
+      components: cooldownNotice(wait),
+      flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],
     });
-    console.log("✅ Successfully registered slash commands globally for User App.");
+    return;
+  }
+  await interaction.showModal(buildBriefModal({ game: conversation?.lastGame }));
+}
+
+async function submitBrief(interaction: ModalSubmitInteraction) {
+  // In the bot DM the receipt is the permanent record, so it isn't ephemeral.
+  const inBotDm = interaction.context === InteractionContextType.BotDM;
+  await interaction.deferReply(inBotDm ? {} : { flags: MessageFlags.Ephemeral });
+
+  const conversation = upsertConversation(profileOf(interaction.user));
+  const wait = briefCooldown(conversation);
+  if (wait > 0) {
+    await interaction.editReply({ components: cooldownNotice(wait), flags: MessageFlags.IsComponentsV2 });
+    return;
+  }
+
+  const submission = readBriefSubmission(interaction);
+  const brief: StoredBrief = {
+    no: nextBriefNo(),
+    game: submission.game,
+    screens: submission.screens,
+    budget: submission.budget,
+    details: submission.details,
+    references: submission.files.length,
+    submittedAt: Date.now(),
+    roblox: await lookupRobloxGame(submission.game),
+  };
+
+  if (conversation.status === "closed") conversation.status = "open";
+  const destination = await fileBrief(conversation, brief, submission.files);
+  if (!destination) {
+    await interaction.editReply({ components: buildBriefFailedNotice(brief), flags: MessageFlags.IsComponentsV2 });
+    return;
+  }
+
+  addBrief(conversation, brief);
+  conversation.lastClientMessageAt = Date.now();
+  saveConversation(conversation);
+  console.log(`📨 Brief ${formatBriefNo(brief.no)} from ${conversation.userName} → ${destination}`);
+
+  const receipt = buildBriefReceipt(brief, interaction.user.displayName);
+  if (inBotDm) {
+    await interaction.editReply({ components: receipt, flags: MessageFlags.IsComponentsV2 });
+    return;
+  }
+
+  const dm = await sendDm(interaction.user.id, { components: receipt, flags: MessageFlags.IsComponentsV2 });
+  await interaction.editReply({
+    components: buildBriefSentNotice(brief, dm.ok ? dm.message.url : null),
+    flags: MessageFlags.IsComponentsV2,
+  });
+}
+
+/* ---------------------------------------------------------------------------
+   Status buttons on admin cards
+   --------------------------------------------------------------------------- */
+
+async function changeStatus(interaction: ButtonInteraction, target: { status: ConversationStatus; userId: string }) {
+  if (!isAdmin(interaction.user.id)) {
+    await interaction.reply({
+      components: buildNotice("Not yours to change", "Only Cerbis can change the status of a brief."),
+      flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],
+    });
+    return;
+  }
+
+  const conversation = getConversation(target.userId);
+  if (!conversation) {
+    await interaction.reply({
+      components: buildNotice("Nothing to update", "This client isn't in the relay store any more."),
+      flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],
+    });
+    return;
+  }
+
+  const previous = conversation.status;
+  conversation.status = target.status;
+  saveConversation(conversation);
+
+  const brief = conversation.briefs.find((b) => b.messageId === interaction.message.id);
+  const card = brief
+    ? buildAdminBriefCard({ client: clientRef(conversation), brief, status: conversation.status, interactive: true })
+    : interaction.message.id === conversation.introMessageId
+      ? buildAdminIntroCard({ client: clientRef(conversation), status: conversation.status })
+      : null;
+
+  try {
+    if (card) await interaction.update({ components: card });
+    else await interaction.deferUpdate();
+  } catch (err) {
+    console.warn("Couldn't redraw the card:", (err as Error).message);
+    if (!interaction.deferred && !interaction.replied) await interaction.deferUpdate().catch(() => {});
+  }
+
+  let outcome = "";
+  if (previous !== conversation.status && conversation.status !== "open") {
+    const latest = brief ?? conversation.briefs.at(-1);
+    const dm = await sendDm(conversation.userId, {
+      components: buildStatusNotice(conversation.status, latest?.no),
+      flags: MessageFlags.IsComponentsV2,
+    });
+    outcome = dm.ok ? " · client notified" : ` · client not notified (${dm.reason})`;
+  }
+
+  await interaction.followUp({
+    components: buildAdminNote(
+      `${escapeMarkdown(interaction.user.displayName)} set this to ${STATUS_LABELS[conversation.status]}${outcome}`,
+    ),
+    flags: MessageFlags.IsComponentsV2,
+  });
+
+  if (conversation.status === "closed" && interaction.channel?.isThread()) {
+    await interaction.channel.setArchived(true, "Closed from the brief card").catch(() => {});
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Client DMs → thread
+   --------------------------------------------------------------------------- */
+
+async function mirrorClientMessage(conversation: Conversation, message: Message, reopened: boolean) {
+  const attachments = [...message.attachments.values()];
+  const stickers = message.stickers.map((s) => `-# Sticker: ${escapeMarkdown(s.name)}`);
+  const opened = await openThread(conversation, `Conversation with ${conversation.userName}`);
+
+  if (!opened) {
+    // No thread access: post to the fallback webhook so the message isn't lost.
+    const webhook = getFallbackWebhook();
+    if (!webhook) return false;
+    const links = attachments.map((a) => `-# Attachment: [${escapeMarkdown(a.name)}](${a.url})`);
+    const body = [message.content, ...stickers, ...links].filter(Boolean).join("\n") || "-# (empty message)";
+    try {
+      for (const chunk of splitText(body, 2000)) {
+        await webhook.send({ content: chunk, username: webhookName(conversation.userName), avatarURL: conversation.avatarUrl });
+      }
+      return true;
+    } catch (err) {
+      console.error(`Relaying a DM from ${conversation.userName} to the webhook failed:`, err);
+      return false;
+    }
+  }
+
+  const { thread, created } = opened;
+  const { files, oversized } = prepareFiles(attachments);
+  const tooLarge = oversized.map((f) => `-# Too large to forward: [${escapeMarkdown(f.name)}](${f.url})`);
+  const body = [message.content, ...stickers, ...tooLarge].filter(Boolean).join("\n");
+  const chunks = splitText(body || (files.length ? "" : "-# (empty message)"), 1900);
+
+  try {
+    if (created) {
+      const intro = await thread.send({
+        components: buildAdminIntroCard({ client: clientRef(conversation), status: conversation.status }),
+        flags: MessageFlags.IsComponentsV2,
+      });
+      conversation.introMessageId = intro.id;
+      saveConversation(conversation);
+    } else if (reopened) {
+      await thread.send({ components: buildAdminNote("Reopened · the client wrote again"), flags: MessageFlags.IsComponentsV2 });
+    }
+
+    const webhook = await getThreadWebhook(thread);
+    for (const [index, chunk] of chunks.entries()) {
+      const last = index === chunks.length - 1;
+      if (webhook) {
+        await webhook.send({
+          content: chunk || undefined,
+          files: last ? files : [],
+          threadId: thread.id,
+          username: webhookName(conversation.userName),
+          avatarURL: conversation.avatarUrl,
+          allowedMentions: { parse: [] },
+        });
+      } else {
+        const label = index === 0 ? `**${escapeMarkdown(conversation.userName)}**\n` : "";
+        await thread.send({ content: `${label}${chunk}` || undefined, files: last ? files : [] });
+      }
+    }
+    return true;
+  } catch (err) {
+    if (errorCode(err) === 10015) channelWebhooks.clear(); // webhook was deleted; recreate next time
+    console.error(`Mirroring a DM from ${conversation.userName} failed:`, err);
+    return false;
+  }
+}
+
+async function relayClientMessage(message: Message) {
+  const conversation = upsertConversation(profileOf(message.author));
+  const now = Date.now();
+  const greet = !conversation.lastClientMessageAt || now - conversation.lastClientMessageAt > GREETING_GAP_MS;
+  const reopened = conversation.status === "closed";
+
+  conversation.lastClientMessageAt = now;
+  if (reopened) conversation.status = "open";
+  saveConversation(conversation);
+
+  if (!(await mirrorClientMessage(conversation, message, reopened))) {
+    await message.react("⚠️").catch(() => {});
+    await message
+      .reply({
+        components: buildNotice(
+          "That didn't reach Cerbis",
+          "The relay is having trouble right now. Try again in a bit, or message @Cerbi directly.",
+          "error",
+        ),
+        flags: MessageFlags.IsComponentsV2,
+      })
+      .catch(() => {});
+    return;
+  }
+
+  await message.react("✅").catch(() => {});
+  if (greet) {
+    await message.author.send({ components: buildDmWelcome(), flags: MessageFlags.IsComponentsV2 }).catch(() => {});
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Thread replies → client DM
+   --------------------------------------------------------------------------- */
+
+async function relayAdminReply(message: Message, thread: ThreadChannel) {
+  const conversation = findConversationByThread(thread.id);
+  if (!conversation || !isAdmin(message.author.id)) return;
+
+  let body = message.content.trim();
+  if (client.user) body = body.replaceAll(`<@${client.user.id}>`, "").replaceAll(`<@!${client.user.id}>`, "").trim();
+  if (body.startsWith("//")) return; // private note, stays in the thread
+
+  const automated = /^!ai\b/i.test(body);
+  if (automated) body = body.replace(/^!ai\b\s*/i, "");
+
+  const attachments = [...message.attachments.values()];
+  if (!body && attachments.length === 0) return;
+
+  const { files, media, oversized } = prepareFiles(attachments);
+  const chunks = splitText(body, 3800);
+  const payloads = chunks.map((chunk, index): MessageCreateOptions => {
+    const last = index === chunks.length - 1;
+    const parts = { body: chunk, media: last ? media : [], continued: index > 0 };
+    return {
+      components: automated
+        ? buildAutomatedAnswer(parts)
+        : buildHumanReply({ ...parts, authorName: message.author.displayName }),
+      files: last ? files : [],
+      flags: MessageFlags.IsComponentsV2,
+    };
+  });
+
+  const result = await sendDm(conversation.userId, payloads);
+  if (result.ok) {
+    await message.react("✅").catch(() => {});
+    if (oversized.length) {
+      const names = oversized.map((f) => escapeMarkdown(f.name)).join(", ");
+      await message
+        .reply({ components: buildAdminNote(`Not sent, over the upload limit: ${names}`), flags: MessageFlags.IsComponentsV2 })
+        .catch(() => {});
+    }
+  } else {
+    await message.react("⚠️").catch(() => {});
+    await message
+      .reply({ components: buildAdminNote(`Not delivered: ${result.reason}`), flags: MessageFlags.IsComponentsV2 })
+      .catch(() => {});
+  }
+}
+
+const lastTypingRelay = new Map<string, number>();
+
+/** Shows "Cerbis is typing…" in the client's DM while a reply is being written. */
+async function relayTyping(typing: Typing) {
+  if (!typing.channel.isThread() || typing.user.bot || !isAdmin(typing.user.id)) return;
+  const conversation = findConversationByThread(typing.channel.id);
+  if (!conversation) return;
+
+  const last = lastTypingRelay.get(conversation.userId) ?? 0;
+  if (Date.now() - last < TYPING_RELAY_GAP_MS) return;
+  lastTypingRelay.set(conversation.userId, Date.now());
+
+  try {
+    const user = await client.users.fetch(conversation.userId);
+    await (await user.createDM()).sendTyping();
+  } catch {
+    // DMs closed; the reply itself will report that.
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Wiring
+   --------------------------------------------------------------------------- */
+
+async function registerCommands() {
+  const everywhere = (builder: SlashCommandBuilder) =>
+    builder
+      .setIntegrationTypes(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)
+      .setContexts(InteractionContextType.Guild, InteractionContextType.BotDM, InteractionContextType.PrivateChannel);
+
+  const commands = [
+    everywhere(new SlashCommandBuilder().setName("brief").setDescription("Send Cerbis a Roblox UI commission brief")),
+    everywhere(new SlashCommandBuilder().setName("status").setDescription("See if Cerbis is taking work, and how it goes")),
+  ].map((command) => command.toJSON());
+
+  try {
+    await client.application?.commands.set(commands);
+    console.log("✅ Slash commands registered: /brief, /status");
   } catch (err) {
     console.error("⚠️ Failed to register slash commands:", err);
   }
 }
 
-/**
- * Relay brief/message to Cerbis's private channel via Webhook.
- * Webhooks don't require the bot to be a member of the guild.
- */
-async function relayViaWebhook(
-  userId: string,
-  userName: string,
-  userAvatar: string,
-  summary: { game?: string; screens?: string; notes?: string; text?: string; imageUrl?: string }
-) {
-  if (!WEBHOOK_URL) {
-    console.warn("⚠️ DISCORD_WEBHOOK_URL not set — cannot relay brief to admin channel.");
-    return;
-  }
+function describeInteraction(interaction: Interaction) {
+  if (interaction.isChatInputCommand()) return `/${interaction.commandName}`;
+  if (interaction.isButton() || interaction.isModalSubmit()) return interaction.customId;
+  return `interaction type ${interaction.type}`;
+}
 
-  const fields: Array<{ name: string; value: string; inline?: boolean }> = [
-    { name: "👤 Client", value: `${userName}`, inline: true },
-    { name: "🆔 Discord ID", value: `\`${userId}\``, inline: true },
-  ];
-
-  if (summary.game) fields.push({ name: "🎮 Game", value: summary.game, inline: true });
-  if (summary.screens) fields.push({ name: "📱 Screens", value: summary.screens, inline: false });
-  if (summary.notes) fields.push({ name: "📝 Notes", value: summary.notes, inline: false });
-
-  const embed = {
-    title: `🎨 New Brief from ${userName}`,
-    color: DISCORD_COLORS.ACCENT,
-    thumbnail: { url: userAvatar },
-    image: summary.imageUrl ? { url: summary.imageUrl } : undefined,
-    description: summary.text || undefined,
-    fields,
-    footer: { text: "Cerbis Discord Relay • cerbis.xyz" },
-    timestamp: new Date().toISOString(),
-  };
-
+async function handleInteraction(interaction: Interaction) {
   try {
-    const res = await fetch(WEBHOOK_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: `📩 ${userName} (via Cerbis App)`,
-        avatar_url: userAvatar,
-        embeds: [embed],
-      }),
-    });
-
-    if (!res.ok) {
-      console.error(`Webhook relay failed (${res.status}):`, await res.text());
-    } else {
-      console.log(`✅ Relayed brief from ${userName} to admin channel via webhook.`);
+    if (interaction.isChatInputCommand()) {
+      if (interaction.commandName === "brief") return await openBriefForm(interaction);
+      if (interaction.commandName === "status") {
+        return await interaction.reply({
+          components: buildStudioStatus({
+            activeBriefs: activeBriefCount(),
+            avatarUrl: client.user?.displayAvatarURL({ size: 256 }),
+          }),
+          flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],
+        });
+      }
+    } else if (interaction.isButton()) {
+      if (interaction.customId === IDS.openBrief) return await openBriefForm(interaction);
+      const target = parseStatusButtonId(interaction.customId);
+      if (target) return await changeStatus(interaction, target);
+    } else if (interaction.isModalSubmit() && interaction.customId === IDS.briefModal) {
+      return await submitBrief(interaction);
     }
   } catch (err) {
-    console.error("Failed to relay via webhook:", err);
+    console.error(`${describeInteraction(interaction)} failed:`, err);
+    if (!interaction.isRepliable()) return;
+    const components = buildNotice(
+      "Something broke on my end",
+      "Try again in a minute. If it keeps happening, message @Cerbi directly.",
+      "error",
+    );
+    if (interaction.deferred && !interaction.replied) {
+      await interaction.editReply({ components, flags: MessageFlags.IsComponentsV2 }).catch(() => {});
+    } else if (!interaction.replied) {
+      await interaction.reply({ components, flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral] }).catch(() => {});
+    }
   }
 }
 
-/**
- * Relay brief/message to Cerbis's private admin channel thread (requires bot in guild).
- * Falls back to webhook if channel access fails.
- */
-async function relayToAdmin(
-  userId: string,
-  userName: string,
-  userAvatar: string,
-  summary: { game?: string; screens?: string; notes?: string; text?: string; imageUrl?: string }
-) {
-  // Try channel-based thread relay first (only works if bot is in the guild)
-  if (ADMIN_CHANNEL_ID) {
+async function handleMessage(message: Message) {
+  if (message.author.bot || message.webhookId || message.system) return;
+  if (message.channel.type === ChannelType.DM) await relayClientMessage(message);
+  else if (message.channel.isThread()) await relayAdminReply(message, message.channel);
+}
+
+client.once(Events.ClientReady, async (ready) => {
+  console.log(`🤖 Cerbis relay online as ${ready.user.tag}`);
+  const channel = await getAdminChannel();
+  if (channel) console.log(`📥 Client threads open in #${channel.name}`);
+  else if (WEBHOOK_URL) console.warn("⚠️ No admin channel access. Briefs go to the webhook, and thread replies are unavailable.");
+  else console.warn("⚠️ No admin channel or webhook configured. Briefs have nowhere to go.");
+  if (ADMIN_USER_IDS.size === 0) console.log("ℹ️ DISCORD_ADMIN_USER_IDS is empty, so anyone who can see a client thread can reply.");
+  await registerCommands();
+});
+
+client.on(Events.InteractionCreate, (interaction) => void handleInteraction(interaction));
+client.on(Events.MessageCreate, (message) => {
+  handleMessage(message).catch((err) => console.error("Message handler failed:", err));
+});
+client.on(Events.TypingStart, (typing) => void relayTyping(typing));
+client.on(Events.Error, (err) => console.error("Discord client error:", err));
+process.on("unhandledRejection", (err) => console.error("Unhandled rejection:", err));
+
+for (const signal of ["SIGINT", "SIGTERM"] as const) {
+  process.once(signal, () => {
+    console.log("Shutting down, saving relay state…");
     try {
-      const adminChannel = await client.channels.fetch(ADMIN_CHANNEL_ID);
-      if (adminChannel && adminChannel.isTextBased()) {
-        const textChannel = adminChannel as TextChannel;
-        let thread: ThreadChannel | null = null;
-
-        const existingThreadId = activeThreads.get(userId);
-        if (existingThreadId) {
-          try {
-            const fetched = await client.channels.fetch(existingThreadId);
-            if (fetched && fetched.isThread()) {
-              thread = fetched as ThreadChannel;
-            }
-          } catch {
-            thread = null;
-          }
-        }
-
-        if (!thread) {
-          const cleanName = userName.replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 20) || "client";
-          thread = await textChannel.threads.create({
-            name: `💬・${cleanName}-${userId.slice(-4)}`,
-            autoArchiveDuration: 1440,
-            reason: `Client inquiry from ${userName} via Cerbis Discord App`,
-          });
-          activeThreads.set(userId, thread.id);
-
-          const infoEmbed = new EmbedBuilder()
-            .setTitle(`🎨 New Brief / Inquiry from ${userName}`)
-            .setColor(DISCORD_COLORS.ACCENT)
-            .setThumbnail(userAvatar)
-            .addFields(
-              { name: "👤 Client", value: `${userName} (<@${userId}>)`, inline: true },
-              { name: "🆔 Discord ID", value: `\`${userId}\``, inline: true },
-              {
-                name: "💬 How to reply",
-                value:
-                  "Reply in this thread. Whatever you type will be delivered straight to the client's DM with your verified badge.",
-                inline: false,
-              }
-            )
-            .setTimestamp();
-
-          await thread.send({ embeds: [infoEmbed] });
-        }
-
-        const detailEmbed = new EmbedBuilder()
-          .setAuthor({ name: `${userName} (Client)`, iconURL: userAvatar })
-          .setColor(0x2f3136)
-          .setTimestamp();
-
-        if (summary.game) detailEmbed.addFields({ name: "🎮 Game", value: summary.game, inline: true });
-        if (summary.screens) detailEmbed.addFields({ name: "📱 Screens", value: summary.screens, inline: true });
-        if (summary.notes) detailEmbed.addFields({ name: "📝 Notes", value: summary.notes, inline: false });
-        if (summary.text) detailEmbed.setDescription(summary.text);
-        if (summary.imageUrl) detailEmbed.setImage(summary.imageUrl);
-
-        await thread.send({ embeds: [detailEmbed] });
-        return; // Success — no need for webhook fallback
-      }
-    } catch (err) {
-      console.warn("⚠️ Channel relay failed, falling back to webhook:", (err as Error).message);
+      flushStore();
+    } finally {
+      void client.destroy().finally(() => process.exit(0));
     }
-  }
-
-  // Fallback: relay via webhook
-  await relayViaWebhook(userId, userName, userAvatar, summary);
+  });
 }
-
-client.once("ready", async () => {
-  console.log("==================================================");
-  console.log(`🤖 Cerbis Discord Relay Bot is online as: ${client.user?.tag}`);
-  if (GUILD_ID) {
-    console.log(`🏠 Guild Target: ${GUILD_ID}`);
-  }
-  console.log(`📡 Ready to receive DMs, Slash Commands, and relay briefs.`);
-  console.log("==================================================");
-
-  await registerSlashCommands();
-});
-
-// -------------------------------------------------------------
-// SCENARIO 1: User-App Slash Commands (/brief & /status)
-// -------------------------------------------------------------
-client.on("interactionCreate", async (interaction) => {
-  if (!interaction.isChatInputCommand()) return;
-
-  const { commandName } = interaction;
-  const userName = interaction.user.displayName || interaction.user.username;
-  const userId = interaction.user.id;
-  const userAvatar = interaction.user.displayAvatarURL();
-
-  if (commandName === "brief") {
-    const game = interaction.options.getString("game", true);
-    const screens = interaction.options.getString("screens", true);
-    const notes = interaction.options.getString("notes") || undefined;
-    const reference = interaction.options.getAttachment("reference");
-    const imageUrl = reference?.url;
-
-    // Send immediate automated receipt embed — only the sender sees it
-    const firstResponse = buildAutomatedFirstResponseEmbed(userName, screens);
-    await interaction.reply({
-      embeds: [new EmbedBuilder(firstResponse)],
-      flags: MessageFlags.Ephemeral,
-    });
-
-    // Relay to Cerbis's private channel (thread or webhook)
-    await relayToAdmin(userId, userName, userAvatar, {
-      game,
-      screens,
-      notes,
-      imageUrl,
-    });
-  }
-
-  if (commandName === "status") {
-    const statusEmbed = new EmbedBuilder()
-      .setTitle("🟢 Cerbis UI Studio — Status")
-      .setColor(DISCORD_COLORS.HUMAN)
-      .setDescription(
-        "Cerbis is currently **open for Roblox UI commissions**.\n\n" +
-          "• **Typical turnaround**: 3–7 days\n" +
-          "• **Handoff**: Figma source + Studio `.rbxm` models + Luau scripts\n" +
-          "• **Platforms**: Phone, Tablet, PC, Console scaled\n\n" +
-          "Use `/brief` or DM to submit your game specs."
-      )
-      .setFooter({ text: "cerbis.xyz" })
-      .setTimestamp();
-
-    await interaction.reply({
-      embeds: [statusEmbed],
-      flags: MessageFlags.Ephemeral,
-    });
-  }
-});
-
-// -------------------------------------------------------------
-// SCENARIO 2: Client DMs the Bot Directly
-// -------------------------------------------------------------
-client.on("messageCreate", async (message: Message) => {
-  if (message.author.bot) return;
-
-  if (message.channel.type === ChannelType.DM) {
-    const userId = message.author.id;
-    const userName = message.author.displayName || message.author.username;
-    const content = message.content.trim();
-
-    console.log(`📩 Received DM from ${userName} (${userId}): ${content}`);
-
-    // Send automated first response if new
-    if (!greetedUsers.has(userId)) {
-      greetedUsers.add(userId);
-      const firstResponse = buildAutomatedFirstResponseEmbed(userName);
-      await message.channel.send({ embeds: [new EmbedBuilder(firstResponse)] }).catch(console.error);
-    }
-
-    // Relay to admin channel
-    await relayToAdmin(userId, userName, message.author.displayAvatarURL(), {
-      text: content || "*Sent an attachment/media*",
-    });
-    return;
-  }
-
-  // -------------------------------------------------------------
-  // SCENARIO 3: Cerbis Replies inside a Client Thread in Discord
-  // -------------------------------------------------------------
-  if (message.channel.isThread()) {
-    const thread = message.channel as ThreadChannel;
-
-    let targetUserId: string | null = null;
-    for (const [userId, threadId] of activeThreads.entries()) {
-      if (threadId === thread.id) {
-        targetUserId = userId;
-        break;
-      }
-    }
-
-    if (targetUserId) {
-      let replyContent = message.content.trim();
-      if (client.user) {
-        replyContent = replyContent.replace(new RegExp(`<@!?${client.user.id}>`, "g"), "").trim();
-      }
-
-      if (!replyContent) return;
-
-      // Handle AI mode (!ai <prompt>)
-      if (replyContent.startsWith("!ai ")) {
-        const aiMessage = replyContent.replace("!ai ", "").trim();
-        const aiEmbed = buildAiResponseEmbed(aiMessage);
-
-        try {
-          const clientUser = await client.users.fetch(targetUserId);
-          await clientUser.send({ embeds: [new EmbedBuilder(aiEmbed)] });
-          await message.react("🟣");
-        } catch (err) {
-          console.error("Failed to send AI response to client:", err);
-          await message.reply("⚠️ Could not deliver message (user may have DMs closed).");
-        }
-        return;
-      }
-
-      // Standard Human Verified reply
-      const humanEmbed = buildHumanResponseEmbed(
-        replyContent,
-        message.author.displayName || "Cerbis"
-      );
-
-      try {
-        const clientUser = await client.users.fetch(targetUserId);
-        await clientUser.send({ embeds: [new EmbedBuilder(humanEmbed)] });
-        await message.react("🟢");
-      } catch (err) {
-        console.error("Failed to send human reply to client:", err);
-        await message.reply("⚠️ Could not deliver message (user may have DMs closed).");
-      }
-    }
-  }
-});
 
 client.login(BOT_TOKEN).catch((err) => {
-  console.error("❌ Failed to login to Discord:", err);
+  console.error("❌ Failed to log in to Discord:", err);
   process.exit(1);
 });
