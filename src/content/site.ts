@@ -46,7 +46,7 @@ export const site = {
   /** Footer + contact links. */
   links: [
     { label: "X", href: "https://x.com/CERBi_S" },
-    { label: "Discord", href: "https://discord.com" },
+    { label: "Discord", href: "https://discord.com/users/1549424708292837438" },
   ],
 
   /** What I take on. Four reads best. */

@@ -133,18 +133,36 @@ export function DiscordAppCard({
           </motion.a>
 
           <a
-            href={discordLink}
+            href="https://discord.com/users/1549424708292837438"
             target="_blank"
             rel="noreferrer noopener"
             className="btn-ghost py-2 text-xs text-paper-2 hover:text-paper"
           >
-            Direct message on Discord
+            Direct message (@Cerbi)
           </a>
         </div>
 
         <p className="font-mono text-[11px] text-paper-3">
           User-app install • Safe and permissionless
         </p>
+      </div>
+
+      {/* Usage steps after install */}
+      <div className="mt-4 rounded-lg border border-rule/50 bg-ink-1/50 px-4 py-3 text-xs text-paper-2">
+        <span className="font-semibold text-paper">Once added to your account:</span> Type{" "}
+        <code className="rounded bg-ink-3 px-1.5 py-0.5 font-mono text-[11px] text-[#7983f5]">
+          /brief
+        </code>{" "}
+        in any Discord chat or DM, or click{" "}
+        <a
+          href="https://discord.com/users/1549424708292837438"
+          target="_blank"
+          rel="noreferrer noopener"
+          className="text-paper underline underline-offset-2 hover:text-accent"
+        >
+          Direct message
+        </a>{" "}
+        to hand off your game link and screens.
       </div>
     </div>
   );
