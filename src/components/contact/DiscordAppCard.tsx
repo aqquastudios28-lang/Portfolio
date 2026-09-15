@@ -3,21 +3,20 @@
 import { motion } from "motion/react";
 import { site } from "@/content/site";
 
+const DEFAULT_INSTALL_URL =
+  "https://discord.com/oauth2/authorize?client_id=1549424708292837438&scope=identify+applications.commands";
+
 interface DiscordAppCardProps {
   directInstallUrl?: string;
-  discordHandle?: string;
   initialConnectedUser?: string;
-  initialError?: string;
 }
 
 export function DiscordAppCard({
   directInstallUrl,
-  discordHandle,
   initialConnectedUser,
-  initialError,
 }: DiscordAppCardProps) {
   const connectedUser = initialConnectedUser;
-  const authUrl = directInstallUrl || "/api/discord/auth";
+  const authUrl = directInstallUrl || DEFAULT_INSTALL_URL;
   const discordLink =
     site.links.find((l) => l.label.toLowerCase() === "discord")?.href || "https://discord.com";
 
@@ -74,13 +73,6 @@ export function DiscordAppCard({
         </div>
       </div>
 
-      {/* Configuration note if error passed */}
-      {initialError === "not_configured" && (
-        <div className="mt-5 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 font-mono text-xs text-amber-300">
-          Discord bot keys are not set in `.env.local` yet. You can test the simulator below, use the browser form, or DM directly.
-        </div>
-      )}
-
       {/* Feature Row */}
       <div className="mt-6 grid grid-cols-1 gap-3 border-y border-rule/60 py-4 sm:grid-cols-3">
         <div className="flex items-start gap-2.5">
@@ -127,6 +119,8 @@ export function DiscordAppCard({
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.99 }}
             href={authUrl}
+            target="_blank"
+            rel="noreferrer noopener"
             className="group inline-flex items-center gap-2.5 rounded-lg bg-[#5865f2] px-5 py-2.5 text-xs font-semibold text-white shadow-md transition hover:bg-[#4752c4]"
           >
             <svg className="h-4 w-4 fill-current" viewBox="0 0 24 24">
@@ -144,7 +138,7 @@ export function DiscordAppCard({
             rel="noreferrer noopener"
             className="btn-ghost py-2 text-xs text-paper-2 hover:text-paper"
           >
-            Direct DM {discordHandle ? `(@${discordHandle})` : "on Discord"}
+            Direct message on Discord
           </a>
         </div>
 

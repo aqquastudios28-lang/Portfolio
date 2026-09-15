@@ -33,7 +33,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
     ? { username: params.discord_user, id: params.discord_id }
     : undefined;
 
-  const discordLink = site.links.find((l) => l.label.toLowerCase() === "discord")?.href;
+
 
   return (
     <div className="py-10 sm:py-16">
@@ -62,9 +62,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
         <div className="mt-10">
           <DiscordAppCard
             directInstallUrl={process.env.DISCORD_APPLICATION_INSTALL_URL}
-            discordHandle={discordLink ? discordLink.split("/").pop() : undefined}
             initialConnectedUser={params.discord_user}
-            initialError={params.discord_error}
           />
         </div>
 
