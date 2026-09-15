@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { site } from "@/content/site";
 
 const DEFAULT_INSTALL_URL =
-  "https://discord.com/oauth2/authorize?client_id=1549424708292837438&scope=identify+applications.commands";
+  "https://discord.com/oauth2/authorize?client_id=1549424708292837438&integration_type=1&scope=identify+applications.commands";
 
 interface DiscordAppCardProps {
   directInstallUrl?: string;

@@ -19,6 +19,7 @@ export async function GET(req: Request) {
   discordAuthUrl.searchParams.set("response_type", "code");
   discordAuthUrl.searchParams.set("redirect_uri", redirectUri);
   discordAuthUrl.searchParams.set("scope", "identify applications.commands");
+  discordAuthUrl.searchParams.set("integration_type", "1");
   discordAuthUrl.searchParams.set("prompt", "consent");
 
   return NextResponse.redirect(discordAuthUrl.toString());
