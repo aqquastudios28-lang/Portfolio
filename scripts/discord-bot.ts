@@ -90,6 +90,12 @@ async function registerSlashCommands() {
           .setDescription("Budget, timeline, or style reference")
           .setRequired(false)
       )
+      .addAttachmentOption((opt) =>
+        opt
+          .setName("reference")
+          .setDescription("Screenshot, mockup, or style reference image")
+          .setRequired(false)
+      )
       .setIntegrationTypes([0, 1]) // Guild & User Install
       .setContexts([0, 1, 2]); // Guild, Bot DM, Private Channels
 
@@ -117,7 +123,7 @@ async function relayViaWebhook(
   userId: string,
   userName: string,
   userAvatar: string,
-  summary: { game?: string; screens?: string; notes?: string; text?: string }
+  summary: { game?: string; screens?: string; notes?: string; text?: string; imageUrl?: string }
 ) {
   if (!WEBHOOK_URL) {
     console.warn("⚠️ DISCORD_WEBHOOK_URL not set — cannot relay brief to admin channel.");
@@ -137,6 +143,7 @@ async function relayViaWebhook(
     title: `🎨 New Brief from ${userName}`,
     color: DISCORD_COLORS.ACCENT,
     thumbnail: { url: userAvatar },
+    image: summary.imageUrl ? { url: summary.imageUrl } : undefined,
     description: summary.text || undefined,
     fields,
     footer: { text: "Cerbis Discord Relay • cerbis.xyz" },
@@ -172,7 +179,7 @@ async function relayToAdmin(
   userId: string,
   userName: string,
   userAvatar: string,
-  summary: { game?: string; screens?: string; notes?: string; text?: string }
+  summary: { game?: string; screens?: string; notes?: string; text?: string; imageUrl?: string }
 ) {
   // Try channel-based thread relay first (only works if bot is in the guild)
   if (ADMIN_CHANNEL_ID) {
@@ -231,6 +238,7 @@ async function relayToAdmin(
         if (summary.screens) detailEmbed.addFields({ name: "📱 Screens", value: summary.screens, inline: true });
         if (summary.notes) detailEmbed.addFields({ name: "📝 Notes", value: summary.notes, inline: false });
         if (summary.text) detailEmbed.setDescription(summary.text);
+        if (summary.imageUrl) detailEmbed.setImage(summary.imageUrl);
 
         await thread.send({ embeds: [detailEmbed] });
         return; // Success — no need for webhook fallback
@@ -271,6 +279,8 @@ client.on("interactionCreate", async (interaction) => {
     const game = interaction.options.getString("game", true);
     const screens = interaction.options.getString("screens", true);
     const notes = interaction.options.getString("notes") || undefined;
+    const reference = interaction.options.getAttachment("reference");
+    const imageUrl = reference?.url;
 
     // Send immediate automated receipt embed — only the sender sees it
     const firstResponse = buildAutomatedFirstResponseEmbed(userName, screens);
@@ -284,6 +294,7 @@ client.on("interactionCreate", async (interaction) => {
       game,
       screens,
       notes,
+      imageUrl,
     });
   }
 
