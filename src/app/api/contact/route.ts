@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
+import { buildAdminBriefEmbed } from "@/lib/discord-embeds";
 
 function escapeHtml(str: string): string {
   return str
@@ -84,7 +85,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const { name, game, scope, message, hp_website } = body;
+    const { name, game, scope, message, hp_website, discord_id, discord_user } = body;
 
     // 3. Honeypot check (Bots fill hidden fields, real users don't)
     if (hp_website) {
@@ -251,31 +252,26 @@ export async function POST(req: Request) {
       }
     }
 
-    // 6. Optional Discord Webhook Backup
+    // 6. Optional Discord Webhook / Channel Dispatch
     if (process.env.DISCORD_WEBHOOK_URL) {
       try {
+        const clientDiscordId = typeof discord_id === "string" ? discord_id : undefined;
+        const displayName = typeof discord_user === "string" && discord_user ? `${cleanName} (@${discord_user})` : cleanName;
+        const adminEmbed = buildAdminBriefEmbed({
+          name: displayName,
+          scope: cleanScope,
+          game: cleanGame,
+          message: cleanMessage,
+          discordId: clientDiscordId,
+        });
+
         await fetch(process.env.DISCORD_WEBHOOK_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            username: "Cerbis Commissions",
-            embeds: [
-              {
-                title: `🎨 New Commission Request [${cleanScope}]`,
-                color: 0xff4a1c,
-                fields: [
-                  { name: "👤 Client / Handle", value: cleanName, inline: true },
-                  { name: "🎯 Scope", value: cleanScope, inline: true },
-                  { name: "🕹️ Game Link", value: cleanGame || "None provided", inline: false },
-                  {
-                    name: "📝 Requirements",
-                    value: cleanMessage.length > 1000 ? cleanMessage.slice(0, 1000) + "..." : cleanMessage,
-                    inline: false,
-                  },
-                ],
-                timestamp: new Date().toISOString(),
-              },
-            ],
+            username: "Cerbis Client Hub",
+            avatar_url: "https://cerbis.xyz/icon.png",
+            embeds: [adminEmbed],
           }),
         });
       } catch (err) {

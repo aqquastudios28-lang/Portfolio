@@ -12,12 +12,21 @@ const SCOPES = [
   "UI Review",
 ];
 
-export function ContactForm({ email }: { email: string }) {
-  const [name, setName] = useState("");
+export function ContactForm({
+  email,
+  initialDiscordUser,
+}: {
+  email: string;
+  initialDiscordUser?: { id?: string; username?: string };
+}) {
+  const [name, setName] = useState(
+    initialDiscordUser?.username ? `@${initialDiscordUser.username}` : ""
+  );
   const [experience, setExperience] = useState("");
   const [selectedScope, setSelectedScope] = useState("Full UI Set");
   const [message, setMessage] = useState("");
   const [hpWebsite, setHpWebsite] = useState(""); // Honeypot spam trap
+  const discordUser = initialDiscordUser;
 
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -65,6 +74,8 @@ export function ContactForm({ email }: { email: string }) {
           message,
           email,
           hp_website: hpWebsite,
+          discord_id: discordUser?.id,
+          discord_user: discordUser?.username,
         }),
       });
 
@@ -87,7 +98,7 @@ export function ContactForm({ email }: { email: string }) {
   };
 
   const handleReset = () => {
-    setName("");
+    setName(initialDiscordUser?.username ? `@${initialDiscordUser.username}` : "");
     setExperience("");
     setMessage("");
     setSelectedScope("Full UI Set");
@@ -116,10 +127,10 @@ export function ContactForm({ email }: { email: string }) {
               </div>
               <div>
                 <h3 className="font-display font-semibold text-lg text-paper">
-                  Commission Request Sent
+                  Brief sent
                 </h3>
                 <p className="font-mono text-xs text-paper-2 mt-0.5">
-                  I will review your project details and get back to you shortly.
+                  Logged in my Discord channel. I will review it today and reply.
                 </p>
               </div>
             </div>
@@ -222,16 +233,24 @@ export function ContactForm({ email }: { email: string }) {
 
             {/* Name / Handle Input */}
             <div>
-              <label htmlFor="cf-name" className="annot mb-2 block">
-                Your Name / Discord / Email
-              </label>
+              <div className="mb-2 flex items-center justify-between">
+                <label htmlFor="cf-name" className="annot block">
+                  Your Name / Discord / Email
+                </label>
+                {discordUser && (
+                  <span className="flex items-center gap-1.5 font-mono text-[11px] text-[#30d158]">
+                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#30d158]" />
+                    Linked Discord (@{discordUser.username})
+                  </span>
+                )}
+              </div>
               <input
                 id="cf-name"
                 type="text"
                 value={name}
                 maxLength={100}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Alex (@alex_studio / alex@domain.com)"
+                placeholder="Discord handle, name, or email"
                 autoComplete="name"
                 className="field"
                 required
@@ -258,7 +277,7 @@ export function ContactForm({ email }: { email: string }) {
             {/* Message */}
             <div>
               <label htmlFor="cf-msg" className="annot mb-2 block">
-                Details & Scope
+                What needs building
               </label>
               <textarea
                 id="cf-msg"
@@ -266,7 +285,7 @@ export function ContactForm({ email }: { email: string }) {
                 value={message}
                 maxLength={3000}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Describe what screens you need, target timeline, and any specific mechanics."
+                placeholder="Game link, which menus you need made or reworked, and your timeline. That is enough for me to quote."
                 className="field"
                 required
               />
@@ -292,10 +311,10 @@ export function ContactForm({ email }: { email: string }) {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                       </svg>
-                      Sending Request...
+                      Sending...
                     </span>
                   ) : (
-                    <span>Send Commission Request &rarr;</span>
+                    <span>Send brief &rarr;</span>
                   )}
                 </button>
 

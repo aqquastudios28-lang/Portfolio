@@ -43,11 +43,10 @@ export const site = {
     { label: "Works in", value: "Figma + Studio" },
   ],
 
-  /** Footer + contact links. Delete any you do not use. */
+  /** Footer + contact links. */
   links: [
-    { label: "Roblox", href: "https://www.roblox.com/users/0/profile" },
-    { label: "X", href: "https://x.com/" },
-    { label: "Discord", href: "https://discord.com/users/" },
+    { label: "X", href: "https://x.com/CERBi_S" },
+    { label: "Discord", href: "https://discord.com" },
   ],
 
   /** What I take on. Four reads best. */
