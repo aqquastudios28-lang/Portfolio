@@ -1,9 +1,11 @@
 import Link from "next/link";
+import { Ghost } from "@/components/season/Spooky";
 import { Container } from "@/components/ui/Container";
 
 export default function NotFound() {
   return (
-    <section className="flex min-h-[62vh] items-center py-24">
+    <section className="relative flex min-h-[62vh] items-center py-24">
+      <Ghost />
       <Container>
         <div className="flex items-baseline justify-between gap-4 border-b border-rule pb-3">
           <span className="annot annot-bright">Error</span>

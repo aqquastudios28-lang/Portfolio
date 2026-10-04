@@ -22,7 +22,7 @@ export const projects: Project[] = [
       ratio: "16/9",
     },
     overview:
-      "The first screen of a premium-styled experience: logo lockup on top, four faceted menu plates below, and a quiet hint line telling the player exactly what to do next.",
+      "The first screen of the game: logo lockup on top, four faceted menu plates below, and a quiet hint line telling the player exactly what to do next.",
     problem:
       "Menu screens with four equal buttons give the player no idea which one starts the game, so the first tap becomes a guess.",
     process: [
@@ -32,7 +32,7 @@ export const projects: Project[] = [
       },
       {
         title: "Warm gold on true black",
-        body: "Bevelled plates, hairline flourishes and a brushed sheen carry the whole theme, so no background art is needed to make the screen feel expensive.",
+        body: "Bevelled plates, hairline flourishes and a brushed sheen carry the whole theme, so the screen needs no background art.",
       },
       {
         title: "Utility icons off the main path",
@@ -40,7 +40,7 @@ export const projects: Project[] = [
       },
     ],
     solution:
-      "A centred menu cluster with one unmistakable primary action, a reusable plate component, and a 'Press play to start' hint under the fold of the buttons.",
+      "A centred menu cluster with one clear primary action, a reusable plate component, and a 'Press play to start' hint under the fold of the buttons.",
     gallery: [],
     outcome:
       "Set the gold art-deco component kit — plates, ribbons, icon frames — that the rest of the game's screens are built from.",
@@ -226,7 +226,7 @@ export const projects: Project[] = [
     solution:
       "Two-tier roll board with visible odds table, dice theme ribbon, and high-contrast roll triggers.",
     gallery: [],
-    outcome: "Clean, transparent roll interface with intuitive multi-pull options.",
+    outcome: "A roll screen that shows its odds and offers multi-pulls in fixed steps.",
     metrics: [
       { value: "7", label: "Rarity tiers" },
       { value: "1x / 3x / 10x", label: "Pull sizes" },
@@ -258,7 +258,7 @@ export const projects: Project[] = [
     process: [
       {
         title: "Clear icon progression",
-        body: "Distinct visual progression from single gems to treasure chests to communicate bundle sizes instantly.",
+        body: "Distinct visual progression from single gems to treasure chests so bundle size reads from the icon alone.",
       },
       {
         title: "Balanced typographic weight",
@@ -266,7 +266,7 @@ export const projects: Project[] = [
       },
       {
         title: "Standardized buy actions",
-        body: "Uniform button positioning across all bundle cards for effortless scanning.",
+        body: "The buy button sits in the same place on every bundle card, so prices compare down one line.",
       },
     ],
     solution:
@@ -316,7 +316,7 @@ export const projects: Project[] = [
       "A bold, responsive Season Pass menu built with clear unlock milestones and gold ribbon header.",
     gallery: [],
     outcome:
-      "Intuitive progression screen that drives daily retention and premium pass engagement.",
+      "One screen for both reward tracks, with tier skips and a single Claim All.",
     metrics: [],
   },
 

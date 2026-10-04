@@ -6,7 +6,7 @@ import { Container } from "@/components/ui/Container";
 import { site } from "@/content/site";
 
 export const metadata: Metadata = {
-  title: "Contact & Discord Relay",
+  title: "Contact",
   description: `Commission Roblox game UI, HUD systems and Luau builds directly via ${site.name}.`,
   alternates: { canonical: "/contact" },
 };
@@ -40,7 +40,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
       <Container>
         {/* Header Bar */}
         <div className="flex items-baseline justify-between gap-4 border-b border-rule pb-3">
-          <span className="annot annot-bright">Discord & Commissions</span>
+          <span className="annot annot-bright">Contact</span>
           <span className="annot">
             {site.availability.open
               ? site.availability.label
@@ -54,11 +54,10 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
             Send the brief on Discord.
           </h1>
           <p className="t-lead mt-4 text-paper-2">
-            Add the bot to your account. Drop the game link, what menus you need, and your deadline. The bot logs the specs instantly, and I reply directly from Studio with a verified badge.
+            Add the bot to your Discord account and run /brief. Give the game link, the menus you need and your deadline. I reply in your DMs.
           </p>
         </div>
 
-        {/* Primary: 1-Click Discord App Installer Card */}
         <div className="mt-10">
           <DiscordAppCard
             directInstallUrl={process.env.DISCORD_APPLICATION_INSTALL_URL}
@@ -72,10 +71,10 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
         <section className="mt-16 border-t border-rule pt-14">
           <div className="mb-8">
             <span className="annot">Browser form</span>
-            <h2 className="font-display text-2xl font-bold text-paper mt-1">
+            <h2 className="t-h2 mt-2 text-paper">
               Write the brief here instead
             </h2>
-            <p className="mt-1 text-xs text-paper-2 max-w-xl">
+            <p className="t-body mt-3 max-w-xl text-sm">
               If you do not want to add the bot, submit here. It lands in my Discord channel either way.
             </p>
           </div>

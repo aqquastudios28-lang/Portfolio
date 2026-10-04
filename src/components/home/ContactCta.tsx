@@ -10,7 +10,7 @@ export function ContactCta() {
       <Ghost />
       <Container>
         <h2 className="t-h1 max-w-3xl text-paper">
-          <span className="t-grad">Working on a game?</span>{" "}
+          <span className="text-accent">Working on a game?</span>{" "}
           <span className="text-paper-2">
             Send the screens you have and what needs reworking.
           </span>

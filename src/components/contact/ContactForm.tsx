@@ -36,7 +36,7 @@ export function ContactForm({
   const formattedBrief = [
     `Commission Request: ${selectedScope}`,
     `Client: ${name || "Anonymous"}`,
-    experience ? `Game / Link: ${experience}` : "",
+    experience ? `Game ${experience}` : "",
     "",
     "Project Requirements:",
     message,
@@ -83,7 +83,7 @@ export function ContactForm({
 
       if (!res.ok) {
         throw new Error(
-          data.error || "Submission encountered an issue. Please copy the brief or contact on Discord."
+          data.error || "That did not send. Copy the brief and message me on Discord instead."
         );
       }
 
@@ -138,16 +138,16 @@ export function ContactForm({
             {/* Brief Summary Box */}
             <div className="w-full border border-rule p-4 text-xs font-mono space-y-2 text-paper-2">
               <div className="flex justify-between border-b border-rule-soft pb-2">
-                <span className="text-paper-3">Project Scope:</span>
+                <span className="text-paper-3">Scope</span>
                 <span className="text-paper font-medium">{selectedScope}</span>
               </div>
               <div className="flex justify-between border-b border-rule-soft pb-2">
-                <span className="text-paper-3">Client / Handle:</span>
+                <span className="text-paper-3">From</span>
                 <span className="text-paper font-medium">{name}</span>
               </div>
               {experience && (
                 <div className="flex justify-between border-b border-rule-soft pb-2">
-                  <span className="text-paper-3">Game / Link:</span>
+                  <span className="text-paper-3">Game</span>
                   <span className="text-paper font-medium truncate max-w-[220px]">{experience}</span>
                 </div>
               )}
@@ -158,9 +158,6 @@ export function ContactForm({
 
             {/* Quick Actions */}
             <div className="w-full space-y-3">
-              <span className="annot block">
-                Quick Action
-              </span>
               <div className="flex flex-wrap gap-3">
                 <button
                   type="button"
@@ -170,7 +167,7 @@ export function ContactForm({
                   <svg className="h-3.5 w-3.5 text-paper-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
-                  <span>{copied ? "Copied to Clipboard!" : "Copy Brief for Discord"}</span>
+                  <span>{copied ? "Copied" : "Copy brief"}</span>
                 </button>
               </div>
             </div>
@@ -181,7 +178,7 @@ export function ContactForm({
                 onClick={handleReset}
                 className="text-xs font-mono text-paper-3 hover:text-paper underline underline-offset-4 transition-colors cursor-pointer"
               >
-                &larr; Send another request
+                &larr; Send another brief
               </button>
             </div>
           </motion.div>
@@ -210,7 +207,7 @@ export function ContactForm({
             {/* Scope Chips */}
             <div>
               <label className="annot mb-3 block">
-                Project Scope
+                Scope
               </label>
               <div className="flex flex-wrap gap-2">
                 {SCOPES.map((scope) => (
@@ -235,12 +232,11 @@ export function ContactForm({
             <div>
               <div className="mb-2 flex items-center justify-between">
                 <label htmlFor="cf-name" className="annot block">
-                  Your Name / Discord / Email
+                  Name, Discord or email
                 </label>
                 {discordUser && (
-                  <span className="flex items-center gap-1.5 font-mono text-[11px] text-[#30d158]">
-                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#30d158]" />
-                    Linked Discord (@{discordUser.username})
+                  <span className="annot">
+                    Linked as @{discordUser.username}
                   </span>
                 )}
               </div>
@@ -260,7 +256,7 @@ export function ContactForm({
             {/* Game Link */}
             <div>
               <label htmlFor="cf-exp" className="annot mb-2 block">
-                Game Name / Roblox Link
+                Game name or Roblox link
               </label>
               <input
                 id="cf-exp"
@@ -327,7 +323,7 @@ export function ContactForm({
                   <svg className="h-3.5 w-3.5 text-paper-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
-                  <span>{copied ? "Copied Brief!" : "Copy Brief"}</span>
+                  <span>{copied ? "Copied" : "Copy brief"}</span>
                 </button>
               </div>
             </div>

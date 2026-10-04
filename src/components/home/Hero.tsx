@@ -16,14 +16,13 @@ export function Hero() {
   return (
     <section className="pt-14 pb-16 sm:pt-24 sm:pb-24">
       <Container>
-        <span className="spooky pill pill-accent mb-7">Halloween edition</span>
         <h1>
           {site.headline.map((line, i) => (
             <span
               key={line}
               className={
                 i === site.headline.length - 1
-                  ? "t-display t-grad block w-fit"
+                  ? "t-display block text-accent"
                   : "t-display block text-paper"
               }
             >

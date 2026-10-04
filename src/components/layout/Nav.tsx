@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
+import { Drip } from "@/components/season/Spooky";
 import { site } from "@/content/site";
 import { cn } from "@/lib/utils";
 
@@ -152,6 +153,8 @@ export function Nav() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <Drip />
     </header>
   );
 }
