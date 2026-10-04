@@ -12,7 +12,7 @@ export const site = {
    * printed as a badge on every page — a job title pinned to four surfaces in
    * mono uppercase is furniture, not information.
    */
-  role: "Roblox UI designer",
+  role: "Roblox UI designer & developer",
 
   /** The homepage statement. One line per array entry. Set at ~120px. */
   headline: ["Menus, shops", "and HUDs for", "Roblox games."],
@@ -21,8 +21,14 @@ export const site = {
   intro:
     "I design UI for Roblox games and build it in Studio. Mostly the screens players open fifty times a session: shops, upgrade menus, daily rewards, the buttons down the side of the HUD. Small surfaces, heavy traffic, almost always a phone.",
 
+  /**
+   * Seasonal theme. "auto" turns Halloween on from 1 October to 2 November
+   * in the visitor's own timezone. "halloween" forces it on, "off" removes it.
+   */
+  season: "auto" as "auto" | "halloween" | "off",
+
   /** Live production URL. Used for canonical tags, sitemap and Open Graph. */
-  url: "https://cerbis.xyz",
+  url: "https://www.cerbis.xyz",
 
   email: "cerbi@cerbis.xyz",
 
@@ -70,6 +76,19 @@ export const site = {
   ],
 } as const;
 
+/** One developer role or project. Shown on the about page, newest first. */
+export type DeveloperEntry = {
+  /** "2024", or a range like "2023 — 2025". */
+  period: string;
+  /** What you were, e.g. "Gameplay scripter". */
+  title: string;
+  /** Studio, game or client. Leave out for solo work. */
+  where?: string;
+  detail: string;
+  /** Rendered as a mono line under the detail. */
+  stack?: readonly string[];
+};
+
 /* ---------------------------------------------------------------------------
    ABOUT PAGE COPY
    --------------------------------------------------------------------------- */
@@ -87,6 +106,12 @@ export const about = {
     { group: "Build", items: ["Roblox Studio", "Luau", "Rojo"] },
     { group: "Motion", items: ["TweenService", "After Effects"] },
   ],
+
+  /**
+   * Developer experience. Newest first. These are claims about you, so the
+   * list starts empty — an empty array renders nothing on the about page.
+   */
+  developer: [] as readonly DeveloperEntry[],
 
   /** Short timeline. Newest first. */
   timeline: [
@@ -120,6 +145,10 @@ export const seo = {
   description: site.intro,
   keywords: [
     "Roblox UI designer",
+    "Roblox developer",
+    "Roblox scripter",
+    "Luau developer",
+    "Roblox UI commissions",
     "Roblox interface design",
     "Roblox HUD design",
     "game UI designer",

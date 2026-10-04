@@ -1,37 +1,45 @@
 @import "tailwindcss";
 
 /* ============================================================================
-   BUBBLE KIT
-   The work on this site is chunky cartoon game UI: fat rounded plates, thick
-   strokes, buttons that visibly press. The site is built from the same parts.
+   FESTIVAL KIT
+   Clean dark page, loud type. Condensed italic caps do the shouting, so the
+   surfaces can stay quiet: thin lines, small radii, no blur.
 
-   The three rules that keep it from turning back into card soup:
-   1. One bubble deep. A plate never contains another plate. Grouping is done
-      with space and a heading, not by wrapping things in another container.
-   2. Depth is a solid offset, never a blur. No glass, no backdrop-filter, no
-      inset white hairline highlight.
-   3. One accent. It marks what you can press. It is not decoration.
+   The rules that keep it clean:
+   1. One panel deep. A frame never contains another frame. Grouping is done
+      with space and a heading.
+   2. Lines are 1px. Depth is a hard two-tone offset on things you can press,
+      never a blur or a glass effect.
+   3. Three colours, three jobs. --accent is what you can press, --accent-2 is
+      the offset under it, --accent-3 only appears in the ribbon and gradient.
+   4. Slant means interactive or label. Body copy is never italic.
+
+   Seasonal themes only swap the variables below. See the SEASON block at the
+   bottom and `site.season` in src/content/site.ts.
    ========================================================================= */
 
 :root {
-  --ink: #0c0c11;
-  --surface: #16161f;
-  --surface-2: #1e1e2a;
+  --ink: #0a0c12;
+  --surface: #12151e;
+  --surface-2: #1a1e2a;
 
-  --paper: #f6f5f2;
-  --paper-2: #a6a5b4;
-  --paper-3: #6b6a7c;
+  --paper: #f7f7f5;
+  --paper-2: #a9adba;
+  --paper-3: #6c7182;
 
-  --stroke: rgba(246, 245, 242, 0.13);
-  --stroke-soft: rgba(246, 245, 242, 0.07);
+  --stroke: rgba(247, 247, 245, 0.14);
+  --stroke-soft: rgba(247, 247, 245, 0.07);
 
-  --accent: #ff6b2c;
-  --accent-deep: #c33f0c;
-  --accent-ink: #240d02;
+  --accent: #ffe100;
+  --accent-deep: #c9b100;
+  --accent-ink: #141200;
+  --accent-2: #ff2d87;
+  --accent-3: #1fe0d0;
 
-  --r-plate: 28px;
-  --r-soft: 18px;
-  --r-pill: 999px;
+  --r-plate: 10px;
+  --r-soft: 6px;
+  --r-pill: 4px;
+  --slant: -9deg;
 }
 
 @theme inline {
@@ -46,6 +54,8 @@
   --color-accent: var(--accent);
   --color-accent-deep: var(--accent-deep);
   --color-accent-ink: var(--accent-ink);
+  --color-accent-2: var(--accent-2);
+  --color-accent-3: var(--accent-3);
 
   --radius-plate: var(--r-plate);
   --radius-soft: var(--r-soft);
@@ -69,13 +79,19 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* One soft warm wash so the page is not a flat black rectangle. One, not
-     five, and no blurred blobs floating over the content. */
-  background-image: radial-gradient(
-    120% 70% at 50% -10%,
-    rgba(255, 107, 44, 0.09),
-    transparent 60%
-  );
+  /* Two soft washes in the corners, in the theme colours. They sit behind
+     everything and never move. */
+  background-image:
+    radial-gradient(
+      70% 50% at 100% 0%,
+      color-mix(in srgb, var(--accent-2) 13%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      60% 45% at 0% 0%,
+      color-mix(in srgb, var(--accent-3) 9%, transparent),
+      transparent 70%
+    );
   background-attachment: fixed;
 }
 
@@ -84,9 +100,9 @@ main { position: relative; z-index: 1; }
 ::selection { background: var(--accent); color: var(--accent-ink); }
 
 :focus-visible {
-  outline: 3px solid var(--accent);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
-  border-radius: 4px;
+  border-radius: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -104,33 +120,41 @@ main { position: relative; z-index: 1; }
      ---------------------------------------------------------------------- */
   .t-display {
     font-family: var(--font-display);
-    font-weight: 600;
-    font-size: clamp(2.75rem, 8.6vw, 7.8rem);
-    line-height: 0.94;
-    letter-spacing: -0.03em;
+    font-weight: 800;
+    font-style: italic;
+    text-transform: uppercase;
+    font-size: clamp(3.1rem, 10.4vw, 9.25rem);
+    line-height: 0.86;
+    letter-spacing: -0.012em;
   }
 
   .t-h1 {
     font-family: var(--font-display);
-    font-weight: 600;
-    font-size: clamp(1.95rem, 4.4vw, 3.4rem);
-    line-height: 1.02;
-    letter-spacing: -0.02em;
+    font-weight: 800;
+    font-style: italic;
+    text-transform: uppercase;
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    line-height: 0.96;
+    letter-spacing: -0.005em;
   }
 
   .t-h2 {
     font-family: var(--font-display);
-    font-weight: 600;
-    font-size: clamp(1.35rem, 2.4vw, 1.95rem);
-    line-height: 1.12;
-    letter-spacing: -0.015em;
+    font-weight: 700;
+    font-style: italic;
+    text-transform: uppercase;
+    font-size: clamp(1.6rem, 2.8vw, 2.35rem);
+    line-height: 1;
+    letter-spacing: 0.002em;
   }
 
   .t-h3 {
     font-family: var(--font-display);
-    font-weight: 500;
-    font-size: 1.0625rem;
-    line-height: 1.35;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 1.25rem;
+    line-height: 1.15;
+    letter-spacing: 0.02em;
   }
 
   .t-lead {
@@ -145,13 +169,28 @@ main { position: relative; z-index: 1; }
     color: var(--paper-2);
   }
 
+  /* Headline colour. The one place all three theme colours meet. */
+  .t-grad {
+    background: linear-gradient(
+      95deg,
+      var(--accent) 0%,
+      var(--accent-2) 55%,
+      var(--accent-3) 110%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    /* Italic glyphs overhang their box; without this the last letter clips. */
+    padding-right: 0.12em;
+  }
+
   /* -------------------------------------------------------------------------
      Annotation. One class for every small caps label on the site.
      ---------------------------------------------------------------------- */
   .annot {
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    font-weight: 500;
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--paper-3);
@@ -160,50 +199,90 @@ main { position: relative; z-index: 1; }
   .annot-bright { color: var(--paper-2); }
 
   .idx {
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    color: var(--paper-3);
+    font-family: var(--font-display);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    font-style: italic;
+    letter-spacing: 0.08em;
+    color: var(--accent);
     font-variant-numeric: tabular-nums;
   }
 
+  /* Big value next to a small label. Hero facts. */
+  .stat__value {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-style: italic;
+    text-transform: uppercase;
+    font-size: 1.25rem;
+    letter-spacing: 0.02em;
+    color: var(--paper);
+  }
+
   /* -------------------------------------------------------------------------
-     Section header. A pill label, then a soft divider running to the edge.
+     Ribbon. The three-colour stripe on the top edge of the nav.
+     ---------------------------------------------------------------------- */
+  .ribbon {
+    height: 3px;
+    background: linear-gradient(
+      90deg,
+      var(--accent) 0 34%,
+      var(--accent-2) 34% 67%,
+      var(--accent-3) 67% 100%
+    );
+  }
+
+  /* -------------------------------------------------------------------------
+     Section header. A slanted title, then a stripe that fades to the edge.
      ---------------------------------------------------------------------- */
   .sec-head {
     display: flex;
     align-items: center;
-    gap: 0.85rem;
+    gap: 1rem;
     padding-bottom: 0.25rem;
+  }
+
+  .sec-head > h2 {
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    font-weight: 800;
+    font-style: italic;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    color: var(--paper);
   }
 
   .sec-head__fill {
     flex: 1 1 auto;
     height: 2px;
-    border-radius: var(--r-pill);
-    background: var(--stroke-soft);
+    background: linear-gradient(
+      90deg,
+      var(--accent),
+      var(--accent-2) 35%,
+      transparent 90%
+    );
+    opacity: 0.7;
   }
 
   /* -------------------------------------------------------------------------
-     Pill. The one small container on the site — used for tags and counters.
-     Never nested inside another pill or plate edge.
+     Pill. Small slanted chip for tags, filters and counters.
      ---------------------------------------------------------------------- */
   .pill {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.45rem;
     border-radius: var(--r-pill);
     background: var(--surface);
-    border: 2px solid var(--stroke);
-    padding: 0.4rem 0.85rem;
-    font-family: var(--font-mono);
-    font-size: 0.625rem;
-    font-weight: 500;
-    letter-spacing: 0.14em;
+    border: 1px solid var(--stroke);
+    padding: 0.4rem 0.9rem;
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    font-style: italic;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--paper-2);
     white-space: nowrap;
+    transform: skewX(var(--slant));
   }
 
   .pill-accent {
@@ -212,144 +291,158 @@ main { position: relative; z-index: 1; }
     color: var(--accent-ink);
   }
 
-  /* Tag that sits over the top edge of a plate, like a label on a slot. */
+  /* Label pinned inside the top-left corner of a frame. */
   .slot-tag {
     position: absolute;
-    top: 0;
-    left: 1.25rem;
+    top: 0.85rem;
+    left: 0.85rem;
     z-index: 3;
-    transform: translateY(-50%);
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
     border-radius: var(--r-pill);
-    background: var(--surface-2);
-    border: 2px solid var(--stroke);
-    padding: 0.35rem 0.8rem;
-    font-family: var(--font-mono);
-    font-size: 0.625rem;
-    font-weight: 500;
-    letter-spacing: 0.14em;
+    background: var(--ink);
+    padding: 0.3rem 0.75rem;
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    font-style: italic;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--paper-2);
+    color: var(--paper);
     white-space: nowrap;
-    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    transform: skewX(var(--slant));
+    transition: background 0.2s ease, color 0.2s ease;
   }
 
   .group:hover .slot-tag {
     background: var(--accent);
-    border-color: var(--accent);
     color: var(--accent-ink);
   }
 
   /* -------------------------------------------------------------------------
-     Plate. The screenshot holder. Fat radius, thick stroke, and depth from a
-     solid offset rather than a blur. Nothing goes inside it but the image.
+     Frame. The screenshot holder. Thin line, small radius, and a colour bar
+     that wipes in along the bottom on hover. Nothing inside but the image.
      ---------------------------------------------------------------------- */
   .frame {
     position: relative;
     overflow: hidden;
     border-radius: var(--r-plate);
     background: var(--surface);
-    border: 2px solid var(--stroke);
-    box-shadow: 0 10px 0 -2px rgba(0, 0, 0, 0.55);
-    transition: border-color 0.25s ease, box-shadow 0.25s ease,
-      transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1);
+    border: 1px solid var(--stroke);
+    transition: border-color 0.25s ease,
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .frame::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    z-index: 2;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .group:hover .frame {
-    border-color: var(--accent);
-    transform: translateY(-4px);
-    box-shadow: 0 14px 0 -2px rgba(0, 0, 0, 0.6);
+    border-color: var(--paper-3);
+    transform: translateY(-3px);
   }
+
+  .group:hover .frame::after { transform: scaleX(1); }
 
   .frame img { display: block; }
 
-  /* Kept as a hook so plates can opt out of the hover lift. */
+  /* Kept as a hook so frames can opt out of the hover lift. */
   .frame-static,
   .group:hover .frame-static {
     transform: none;
-    box-shadow: 0 10px 0 -2px rgba(0, 0, 0, 0.55);
   }
 
   /* -------------------------------------------------------------------------
-     Controls. Chunky pills that actually depress when clicked.
+     Controls. Slanted blocks with a hard two-tone offset that closes when
+     pressed.
      ---------------------------------------------------------------------- */
   .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.55rem;
+    gap: 0.6rem;
     min-height: 3rem;
-    padding: 0 1.5rem;
+    padding: 0 1.6rem;
     border: 0;
     border-radius: var(--r-pill);
     background: var(--accent);
     color: var(--accent-ink);
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    font-weight: 500;
-    letter-spacing: 0.14em;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 800;
+    font-style: italic;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    box-shadow: 0 4px 0 var(--accent-deep);
+    transform: skewX(var(--slant));
+    box-shadow: 4px 4px 0 var(--accent-2);
     cursor: pointer;
     transition: transform 0.12s ease, box-shadow 0.12s ease,
-      background 0.18s ease;
+      filter 0.18s ease;
   }
 
   .btn:hover {
-    background: #ff8047;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 0 var(--accent-deep);
+    filter: brightness(1.08);
+    transform: skewX(var(--slant)) translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--accent-2);
   }
 
   .btn:active {
-    transform: translateY(3px);
-    box-shadow: 0 1px 0 var(--accent-deep);
+    transform: skewX(var(--slant)) translate(3px, 3px);
+    box-shadow: 1px 1px 0 var(--accent-2);
   }
 
   .btn:disabled {
     opacity: 0.55;
     cursor: not-allowed;
-    transform: none;
-    box-shadow: 0 4px 0 var(--accent-deep);
+    filter: none;
+    transform: skewX(var(--slant));
+    box-shadow: 4px 4px 0 var(--accent-2);
   }
 
   .btn-ghost {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.55rem;
+    gap: 0.6rem;
     min-height: 3rem;
-    padding: 0 1.4rem;
+    padding: 0 1.5rem;
     border-radius: var(--r-pill);
-    background: var(--surface);
-    border: 2px solid var(--stroke);
+    background: transparent;
+    border: 1px solid var(--stroke);
     color: var(--paper-2);
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    font-weight: 500;
-    letter-spacing: 0.14em;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    font-style: italic;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.5);
+    transform: skewX(var(--slant));
     cursor: pointer;
-    transition: transform 0.12s ease, box-shadow 0.12s ease,
-      border-color 0.18s ease, color 0.18s ease;
+    transition: transform 0.12s ease, border-color 0.18s ease,
+      color 0.18s ease, background 0.18s ease;
   }
 
   .btn-ghost:hover {
     color: var(--paper);
-    border-color: var(--paper-3);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.5);
+    border-color: var(--paper);
+    background: var(--surface);
+    transform: skewX(var(--slant)) translate(-1px, -1px);
   }
 
   .btn-ghost:active {
-    transform: translateY(3px);
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+    transform: skewX(var(--slant)) translate(1px, 1px);
   }
 
-  /* Text link with a rounded underline that wipes in. */
+  /* Text link with an underline that wipes in. */
   .link-rule {
     position: relative;
     color: var(--paper);
@@ -363,7 +456,6 @@ main { position: relative; z-index: 1; }
     bottom: -3px;
     width: 100%;
     height: 2px;
-    border-radius: var(--r-pill);
     background: var(--accent);
     transform: scaleX(0);
     transform-origin: left;
@@ -373,14 +465,13 @@ main { position: relative; z-index: 1; }
   .link-rule:hover::after { transform: scaleX(1); }
 
   /* -------------------------------------------------------------------------
-     Form fields. Rounded, filled, thick focus ring — same family as the
-     buttons rather than a different visual language.
+     Form fields. Flat, thin line, accent on focus.
      ---------------------------------------------------------------------- */
   .field {
     width: 100%;
     border-radius: var(--r-soft);
     background: var(--surface);
-    border: 2px solid var(--stroke);
+    border: 1px solid var(--stroke);
     padding: 0.85rem 1.1rem;
     font-family: var(--font-sans);
     font-size: 0.9375rem;
@@ -401,9 +492,150 @@ main { position: relative; z-index: 1; }
 
   /* A soft divider used where a hairline would have been. */
   .div-soft {
-    height: 2px;
-    border-radius: var(--r-pill);
+    height: 1px;
     background: var(--stroke-soft);
   }
 }
 
+/* ============================================================================
+   SEASON — HALLOWEEN
+   Switched on by `data-season="halloween"` on <html>, which the inline script
+   in the root layout sets from `site.season`. The theme is a variable swap;
+   the decorations are the `.spooky` elements in components/season/Spooky.tsx,
+   which are in the DOM all year and hidden outside the season.
+   ========================================================================= */
+
+html[data-season="halloween"] {
+  --ink: #0c0910;
+  --surface: #17121d;
+  --surface-2: #211a2a;
+
+  --accent: #ff7a1a;
+  --accent-deep: #c4530a;
+  --accent-ink: #1d0a00;
+  --accent-2: #a259ff;
+  --accent-3: #9dff3c;
+}
+
+html:not([data-season="halloween"]) .spooky { display: none; }
+
+/* Fixed layer behind <main>. Never takes a click. */
+.spooky-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.spooky-web {
+  position: absolute;
+  top: 3.25rem;
+  width: clamp(6.5rem, 16vw, 13rem);
+  height: auto;
+  color: var(--paper);
+  opacity: 0.2;
+}
+
+.spooky-web--l { left: 0; }
+.spooky-web--r { right: 0; transform: scaleX(-1); }
+
+.spooky-bat {
+  position: absolute;
+  left: 0;
+  width: clamp(1.75rem, 3.2vw, 2.75rem);
+  color: var(--accent-2);
+  opacity: 0.75;
+  animation: spooky-fly 26s linear infinite;
+}
+
+.spooky-bat svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  animation: spooky-flap 0.32s ease-in-out infinite alternate;
+}
+
+.spooky-bat:nth-child(2) { animation-duration: 34s; animation-delay: -9s; }
+.spooky-bat:nth-child(3) { animation-duration: 30s; animation-delay: -21s; }
+
+.spooky-spider {
+  position: absolute;
+  top: 0;
+  right: 9%;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  color: var(--paper);
+  opacity: 0.55;
+  animation: spooky-dangle 6s ease-in-out infinite alternate;
+}
+
+.spooky-spider::before {
+  content: "";
+  width: 1px;
+  height: 11rem;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+@media (min-width: 768px) {
+  html[data-season="halloween"] .spooky-spider { display: flex; }
+}
+
+/* Sits on the footer's top rule, like it was left on a doorstep. */
+.spooky-pumpkins {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 100%;
+  display: flex;
+  align-items: flex-end;
+  gap: 0.35rem;
+  pointer-events: none;
+}
+
+.spooky-pumpkins svg:nth-child(1) { width: 2.25rem; }
+.spooky-pumpkins svg:nth-child(2) { width: 3.25rem; }
+.spooky-pumpkins svg:nth-child(3) { width: 1.75rem; }
+
+.spooky-ghost {
+  position: absolute;
+  right: 8%;
+  top: 50%;
+  width: clamp(4rem, 9vw, 7.5rem);
+  opacity: 0.9;
+  pointer-events: none;
+  animation: spooky-float 4.5s ease-in-out infinite alternate;
+}
+
+@media (max-width: 1023px) {
+  html[data-season="halloween"] .spooky-ghost { display: none; }
+}
+
+/* A bat that cannot fly is just a smudge stuck to the left edge. */
+@media (prefers-reduced-motion: reduce) {
+  .spooky-bat { display: none; }
+}
+
+@keyframes spooky-fly {
+  0%   { transform: translate(-12vw, 0); }
+  25%  { transform: translate(20vw, -7vh); }
+  50%  { transform: translate(52vw, 4vh); }
+  75%  { transform: translate(84vw, -6vh); }
+  100% { transform: translate(112vw, 0); }
+}
+
+@keyframes spooky-flap {
+  from { transform: scaleY(1); }
+  to   { transform: scaleY(0.55); }
+}
+
+@keyframes spooky-dangle {
+  from { transform: translateY(-5rem); }
+  to   { transform: translateY(0); }
+}
+
+@keyframes spooky-float {
+  from { transform: translateY(-58%) rotate(-4deg); }
+  to   { transform: translateY(-42%) rotate(4deg); }
+}

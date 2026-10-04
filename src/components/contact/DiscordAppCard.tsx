@@ -21,10 +21,10 @@ export function DiscordAppCard({
     site.links.find((l) => l.label.toLowerCase() === "discord")?.href || "https://discord.com";
 
   return (
-    <div className="relative overflow-hidden rounded-xl border border-rule bg-ink-2/60 p-6 backdrop-blur-md sm:p-8">
+    <div className="relative overflow-hidden rounded-plate border border-rule bg-surface p-6 sm:p-8">
       {/* Ambient subtle glow */}
       <div
-        className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[#5865f2]/10 blur-3xl"
+        className="pointer-events-none absolute -right-16 -top-16 hidden"
         aria-hidden="true"
       />
 
@@ -33,7 +33,7 @@ export function DiscordAppCard({
         <div className="flex items-start gap-4 sm:items-center">
           <div className="relative flex-shrink-0">
             {/* Avatar */}
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-[#5865f2]/15 text-xl font-bold text-paper shadow-inner">
+            <div className="flex h-14 w-14 items-center justify-center rounded-soft border border-white/10 bg-[#5865f2]/15 text-xl font-bold text-paper shadow-inner">
               <span className="font-display">C</span>
             </div>
             {/* Live Indicator */}

@@ -8,6 +8,7 @@ import {
   getProject,
   publishedProjects,
 } from "@/content/projects";
+import { site } from "@/content/site";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -59,8 +60,44 @@ export default async function CaseStudyPage({ params }: Params) {
   const next = getNextProject(slug);
   const index = publishedProjects.findIndex((p) => p.slug === slug);
 
+  const url = `${site.url}/work/${project.slug}`;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CreativeWork",
+        "@id": `${url}#work`,
+        url,
+        name: project.title,
+        headline: `${project.title} — Roblox UI Case Study`,
+        description: project.summary,
+        genre: project.category,
+        dateCreated: project.year,
+        image: project.cover.src ? `${site.url}${project.cover.src}` : undefined,
+        creator: { "@id": `${site.url}/#person` },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: site.url },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Work",
+            item: `${site.url}/work`,
+          },
+          { "@type": "ListItem", position: 3, name: project.title, item: url },
+        ],
+      },
+    ],
+  };
+
   return (
     <article className="py-10 sm:py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Container>
         <div className="flex items-baseline justify-between gap-4 border-b border-rule pb-3">
           <Link

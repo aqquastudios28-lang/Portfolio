@@ -16,13 +16,14 @@ export function Hero() {
   return (
     <section className="pt-14 pb-16 sm:pt-24 sm:pb-24">
       <Container>
+        <span className="spooky pill pill-accent mb-7">Halloween edition</span>
         <h1>
           {site.headline.map((line, i) => (
             <span
               key={line}
               className={
                 i === site.headline.length - 1
-                  ? "t-display block text-paper-3"
+                  ? "t-display t-grad block w-fit"
                   : "t-display block text-paper"
               }
             >
@@ -51,7 +52,7 @@ export function Hero() {
                 className="flex items-baseline justify-between gap-6 border-b border-rule-soft py-3 first:pt-0 last:border-0"
               >
                 <dt className="annot">{fact.label}</dt>
-                <dd className="font-mono text-sm text-paper">{fact.value}</dd>
+                <dd className="stat__value">{fact.value}</dd>
               </div>
             ))}
           </dl>

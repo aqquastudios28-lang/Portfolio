@@ -1,25 +1,28 @@
 import type { Metadata, Viewport } from "next";
-import { Fredoka, JetBrains_Mono, Outfit } from "next/font/google";
+import { Barlow, Barlow_Condensed, JetBrains_Mono } from "next/font/google";
+import { SeasonDecor, SeasonScript } from "@/components/season/Spooky";
 import { Footer } from "@/components/layout/Footer";
 import { Nav } from "@/components/layout/Nav";
 import { LightboxProvider } from "@/components/ui/Lightbox";
 import { MotionProvider } from "@/components/ui/MotionProvider";
-import { seo, site } from "@/content/site";
+import { about, seo, site } from "@/content/site";
 import "./globals.css";
 
-/* Fredoka is the rounded, chunky face the headlines need; Outfit is a soft
-   geometric that stays readable at body size; mono handles every caps label.
-   --font-sans was declared in the theme but never bound to a family, so body
-   text had been falling through to system-ui. */
-const display = Fredoka({
+/* Barlow Condensed in heavy italic caps carries every headline and label;
+   Barlow is the same skeleton at normal width, so body text matches without
+   competing. Mono is left for addresses and values you might copy. */
+const display = Barlow_Condensed({
   variable: "--font-display",
   subsets: ["latin"],
+  weight: ["600", "700", "800"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
-const sans = Outfit({
+const sans = Barlow({
   variable: "--font-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
   display: "swap",
 });
 
@@ -41,6 +44,17 @@ export const metadata: Metadata = {
   authors: [{ name: site.name }],
   creator: site.name,
   alternates: { canonical: "/" },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -68,20 +82,40 @@ export default function RootLayout({
 }) {
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Person",
-    name: site.name,
-    jobTitle: site.role,
-    url: site.url,
-    email: `mailto:${site.email}`,
-    sameAs: site.links.map((l) => l.href),
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": `${site.url}/#person`,
+        name: site.name,
+        jobTitle: site.role,
+        description: site.intro,
+        url: site.url,
+        image: `${site.url}/media/logo.png`,
+        email: `mailto:${site.email}`,
+        sameAs: site.links.map((l) => l.href),
+        knowsAbout: about.toolkit.flatMap((g) => g.items),
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${site.url}/#website`,
+        url: site.url,
+        name: site.name,
+        description: site.intro,
+        inLanguage: "en",
+        publisher: { "@id": `${site.url}/#person` },
+      },
+    ],
   };
 
   return (
     <html
       lang="en"
       className={`${display.variable} ${sans.variable} ${mono.variable}`}
+      /* SeasonScript adds data-season before hydration. */
+      suppressHydrationWarning
     >
       <head>
+        <SeasonScript />
         <noscript>
           <style>{`[data-motion]{opacity:1!important;transform:none!important;clip-path:none!important}`}</style>
         </noscript>
@@ -93,6 +127,8 @@ export default function RootLayout({
         >
           Skip to content
         </a>
+
+        <SeasonDecor />
 
         <MotionProvider>
           <LightboxProvider>

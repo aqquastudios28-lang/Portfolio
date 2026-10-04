@@ -5,7 +5,7 @@ import { about, site } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "About",
-  description: `Background, approach and toolkit for ${site.name} — Roblox UI designer.`,
+  description: `Background, developer experience and toolkit for ${site.name} — ${site.role}.`,
   alternates: { canonical: "/about" },
 };
 
@@ -20,7 +20,7 @@ export default function AboutPage() {
 
         {/* Opening statement. The first bio paragraph set at display size — it
             is the strongest line on the page, so it is treated as one. */}
-        <p className="t-h1 mt-12 max-w-4xl text-paper">{about.bio[0]}</p>
+        <p className="t-h2 mt-12 max-w-4xl text-paper normal-case not-italic">{about.bio[0]}</p>
 
         <div className="mt-12 grid gap-10 border-t border-rule pt-10 sm:grid-cols-12 sm:gap-8">
           <span className="annot sm:col-span-3">Working notes</span>
@@ -49,6 +49,34 @@ export default function AboutPage() {
             ))}
           </div>
         </section>
+
+        {about.developer.length > 0 && (
+          <section className="grid gap-10 border-t border-rule py-10 sm:grid-cols-12 sm:gap-8">
+            <h2 className="annot sm:col-span-3">Developer experience</h2>
+            <ol className="sm:col-span-9 sm:max-w-3xl">
+              {about.developer.map((entry) => (
+                <li
+                  key={`${entry.period}-${entry.title}`}
+                  className="grid gap-2 border-b border-rule-soft py-5 first:pt-0 last:border-0 sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-6"
+                >
+                  <span className="idx">{entry.period}</span>
+                  <div>
+                    <h3 className="t-h3 text-paper">{entry.title}</h3>
+                    {entry.where && (
+                      <p className="annot mt-1.5">{entry.where}</p>
+                    )}
+                    <p className="t-body mt-2 text-sm">{entry.detail}</p>
+                    {entry.stack && entry.stack.length > 0 && (
+                      <p className="mt-3 font-mono text-sm text-paper-2">
+                        {entry.stack.join(" · ")}
+                      </p>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
 
         <section className="grid gap-10 border-t border-rule py-10 sm:grid-cols-12 sm:gap-8">
           <span className="annot sm:col-span-3">Timeline</span>

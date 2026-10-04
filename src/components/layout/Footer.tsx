@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Pumpkins } from "@/components/season/Spooky";
 import { Container } from "@/components/ui/Container";
 import { site } from "@/content/site";
 
@@ -18,7 +19,8 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-8 border-t border-rule">
+    <footer className="relative mt-8 border-t border-rule">
+      <Pumpkins />
       <Container>
         <div className="grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
           <div>

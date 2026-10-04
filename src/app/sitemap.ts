@@ -25,6 +25,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: now,
     changeFrequency: "yearly" as const,
     priority: 0.8,
+    /* Image sitemap entries. The screenshots are the portfolio, so they are
+       worth getting into image search. */
+    images: [p.cover, ...p.gallery]
+      .filter((m) => m.kind === "image" && m.src)
+      .map((m) => `${site.url}${m.src}`),
   }));
 
   return [...staticRoutes, ...projectRoutes];

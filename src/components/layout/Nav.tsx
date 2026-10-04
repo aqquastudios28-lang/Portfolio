@@ -50,6 +50,7 @@ export function Nav() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-rule bg-ink/85 backdrop-blur-md">
+      <div aria-hidden className="ribbon" />
       <nav
         aria-label="Primary"
         className="mx-auto flex w-full max-w-[78rem] items-center justify-between px-5 py-3 sm:px-8"
@@ -82,7 +83,7 @@ export function Nav() {
                   {isActive(item.href) && (
                     <motion.span
                       layoutId="nav-underline"
-                      className="absolute -bottom-1 left-0 h-[3px] w-full rounded-full bg-accent"
+                      className="absolute -bottom-1 left-0 h-[3px] w-full -skew-x-12 bg-accent"
                       transition={{ type: "spring", stiffness: 420, damping: 34 }}
                     />
                   )}
@@ -97,7 +98,7 @@ export function Nav() {
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-controls="mobile-menu"
-          className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-rule bg-surface text-paper transition-colors hover:border-paper-3 md:hidden"
+          className="flex h-11 w-11 items-center justify-center rounded-soft border border-rule bg-surface text-paper transition-colors hover:border-paper-3 md:hidden"
         >
           <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
           <svg
