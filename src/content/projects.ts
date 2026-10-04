@@ -17,6 +17,8 @@ export const projects: Project[] = [
     featured: true,
     cover: {
       src: "/media/projects/MainMenu.png",
+      width: 2400,
+      height: 1350,
       kind: "image",
       alt: "Art deco main menu with Shop, Servers, Inventory and Play buttons around a centred logo lockup",
       ratio: "16/9",
@@ -64,6 +66,8 @@ export const projects: Project[] = [
     featured: true,
     cover: {
       src: "/media/projects/LoadoutStash.png",
+      width: 2400,
+      height: 1350,
       kind: "image",
       alt: "Tactical loadout screen with character equipment slots, tactical rig and backpack grids, and a stash panel with three currency counters",
       ratio: "16/9",
@@ -115,6 +119,8 @@ export const projects: Project[] = [
     featured: true,
     cover: {
       src: "/media/projects/Index.png",
+      width: 936,
+      height: 700,
       kind: "image",
       alt: "Index navigation modal with portal buttons to game modes, shops and inventory",
       ratio: "4/3",
@@ -158,6 +164,8 @@ export const projects: Project[] = [
     featured: true,
     cover: {
       src: "/media/projects/Vendor.png",
+      width: 936,
+      height: 530,
       kind: "image",
       alt: "Vendor hub with two large cards routing to gacha rolls and stat upgrades",
       ratio: "16/9",
@@ -201,6 +209,8 @@ export const projects: Project[] = [
     featured: true,
     cover: {
       src: "/media/projects/Gacha.png",
+      width: 936,
+      height: 756,
       kind: "image",
       alt: "Gacha roll screen with a rarity odds table beside the roll buttons",
       ratio: "4/3",
@@ -247,6 +257,8 @@ export const projects: Project[] = [
     featured: false,
     cover: {
       src: "/media/projects/GemsShop.png",
+      width: 922,
+      height: 762,
       kind: "image",
       alt: "Gems shop with tiered currency packs and price pills",
       ratio: "4/3",
@@ -290,6 +302,8 @@ export const projects: Project[] = [
     featured: false,
     cover: {
       src: "/media/projects/Pass.png",
+      width: 1002,
+      height: 762,
       kind: "image",
       alt: "Season pass menu with Free and Premium tier progression and claim buttons",
       ratio: "4/3",
@@ -333,6 +347,8 @@ export const projects: Project[] = [
     featured: false,
     cover: {
       src: "/media/projects/Upgrades@2x.png",
+      width: 1872,
+      height: 1685,
       kind: "image",
       alt: "Upgrade menu rows showing level caps with Buy 1 and Buy Max buttons",
       ratio: "1/1",
@@ -380,6 +396,8 @@ export const projects: Project[] = [
     featured: true,
     cover: {
       src: "/media/projects/DailyRewards.png",
+      width: 1872,
+      height: 1399,
       kind: "image",
       alt: "Six-day daily reward calendar with claim, locked and claimed states",
       ratio: "4/3",
@@ -426,6 +444,8 @@ export const projects: Project[] = [
     featured: false,
     cover: {
       src: "/media/projects/Settings.png",
+      width: 480,
+      height: 698,
       kind: "image",
       alt: "Settings panel with glowing toggle switches for shadows and audio",
       ratio: "2/3",
@@ -464,6 +484,8 @@ export const projects: Project[] = [
     featured: false,
     cover: {
       src: "/media/projects/LeftSideBar.png",
+      width: 357,
+      height: 571,
       kind: "image",
       alt: "Vertical HUD sidebar with icon buttons for shop, settings, codes and inventory",
       ratio: "2/3",

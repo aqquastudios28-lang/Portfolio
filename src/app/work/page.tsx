@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
+import { Shot } from "@/components/work/Shot";
 import { publishedProjects } from "@/content/projects";
 import { cn } from "@/lib/utils";
 
@@ -102,28 +102,20 @@ export default function WorkPage() {
         </div>
 
         {viewMode === "plates" ? (
-          <div className="mt-10 grid gap-x-8 gap-y-14 sm:grid-cols-2">
+          <div className="mt-10 grid items-start gap-x-8 gap-y-16 sm:grid-cols-2">
             {filtered.map((project) => (
               <Link
                 key={project.slug}
                 href={`/work/${project.slug}`}
                 className="group block"
               >
-                <div className="relative">
-                  <span className="slot-tag">{project.category}</span>
-                  <div className="frame aspect-[16/10]">
-                    <Image
-                      src={project.cover.src}
-                      alt={project.cover.alt}
-                      fill
-                      unoptimized
-                      sizes="(max-width: 640px) 100vw, 600px"
-                      className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.02]"
-                    />
-                  </div>
-                </div>
+                <Shot
+                  media={project.cover}
+                  sizes="(max-width: 640px) 100vw, 600px"
+                />
 
-                <h2 className="t-h3 mt-5 text-paper transition-colors group-hover:text-accent">
+                <p className="annot mt-5">{project.category}</p>
+                <h2 className="t-h3 mt-1.5 text-paper transition-colors group-hover:text-accent">
                   {project.title}
                 </h2>
                 <p className="t-body mt-2 max-w-md text-sm">

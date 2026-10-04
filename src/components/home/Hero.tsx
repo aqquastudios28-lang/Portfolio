@@ -1,14 +1,14 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { CopyButton } from "@/components/ui/CopyButton";
+import { Shot } from "@/components/work/Shot";
 import { publishedProjects } from "@/content/projects";
 import { site } from "@/content/site";
 
 /**
  * Opens on the statement. No status pill, no decorative divider, no scroll
  * animation — the page is just there when it loads, and the first screenshot
- * arrives at full width instead of as a thumbnail in a sidebar.
+ * arrives uncropped instead of as a thumbnail in a sidebar.
  */
 export function Hero() {
   const lead = publishedProjects[0];
@@ -61,20 +61,11 @@ export function Hero() {
       {lead ? (
         <Container className="mt-16 sm:mt-24">
           <Link href={`/work/${lead.slug}`} className="group block">
-            <div className="relative">
-              <span className="slot-tag">{lead.category}</span>
-              <div className="frame aspect-[16/9]">
-                <Image
-                  src={lead.cover.src}
-                  alt={lead.cover.alt}
-                  fill
-                  priority
-                  unoptimized
-                  sizes="(max-width: 1280px) 100vw, 1248px"
-                  className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.015]"
-                />
-              </div>
-            </div>
+            <Shot
+              media={lead.cover}
+              priority
+              sizes="(max-width: 1280px) 100vw, 1248px"
+            />
 
             <div className="mt-5 flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
               <h2 className="t-h2 text-paper transition-colors group-hover:text-accent">

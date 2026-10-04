@@ -1,12 +1,12 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Container } from "@/components/ui/Container";
+import { Shot } from "@/components/work/Shot";
 import { publishedProjects } from "@/content/projects";
 
 /**
  * A selection, not the index — the full filterable list lives on /work, so
- * these four get real size instead of becoming thumbnails. Rows alternate side
- * and vary in height so the section has a rhythm rather than a repeating card.
+ * these four get real size instead of becoming thumbnails. Rows alternate side,
+ * and each screenshot keeps its own proportions, so no two rows match.
  */
 export function SelectedWork() {
   const selection = publishedProjects.slice(1, 5);
@@ -41,25 +41,10 @@ export function SelectedWork() {
                         : "lg:col-span-7"
                     }
                   >
-                    <div className="relative">
-                      <span className="slot-tag">{project.category}</span>
-                      <div
-                        className={
-                          i % 3 === 1
-                            ? "frame aspect-[4/3]"
-                            : "frame aspect-[16/10]"
-                        }
-                      >
-                        <Image
-                          src={project.cover.src}
-                          alt={project.cover.alt}
-                          fill
-                          unoptimized
-                          sizes="(max-width: 1024px) 100vw, 700px"
-                          className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.02]"
-                        />
-                      </div>
-                    </div>
+                    <Shot
+                      media={project.cover}
+                      sizes="(max-width: 1024px) 100vw, 700px"
+                    />
                   </div>
 
                   <div
@@ -69,7 +54,8 @@ export function SelectedWork() {
                         : "lg:col-span-4 lg:col-start-9"
                     }
                   >
-                    <h3 className="t-h2 text-paper transition-colors group-hover:text-accent">
+                    <p className="annot">{project.category}</p>
+                    <h3 className="t-h2 mt-2 text-paper transition-colors group-hover:text-accent">
                       {project.title}
                     </h3>
 

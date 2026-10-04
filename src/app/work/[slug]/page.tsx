@@ -127,11 +127,7 @@ export default async function CaseStudyPage({ params }: Params) {
 
       <Container>
         {project.cover.src ? (
-          <PlateZoom
-            src={project.cover.src}
-            alt={project.cover.alt}
-            tag={project.category}
-          />
+          <PlateZoom media={project.cover} />
         ) : (
           <div className="frame flex aspect-[16/9] items-center justify-center">
             <span className="annot">No screenshot</span>

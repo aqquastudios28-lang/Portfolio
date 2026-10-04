@@ -2,13 +2,16 @@
 export type Media = {
   /** Path under /public, e.g. "/media/projects/tycoon-hud/hero.png". Empty = placeholder. */
   src: string;
+  /** Real pixel size of the file. Images are shown uncropped at this ratio. */
+  width?: number;
+  height?: number;
   /** "image" for png/jpg/webp, "video" for mp4/webm loops (also use this for converted GIFs). */
   kind: "image" | "video";
   /** Required. Describes the interface shown, for screen readers and SEO. */
   alt: string;
   /** Optional caption rendered beneath the frame. */
   caption?: string;
-  /** Aspect ratio, e.g. "16/9", "4/3", "9/16" for mobile HUD shots. Defaults to "16/9". */
+  /** Aspect ratio for video loops, e.g. "16/9". Images use width and height instead. */
   ratio?: string;
   /** Optional still frame shown before a video loads. */
   poster?: string;
