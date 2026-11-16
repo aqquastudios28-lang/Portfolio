@@ -1,6 +1,11 @@
-# Portfolio
+# Cerbis — portfolio
 
-Roblox UI/UX portfolio. Next.js 16 (App Router) · TypeScript · Tailwind 4. Fully static — every route prerenders.
+Programming-first portfolio for Cerbis, a software developer in Florence. Native
+desktop apps, developer tools, web interfaces and game systems are the main
+event; the Roblox interface work lives in a separate design archive.
+
+Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · Motion. Every content
+route is prerendered; only the contact endpoint runs on demand.
 
 ```bash
 npm run dev     # http://localhost:3000
@@ -11,124 +16,202 @@ npm run lint
 
 ---
 
-## ⚠️ Still stubbed
+## The two routes
 
-- `site.links` in `src/content/site.ts` — the Roblox, X and Discord URLs are empty stubs and currently point nowhere useful.
+The site deliberately separates engineering from interface design.
 
-Everything else in `content/` is real copy. The `metrics` rows deliberately hold only facts you could check against the screenshot above them — tier counts, states, level caps. If you add a metric, hold it to the same standard: no conversion rates, no retention percentages, nothing you cannot show.
+| Route | What it is |
+| --- | --- |
+| `/` | Thesis, measured Yappuccino comparison, selected engineering work, working principles, design teaser, scope and contact |
+| `/work` | Filterable engineering index — six case studies, plate or index view |
+| `/work/[slug]` | One engineering case study: problem, process, measurements, constraints, next project |
+| `/design` | Roblox interface archive — menus, shops, economies and HUDs |
+| `/design/[slug]` | One interface case study |
+| `/about` | Background, developer experience, toolkit and timeline |
+| `/contact` | Project enquiry form and direct channels |
+| `/privacy`, `/cookies`, `/terms` | Legal pages |
+
+Nav order is Work · Design · About · Contact. Design is a secondary tab, not a
+co-equal homepage pitch.
 
 ---
 
 ## Where everything lives
 
-You edit content. You should rarely need to touch components.
+You edit content. Components should rarely need touching.
 
 | File | What it controls |
 | --- | --- |
-| `src/content/site.ts` | Name, role, headline, intro, email, availability, links, capabilities, About page copy, SEO defaults |
-| `src/content/projects.ts` | Every case study |
-| `src/content/types.ts` | The shape of a project — read this to see every available field |
-| `src/app/globals.css` | Design tokens: colour and type scale |
-| `src/lib/motion.ts` | Motion tokens: one curve, three durations, shared variants |
+| `src/content/site.ts` | Name, role, headline, intro, facts, links, capabilities, principles, About copy, toolkit, developer experience, timeline, SEO defaults |
+| `src/content/code-projects.ts` | Six engineering case studies plus the "Also built" list |
+| `src/content/projects.ts` | The Roblox interface archive |
+| `src/content/types.ts` | `CodeProject`, `DesignProject`, `Media`, `Plate`, metrics and process shapes |
+| `src/content/legal.ts` | Privacy, cookie and terms copy |
+| `src/app/globals.css` | Design tokens, type scale and shared component classes |
+| `src/lib/motion.ts` | Motion tokens and shared variants |
 
 ```
 src/
-  app/            routes — /, /work, /work/[slug], /about, /contact
+  app/            routes — /, /work, /work/[slug], /design, /design/[slug],
+                  /about, /contact, legal pages, sitemap, robots, manifest, OG image
   components/
     layout/       Nav, Footer
-    ui/           Container, Reveal, Lines, Rule, MediaFrame, VideoLoop,
-                  Lightbox, CopyButton, Chip, ArrowLink
-    home/         Hero, SelectedWork, Capabilities, ContactCta
-    work/         ProjectRow
-    case/         CaseSection, ProcessList, MetricRow, NextProject
+    home/         Hero, MemoryFootprint, SelectedWork, Toolkit, DesignTeaser,
+                  Capabilities, ContactCta
+    work/         WorkIndex, Shot, Plate, PlateZoom
     contact/      ContactForm
-  content/        ← you edit these
-  lib/            cn(), useScrolled(), usePrefersReducedMotion(), motion tokens
+    ui/           Container, CopyButton, Lightbox, MotionProvider
+    season/       Halloween decorations (auto, off outside October)
+    legal/        LegalPage
+  content/        ← edit these
+  lib/            cn(), motion tokens, rate limiting, Discord message payloads
+public/media/projects/
+  yappuccino/     real app screenshots
+  hearthlens/     real app screenshots
+  mcd/            live handbook screenshot
+  game-ui-suite/  Roblox interface archive images
 ```
 
 ---
 
-## Adding a project
+## Adding engineering work
 
-Append an object to the `projects` array in `src/content/projects.ts`. Routes, the sitemap and the work grid all pick it up automatically — there is nothing to register.
+Append an object to `codeProjects` in `src/content/code-projects.ts`. Routes,
+the sitemap, the work index and the homepage all pick it up automatically —
+there is nothing to register.
 
 - `published: false` hides it without deleting it.
-- `featured: true` surfaces it on the homepage. Three or four works best; they render full-width, so prefer landscape covers there.
+- `featured: true` puts it in the homepage selection. Yappuccino is the lead;
+  the other featured studies follow in alternating rows.
+- Give every case study a `plate` when there is no honest screenshot. Plates are
+  typographic terminal covers, not fake product shots.
+- `cover` is optional; `plate` is required when there is no cover.
+- Use `note` for provenance that a reader deserves to know — forks, AI
+  assistance, collaborators. It renders after the stack line.
 
-## Adding images and video
+Case studies carry `summary`, `role`, `status`, `year`, `language`, `repo`,
+`stack`, `metrics`, `process`, `constraints` and optional `gallery` media. Any
+number in `metrics` must be checkable: a README measurement, a test count, or a
+value visible in the screenshot above it. No invented conversion or retention
+figures.
 
-1. Drop files in `public/media/projects/<slug>/`
-2. Point the slot at them:
+### The measurement standard
 
-```ts
-cover: {
-  src: "/media/projects/ascend-tycoon-hud/cover.png",
-  kind: "image",
-  alt: "Describe the interface shown — this is read aloud and indexed",
-  ratio: "16/9",
-}
-```
+Yappuccino's homepage comparison uses the published README numbers, measured on
+one Windows PC against Vesktop (Discord's web app in the same Electron shell):
 
-Any slot left as `src: ""` renders a dashed placeholder showing the expected ratio, the alt text and the path to drop the file at. They are deliberately obvious so you cannot ship one by accident.
+| State | Vesktop | Yappuccino |
+| --- | --- | --- |
+| Idle | 724 MB | 30 MB (−96%) |
+| Image-heavy channel | 706 MB | 41 MB (−94%) |
+| In a call | 888 MB | 44 MB (−95%) |
+| Screen sharing | 1,013 MB | 113 MB (−89%) |
+| Launch to readable window | 8 s | 0.22 s (36× faster) |
 
-**Video:** use `kind: "video"` with an `.mp4`. Convert GIFs first — an mp4 is typically 10× smaller:
+Memory and CPU were measured 25 October 2026; screen sharing on 27 October.
+CPU counts the whole processor as 100%. If a claim cannot be repeated with that
+method, it does not go on the site.
+
+---
+
+## Adding design work
+
+Append to `projects` in `src/content/projects.ts`. The same `published`,
+`featured`, `cover` and `gallery` conventions apply. Design pages are statically
+generated from the slug.
+
+Images go in `public/media/projects/<slug>/`, with real `width` and `height` so
+the frame reserves the right space before decode. Video loops use `kind:
+"video"` and an `.mp4`; convert GIFs first:
 
 ```bash
-ffmpeg -i clip.gif -movflags faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" clip.mp4
+ffmpeg -i clip.gif -movflags faststart -pix_fmt yuv420p \
+  -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" clip.mp4
 ```
 
-Add a `poster` frame for anything above the fold. Loops autoplay muted, pause off-screen, and do not autoplay at all for visitors who have asked for reduced motion — they get controls instead.
+Loops autoplay muted, pause off-screen, and respect reduced-motion preferences.
 
 ---
 
 ## Design system
 
-Technical editorial: ink and bone, a visible hairline grid, mono metadata, square corners. Tokens live at the top of `globals.css`. Change them there, not in components.
+Loud condensed italic type, quiet surfaces: one panel deep, 1px rules, small
+radii, no blur. The three accent colours each have one job.
 
 | Token | Value | Role |
 | --- | --- | --- |
-| `--ink` | `#0b0b0c` | Page |
-| `--ink-2` | `#101011` | Media frames |
-| `--bone` | `#edebe7` | Primary text (warm off-white, never pure white) |
-| `--bone-dim` | `#928e87` | Body copy |
-| `--bone-faint` | `#605d58` | Metadata |
-| `--rule` | `12% bone` | The grid, made visible |
-| `--accent` | `#ff4a1c` | Interaction only |
+| `--ink` | `#0a0c12` | Page |
+| `--surface` | `#12151e` | Panels |
+| `--paper` | `#f7f7f5` | Primary text |
+| `--paper-2` | `#a9adba` | Body copy |
+| `--paper-3` | `#82879a` | Metadata |
+| `--accent` | `#ffe100` | Interaction only |
+| `--accent-2` | `#ff2d87` | Offset shadow, ribbon |
+| `--accent-3` | `#1fe0d0` | Ribbon only |
 
-### The one rule
+Fonts: Barlow Condensed (display, heavy italic caps), Barlow (body) and
+JetBrains Mono (addresses, values, metadata). Use `.t-display`, `.t-h1`,
+`.t-h2`, `.t-h3`, `.t-lead`, `.t-body`, `.annot` and `.pill` rather than ad-hoc
+sizes.
 
-**Colour is interaction.** Orange marks hover, focus and current state — nothing else. No glows, no gradients, no accent-coloured punctuation, no decorative highlights. The resting page is achromatic so that your screenshots are the only colour on it.
+Standing decisions:
 
-If you add a component, ask whether the colour you are reaching for marks something the visitor can *do*. If not, use `--bone-dim` or a rule.
-
-### Other standing decisions
-
-- **Square corners.** `--radius: 0`. Print has no rounded corners, and a mix of pill buttons against soft cards is the fastest way to look generated.
-- **Two families.** Archivo carries display and text; JetBrains Mono carries metadata. A third face would be decoration.
-- **Rules, not cards.** Sections are separated by hairlines and share one left rail (`.rail`, a 9rem metadata column). Almost nothing is boxed.
-- **One motion.** Every animation on the site pulls its curve and duration from `src/lib/motion.ts`: a single hard ease-out, three durations, nothing that loops. Display type rises from behind a mask, images are uncovered by a wipe, section rules draw in from the left. No hover scale, no parallax, no shimmer, no perpetual animation — anything still moving after you have stopped scrolling is decoration.
-
-Use `.t-display`, `.t-h1`, `.t-h2`, `.t-h3`, `.t-lead`, `.t-body`, `.t-label` rather than ad-hoc sizes.
+- **Slant means interactive or label.** Body copy is never italic.
+- **Colour is interaction.** Yellow marks what you can press, focus, or the
+  current state. It is not decoration.
+- **Rules, not cards.** Grouping is done with space and a section header.
+- **One motion.** Shared curves and durations; no perpetual animation.
+- **Three colours, three jobs.** Surviving the ribbon is the only place all
+  three accents meet.
 
 ---
 
-## What is already handled
+## Contact endpoint
 
-- **SEO** — per-route metadata, canonical URLs, Open Graph, Twitter cards, `sitemap.xml`, `robots.txt`, Person JSON-LD, and a generated share card (`opengraph-image.tsx`) that rebuilds itself from `site.ts`.
-- **Accessibility** — skip link, one `<h1>` per page, semantic landmarks, labelled form fields, visible focus rings, `aria-current` on the active nav item.
-- **Reduced motion** — every animated component checks `useReducedMotion()` and renders its final state directly. A visitor who asked for no motion gets a static page, not a fast one.
-- **No-JS resilience** — Motion writes its "hidden" state into the prerendered HTML, so animated elements carry `data-motion` and a `<noscript>` rule in `layout.tsx` restores them. If scripts never run, the page renders plainly visible rather than blank.
+`POST /api/contact` validates `name`, `scope`, `message` and optional `game`
+(now the project link), checks a honeypot, applies a per-IP rate limit (5
+requests per 10 minutes), escapes everything that reaches email, and then:
 
-## Contact form
+- sends mail through Resend when `RESEND_API_KEY` is set — `NOTIFICATION_EMAIL`
+  or `CONTACT_EMAIL` is the recipient, `RESEND_FROM_EMAIL` the optional sender;
+- posts a Discord Components V2 card when `DISCORD_WEBHOOK_URL` is set;
+- logs the submission and returns success in local mode when neither is set.
 
-There is no backend. The form composes a `mailto:` link and hands off to the visitor's own mail client — nothing to host, no third-party service holding messages. To switch to in-page submission later, replace the handler in `src/components/contact/ContactForm.tsx` with a POST to a route handler; the markup stays.
+The browser form keeps its original payload keys (`name`, `game`, `scope`,
+`message`, `hp_website`) so existing automation keeps working while the labels
+read as engineering enquiries.
+
+---
+
+## Already handled
+
+- **SEO** — per-route metadata and canonicals, Open Graph and Twitter cards,
+  `sitemap.xml` with image entries for both archives, `robots.txt`, Person
+  JSON-LD and a generated share card that rebuilds itself from `site.ts`.
+- **Accessibility** — skip link, one `<h1>` per page, semantic landmarks,
+  labelled fields, visible focus rings and `aria-current` on active nav.
+- **Reduced motion** — animated components render their final state.
+- **No-JS resilience** — the prerendered HTML stays visible without scripts.
+- **Dark-only** — the palette is authored for a dark page and `color-scheme`
+  matches it, so form controls and scrollbars do not flash white.
 
 ## Deploy
 
-Static output, so anywhere works. Vercel:
+Content routes are static. The contact route needs a Node runtime for Resend and
+webhook delivery, so deploy to Vercel (or another Node host) rather than a pure
+static file server.
 
 ```bash
 npx vercel
 ```
 
-`site.url` is already set to `https://cerbis.xyz`; change it there if the domain moves, and canonical tags, Open Graph and the sitemap follow.
+`site.url` is `https://www.cerbis.xyz`. Change it there and canonical tags,
+Open Graph and the sitemap follow.
+
+## Provenance
+
+Yappuccino began as a fork of yapfast by wiredtenshi, and its README states that
+AI wrote most of the code. The case study includes that note and presents the
+architecture and measurements, both of which can be checked against the
+repository. Other project claims are documented from their public repositories
+and the shipped interfaces.

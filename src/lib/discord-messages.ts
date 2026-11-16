@@ -551,14 +551,14 @@ export function buildWebsiteBriefCard(data: {
     container(COLORS.brand, [
       text(
         lines(
-          `-# Website brief · ${escapeMarkdown(data.scope)}`,
-          `## ${escapeMarkdown(truncate(data.game || "No game given", 80))}`,
+          `-# Website enquiry · ${escapeMarkdown(data.scope)}`,
+          `## ${escapeMarkdown(truncate(data.game || "No project link", 80))}`,
           `from **${escapeMarkdown(data.name)}**${handle}`,
           discordId && `<@${discordId}> · [Open Discord profile](https://discord.com/users/${discordId})`,
         ),
       ),
       divider(),
-      text(lines(field("Scope", escapeMarkdown(data.scope)), field("Game", data.game ? linkOrText(data.game) : "Not given"))),
+      text(lines(field("Scope", escapeMarkdown(data.scope)), field("Project", data.game ? linkOrText(data.game) : "Not given"))),
       text(`**Details**\n>>> ${truncate(data.message, 3000)}`),
       divider(),
       text(`-# Sent from the contact form on ${new URL(site.url).host} · ${discordId ? "reply on Discord or by email" : "reply by email"}`),

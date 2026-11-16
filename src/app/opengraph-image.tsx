@@ -14,10 +14,10 @@ export const contentType = "image/png";
  * you change your name or role in site.ts.
  */
 export default function OgImage() {
-  const ink = "#0b0b0c";
-  const bone = "#edebe7";
-  const boneFaint = "#605d58";
-  const rule = "rgba(237,235,231,0.16)";
+  const ink = "#0a0c12";
+  const bone = "#f7f7f5";
+  const boneFaint = "#82879a";
+  const rule = "rgba(247,247,245,0.14)";
 
   return new ImageResponse(
     (

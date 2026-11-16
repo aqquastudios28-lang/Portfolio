@@ -92,7 +92,12 @@ export default function RootLayout({
         url: site.url,
         image: `${site.url}/media/logo.png`,
         email: `mailto:${site.email}`,
-        sameAs: site.links.map((l) => l.href),
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Florence",
+          addressCountry: "IT",
+        },
+        sameAs: site.links.filter((l) => l.profile).map((l) => l.href),
         knowsAbout: about.toolkit.flatMap((g) => g.items),
       },
       {

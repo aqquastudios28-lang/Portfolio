@@ -2,35 +2,38 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/Container";
+import { Plate } from "@/components/work/Plate";
 import { PlateZoom } from "@/components/work/PlateZoom";
 import {
-  getNextProject,
-  getProject,
-  publishedProjects,
-} from "@/content/projects";
+  getCodeProject,
+  getNextCodeProject,
+  publishedCodeProjects,
+} from "@/content/code-projects";
 import { site } from "@/content/site";
 
 type Params = { params: Promise<{ slug: string }> };
 
 export function generateStaticParams() {
-  return publishedProjects.map((p) => ({ slug: p.slug }));
+  return publishedCodeProjects.map((project) => ({ slug: project.slug }));
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
-  const project = getProject(slug);
+  const project = getCodeProject(slug);
 
   if (!project) return { title: "Not found" };
 
+  const title = `${project.title} — ${project.kind} case study`;
+
   return {
-    title: `${project.title} — Roblox UI Case Study`,
+    title,
     description: project.summary,
     alternates: { canonical: `/work/${project.slug}` },
     openGraph: {
       type: "article",
-      title: `${project.title} — Roblox UI Case Study`,
+      title,
       description: project.summary,
-      images: project.cover.src ? [project.cover.src] : undefined,
+      images: project.cover?.src ? [project.cover.src] : undefined,
     },
   };
 }
@@ -51,30 +54,31 @@ function Section({
   );
 }
 
-export default async function CaseStudyPage({ params }: Params) {
+export default async function CodeCaseStudyPage({ params }: Params) {
   const { slug } = await params;
-  const project = getProject(slug);
+  const project = getCodeProject(slug);
 
   if (!project) notFound();
 
-  const next = getNextProject(slug);
-  const index = publishedProjects.findIndex((p) => p.slug === slug);
+  const next = getNextCodeProject(slug);
+  const index = publishedCodeProjects.findIndex((p) => p.slug === slug);
 
   const url = `${site.url}/work/${project.slug}`;
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "CreativeWork",
-        "@id": `${url}#work`,
+        "@type": "SoftwareSourceCode",
+        "@id": `${url}#software`,
         url,
         name: project.title,
-        headline: `${project.title} — Roblox UI Case Study`,
         description: project.summary,
-        genre: project.category,
+        codeRepository: project.repo,
+        programmingLanguage: project.language,
         dateCreated: project.year,
-        image: project.cover.src ? `${site.url}${project.cover.src}` : undefined,
-        creator: { "@id": `${site.url}/#person` },
+        genre: project.kind,
+        author: { "@id": `${site.url}/#person` },
+        image: project.cover?.src ? `${site.url}${project.cover.src}` : undefined,
       },
       {
         "@type": "BreadcrumbList",
@@ -110,31 +114,66 @@ export default async function CaseStudyPage({ params }: Params) {
             >
               &larr;
             </span>
-            Work index
+            Engineering index
           </Link>
           <span className="annot">
             {String(index + 1).padStart(2, "0")} /{" "}
-            {String(publishedProjects.length).padStart(2, "0")} —{" "}
-            {project.category}
+            {String(publishedCodeProjects.length).padStart(2, "0")} —{" "}
+            {project.kind}
           </span>
         </div>
 
         <header className="pt-12 pb-10">
-          <h1 className="t-h1 max-w-4xl text-paper">{project.title}</h1>
+          <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
+            <span className="annot annot-bright">{project.language}</span>
+            <span className="annot">{project.year}</span>
+            <span className="annot">{project.status}</span>
+          </div>
+
+          <h1 className="t-h1 mt-5 max-w-4xl text-paper">{project.title}</h1>
           <p className="t-lead mt-5 max-w-2xl">{project.summary}</p>
+
+          {(project.repo || project.site) && (
+            <div className="mt-7 flex flex-wrap gap-x-8 gap-y-3 border-t border-rule-soft pt-5">
+              {project.repo && (
+                <a
+                  href={project.repo}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="link-rule inline-flex items-center gap-2 text-sm"
+                >
+                  Repository
+                  <span aria-hidden>&#8599;</span>
+                </a>
+              )}
+              {project.site && (
+                <a
+                  href={project.site}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="link-rule inline-flex items-center gap-2 text-sm"
+                >
+                  Live site
+                  <span aria-hidden>&#8599;</span>
+                </a>
+              )}
+            </div>
+          )}
         </header>
       </Container>
 
       <Container>
-        {project.cover.src ? (
+        {project.cover ? (
           <PlateZoom media={project.cover} />
+        ) : project.plate ? (
+          <Plate plate={project.plate} />
         ) : (
           <div className="frame flex aspect-[16/9] items-center justify-center">
             <span className="annot">No screenshot</span>
           </div>
         )}
 
-        <dl className="mt-6 grid grid-cols-2 gap-x-8 gap-y-5 sm:grid-cols-4">
+        <dl className="mt-6 grid grid-cols-2 gap-x-8 gap-y-5 border-b border-rule pb-6 sm:grid-cols-4">
           <div>
             <dt className="annot">Role</dt>
             <dd className="mt-1.5 text-sm text-paper">{project.role}</dd>
@@ -146,20 +185,42 @@ export default async function CaseStudyPage({ params }: Params) {
             </dd>
           </div>
           <div>
-            <dt className="annot">Type</dt>
-            <dd className="mt-1.5 text-sm text-paper">{project.category}</dd>
+            <dt className="annot">Language</dt>
+            <dd className="mt-1.5 text-sm text-paper">{project.language}</dd>
           </div>
           <div>
-            <dt className="annot">Tools</dt>
-            <dd className="mt-1.5 text-sm text-paper">
-              {project.tools.join(", ")}
-            </dd>
+            <dt className="annot">Status</dt>
+            <dd className="mt-1.5 text-sm text-paper">{project.status}</dd>
           </div>
         </dl>
+
+        <p className="mt-4 font-mono text-xs leading-6 text-paper-3">
+          <span className="text-paper-2">Stack — </span>
+          {project.stack.join(" · ")}
+        </p>
+
+        {project.note && (
+          <p className="mt-4 max-w-3xl border-l-2 border-accent/40 pl-4 font-mono text-xs leading-6 text-paper-3">
+            {project.note}
+          </p>
+        )}
+
+        {project.metrics.length > 0 && (
+          <dl className="mt-10 grid grid-cols-2 gap-x-8 gap-y-8 border-y border-rule py-8 lg:grid-cols-4">
+            {project.metrics.map((metric) => (
+              <div key={metric.label}>
+                <dd className="font-display text-3xl font-semibold tracking-tight text-accent sm:text-4xl">
+                  {metric.value}
+                </dd>
+                <dt className="annot mt-2">{metric.label}</dt>
+              </div>
+            ))}
+          </dl>
+        )}
       </Container>
 
       <Container>
-        <div className="mt-16">
+        <div className="mt-12">
           <Section label="Overview">
             <p className="text-base leading-relaxed text-paper">
               {project.overview}
@@ -191,34 +252,56 @@ export default async function CaseStudyPage({ params }: Params) {
             </Section>
           )}
 
-          <Section label="Solution">
-            <p className="text-base leading-relaxed text-paper">
-              {project.solution}
-            </p>
-            {project.outcome && (
-              <p className="t-body mt-6 rounded-r-[18px] border-l-4 border-accent pl-5 text-sm">
-                {project.outcome}
-              </p>
-            )}
+          <Section label="How it is built">
+            <ol className="space-y-0">
+              {project.architecture.map((part, i) => (
+                <li
+                  key={part.title}
+                  className="grid gap-2 border-b border-rule-soft py-5 first:pt-0 last:border-0 sm:grid-cols-[3rem_minmax(0,1fr)] sm:gap-6"
+                >
+                  <span className="idx">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <h3 className="t-h3 text-paper">{part.title}</h3>
+                    <p className="t-body mt-2 text-sm">{part.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
           </Section>
 
-          {project.metrics.length > 0 && (
-            <Section label="Spec">
-              <dl className="grid grid-cols-1 gap-x-8 sm:grid-cols-3">
-                {project.metrics.map((metric) => (
-                  <div
-                    key={metric.label}
-                    className="border-t border-rule-soft py-4 sm:border-t-0 sm:py-0"
+          {project.gallery.length > 0 && (
+            <Section label="Screens">
+              <div className="grid gap-8 sm:grid-cols-2">
+                {project.gallery.map((media, i) => (
+                  <figure
+                    key={media.src}
+                    className={i === 0 ? "sm:col-span-2" : undefined}
                   >
-                    <dd className="font-display text-2xl font-semibold tracking-tight text-paper">
-                      {metric.value}
-                    </dd>
-                    <dt className="annot mt-2">{metric.label}</dt>
-                  </div>
+                    {media.src ? (
+                      <PlateZoom media={media} />
+                    ) : (
+                      <div className="frame flex aspect-[16/9] items-center justify-center">
+                        <span className="annot">No screenshot</span>
+                      </div>
+                    )}
+                    {media.caption && (
+                      <figcaption className="annot mt-3 normal-case tracking-normal">
+                        {media.caption}
+                      </figcaption>
+                    )}
+                  </figure>
                 ))}
-              </dl>
+              </div>
             </Section>
           )}
+
+          <Section label="Outcome">
+            <p className="text-base leading-relaxed text-paper">
+              {project.outcome}
+            </p>
+          </Section>
         </div>
 
         {next && (
@@ -226,7 +309,7 @@ export default async function CaseStudyPage({ params }: Params) {
             href={`/work/${next.slug}`}
             className="group mt-10 grid items-center gap-4 border-t border-rule pt-8 sm:grid-cols-12 sm:gap-8"
           >
-            <span className="annot sm:col-span-3">Next screen</span>
+            <span className="annot sm:col-span-3">Next project</span>
             <div className="sm:col-span-6">
               <h2 className="t-h2 text-paper transition-colors group-hover:text-accent">
                 {next.title}
@@ -234,7 +317,7 @@ export default async function CaseStudyPage({ params }: Params) {
               <p className="t-body mt-2 text-sm">{next.summary}</p>
             </div>
             <span className="annot sm:col-span-3 sm:text-right">
-              {next.category}
+              {next.kind}
               <span
                 aria-hidden
                 className="ml-3 inline-block transition-transform group-hover:translate-x-1"

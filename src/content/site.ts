@@ -12,14 +12,14 @@ export const site = {
    * printed as a badge on every page — a job title pinned to four surfaces in
    * mono uppercase is furniture, not information.
    */
-  role: "Roblox UI designer & developer",
+  role: "Software developer",
 
   /** The homepage statement. One line per array entry. Set at ~120px. */
-  headline: ["Menus, shops", "and HUDs for", "Roblox games."],
+  headline: ["Software that", "respects the", "machine."],
 
   /** One paragraph under the headline. */
   intro:
-    "I design UI for Roblox games and build it in Studio. Mostly the screens players open fifty times a session: shops, upgrade menus, daily rewards, the buttons down the side of the HUD. Small surfaces, heavy traffic, almost always a phone.",
+    "I build native desktop apps, developer tools and small web interfaces, mostly in Rust, C# and TypeScript. The work usually starts with something that should be fast, local or readable — and isn't.",
 
   /**
    * Seasonal theme. "auto" turns Halloween on from 1 October to 2 November
@@ -32,10 +32,16 @@ export const site = {
 
   email: "cerbi@cerbis.xyz",
 
+  /** First year of public work. Printed on the About page and in JSON-LD. */
+  since: "2022",
+
+  /** Home base. Stated once, as a fact. */
+  location: "Florence, Italy",
+
   /** Availability. Stated once, in the nav. Set `open: false` to flip it. */
   availability: {
     open: true,
-    label: "Open for new work",
+    label: "Open to interesting work",
     closedLabel: "Not taking work",
   },
 
@@ -44,34 +50,56 @@ export const site = {
    * you, so they live here rather than being invented in a component.
    */
   facts: [
-    { label: "Based", value: "Remote" },
-    { label: "Since", value: "2022" },
-    { label: "Works in", value: "Figma + Studio" },
+    { label: "Based", value: "Florence, Italy" },
+    { label: "Building since", value: "2022" },
+    { label: "Currently", value: "Yappuccino" },
   ],
 
-  /** Footer + contact links. */
+  /** Footer + contact links. `profile` marks URLs that identify me, for JSON-LD. */
   links: [
-    { label: "X", href: "https://x.com/CERBi_S" },
-    { label: "Discord", href: "https://discord.com/users/1549424708292837438" },
+    { label: "GitHub", href: "https://github.com/cerbiss", profile: true },
+    { label: "Hearthlens", href: "https://hearthlens.vercel.app/", profile: false },
+    { label: "X", href: "https://x.com/CERBi_S", profile: true },
+    { label: "Discord", href: "https://discord.com/users/1549424708292837438", profile: true },
   ],
 
   /** What I take on. Four reads best. */
   capabilities: [
     {
-      title: "Screens",
-      body: "Shops, upgrade menus, reward popups, settings, HUD. I design them against the actual loop, which usually means finding out how often a screen gets opened before deciding how much room it gets.",
+      title: "Native apps",
+      body: "Apps that draw their own window instead of shipping a browser. Rust with Slint and Skia, C# with Avalonia, then the unglamorous part: installers, updates and data that stays on the machine.",
     },
     {
-      title: "Systems",
-      body: "One set of frames, buttons, badges and type sizes that every later screen is built from. Costs a bit more on screen one. Saves you on screen twenty.",
+      title: "Developer tools",
+      body: "Bridges, extensions and small automations that remove a step from someone's day. Local-first by default, standard library where possible, and the failure modes written down instead of hidden.",
     },
     {
-      title: "Build",
-      body: "I hand over working Luau, not a Figma link. Scaling handled for phone, tablet and desktop, with state kept somewhere your programmer can find it.",
+      title: "Web interfaces",
+      body: "Next.js and React interfaces that are fast by default: static where possible, accessible where it matters, and no dashboard for its own sake. I design the interface as well as build it.",
     },
     {
-      title: "Second opinion",
-      body: "If your game is live and something in the UI is losing people, I will play it and write up what I would change. Cheaper than a rebuild, and sometimes that is all it needs.",
+      title: "Game systems",
+      body: "Server-side Lua for FiveM and Roblox: anti-cheat, economy and interface systems that assume the client is lying. Runtime-reloadable modules, permissions, and limits stated plainly.",
+    },
+  ],
+
+  /** Working principles. Each one points at a project that proves it. */
+  principles: [
+    {
+      title: "Measure the claim",
+      body: "When a project carries a number, there is a method behind it: four memory states measured against Vesktop, forty-one headless tests, a launch timed from click to readable messages. If it cannot be repeated, it does not go on the page.",
+    },
+    {
+      title: "Keep it local",
+      body: "HearthLens stores match history in SQLite and reads only the game's logs. The prompt enhancer analyses prompts in the browser. The Unreal bridge runs on localhost with no API key. Data stays where the work happens unless there is a reason to move it.",
+    },
+    {
+      title: "Remove the layer",
+      body: "The fastest code is the runtime you never ship. A Discord client with no browser engine, a bridge with no cloud relay, a handbook with no database. Reach for the smaller architecture before reaching for more hardware.",
+    },
+    {
+      title: "Write the limits down",
+      body: "Feature gaps, unsupported platforms and checks that would require trusting the client are documented next to the features. An honest limitation is more useful than a hidden one.",
     },
   ],
 } as const;
@@ -95,43 +123,84 @@ export type DeveloperEntry = {
 export const about = {
   /** Each string is one paragraph. */
   bio: [
-    "I make interfaces for Roblox games. Most of my work is the middle part nobody screenshots: the shop that has to sell without nagging, the upgrade menu that still makes sense at level 40, the popup a player meets on their second morning.",
-    "Almost everyone plays on a phone, often outside, often on a cracked screen. That is the constraint I design to. If a label is unreadable there, it does not matter how it looks in Figma.",
-    "I build what I design. Partly stubbornness — I got tired of handing off files and watching the spacing drift — and partly because being the one who implements it changes what you are willing to draw.",
+    "I build software that tries not to waste what it runs on. Native desktop apps, developer tools and small web interfaces, mostly in Rust, C# and TypeScript.",
+    "The projects I keep returning to are replacements. A Discord client with no browser in it. A Hearthstone companion that reads logs instead of touching the game. An anti-cheat you can read and reload while the server is still up. Usually the constraint is more interesting than the feature list.",
+    "I am based in Florence. I work on my own projects and take on work when the problem is clear enough to test. When a project needs an interface I design that too; that is where the Roblox screens come from.",
   ],
 
   /** Grouped tool chips. */
   toolkit: [
+    { group: "Languages", items: ["Rust", "C#", "TypeScript", "Python", "Lua"] },
+    { group: "Desktop", items: ["Slint", "Skia", "Avalonia", ".NET"] },
+    { group: "Web", items: ["Next.js", "React", "Tailwind CSS", "SQLite"] },
+    { group: "Workflow", items: ["Git", "Linux", "Windows", "Vercel"] },
     { group: "Design", items: ["Figma", "Photoshop", "Illustrator"] },
-    { group: "Build", items: ["Roblox Studio", "Luau", "Rojo"] },
-    { group: "Motion", items: ["TweenService", "After Effects"] },
   ],
 
   /**
    * Developer experience. Newest first. These are claims about you, so the
    * list starts empty — an empty array renders nothing on the about page.
    */
-  developer: [] as readonly DeveloperEntry[],
+  developer: [
+    {
+      period: "2026 — now",
+      title: "Yappuccino",
+      where: "Native Discord client · open source",
+      detail:
+        "A Discord client written in Rust with Slint and Skia, with no browser engine anywhere. About 30 MB idle against 724 MB for the Electron app, with voice, video, screen sharing and ten themes. It continues the yapfast fork and is published as a beta.",
+      stack: ["Rust", "Slint", "Skia", "Discord API"],
+    },
+    {
+      period: "2026 — now",
+      title: "HearthLens",
+      where: "Hearthstone companion · .NET",
+      detail:
+        "A cross-platform overlay, deck tracker and Battlegrounds advisor. It reads Hearthstone's logs and a few read-only memory values; it never writes to the game. One .NET core, Avalonia UI, SQLite history and installers for Windows, macOS and Linux.",
+      stack: ["C#", ".NET 10", "Avalonia", "SQLite", "xUnit"],
+    },
+    {
+      period: "2025 — now",
+      title: "AqquaAC / FivemAC",
+      where: "FiveM anti-cheat · open source",
+      detail:
+        "Server-side Lua anti-cheat with runtime-reloadable modules, ACE permissions and a documented threat model. Maintainer of AqquaAC and author of FivemAC, its score-decay and webhook-alert counterpart.",
+      stack: ["Lua", "FiveM", "ConVars", "ACE"],
+    },
+    {
+      period: "2025",
+      title: "MC&D Onboarding Handbook",
+      where: "Web app · live",
+      detail:
+        "A Next.js handbook for a roleplay company: eight searchable sections, four format generators, a command palette and a static deployment. Built with the company's own archival visual language instead of a generic docs theme.",
+      stack: ["Next.js", "TypeScript", "Tailwind CSS", "Radix UI"],
+    },
+  ] as readonly DeveloperEntry[],
 
   /** Short timeline. Newest first. */
   timeline: [
     {
-      year: "2025",
-      title: "Freelance",
+      year: "2026",
+      title: "Native apps",
       detail:
-        "Full UI sets for small studios. Usually every menu at once rather than one screen at a time.",
+        "Yappuccino and HearthLens. Replacing browser-based tools with apps that draw their own windows and keep their data on the machine.",
     },
     {
-      year: "2023",
-      title: "First paid rework",
+      year: "2025",
+      title: "Tools and systems",
       detail:
-        "Rebuilt the HUD and shop on a game that was already live. Learned what breaks when 400 people are mid-session.",
+        "AqquaAC, the MC&D handbook and the prompt enhancer. Mostly open source, mostly server-side or in the browser, all documented.",
+    },
+    {
+      year: "2024",
+      title: "Open source",
+      detail:
+        "First public contributions, including Italian localisation work for YimMenu.",
     },
     {
       year: "2022",
       title: "Studio",
       detail:
-        "Started in Roblox Studio, mostly rebuilding menus I liked until I could work out why they were laid out that way.",
+        "Started building Roblox interfaces and Luau systems. The design archive still lives on this site, kept separate from the engineering work.",
     },
   ],
 } as const;
@@ -144,13 +213,15 @@ export const seo = {
   defaultTitle: `${site.name} — ${site.role}`,
   description: site.intro,
   keywords: [
-    "Roblox UI designer",
-    "Roblox developer",
-    "Roblox scripter",
-    "Luau developer",
-    "Roblox UI commissions",
-    "Roblox interface design",
-    "Roblox HUD design",
-    "game UI designer",
+    "Cerbis",
+    "software developer Florence",
+    "Rust developer",
+    "native desktop app developer",
+    "C# developer",
+    "TypeScript developer",
+    "Next.js developer",
+    "open source developer",
+    "developer tools",
+    "interface design",
   ],
 } as const;

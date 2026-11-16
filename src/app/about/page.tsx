@@ -13,9 +13,12 @@ export default function AboutPage() {
   return (
     <div className="py-10 sm:py-16">
       <Container>
+        <h1 className="sr-only">
+          About {site.name} — {site.role}
+        </h1>
         <div className="flex items-baseline justify-between gap-4 border-b border-rule pb-3">
           <span className="annot annot-bright">About</span>
-          <span className="annot">Since {site.facts[1]?.value ?? "2022"}</span>
+          <span className="annot">Since {site.since}</span>
         </div>
 
         {/* Opening statement. The first bio paragraph set at display size — it
@@ -34,7 +37,7 @@ export default function AboutPage() {
         </div>
 
         <section className="grid gap-10 border-t border-rule py-10 sm:grid-cols-12 sm:gap-8">
-          <span className="annot sm:col-span-3">Toolkit</span>
+          <h2 className="annot sm:col-span-3">Toolkit</h2>
           <div className="sm:col-span-9">
             {about.toolkit.map((group) => (
               <div
@@ -79,7 +82,7 @@ export default function AboutPage() {
         )}
 
         <section className="grid gap-10 border-t border-rule py-10 sm:grid-cols-12 sm:gap-8">
-          <span className="annot sm:col-span-3">Timeline</span>
+          <h2 className="annot sm:col-span-3">Timeline</h2>
           <ol className="sm:col-span-9 sm:max-w-3xl">
             {about.timeline.map((entry) => (
               <li

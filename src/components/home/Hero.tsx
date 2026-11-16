@@ -1,17 +1,20 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { CopyButton } from "@/components/ui/CopyButton";
+import { Plate } from "@/components/work/Plate";
 import { Shot } from "@/components/work/Shot";
-import { publishedProjects } from "@/content/projects";
+import { featuredCodeProjects } from "@/content/code-projects";
 import { site } from "@/content/site";
 
 /**
  * Opens on the statement. No status pill, no decorative divider, no scroll
- * animation — the page is just there when it loads, and the first screenshot
+ * animation — the page is just there when it loads, and the lead project
  * arrives uncropped instead of as a thumbnail in a sidebar.
  */
 export function Hero() {
-  const lead = publishedProjects[0];
+  const lead =
+    featuredCodeProjects.find((project) => project.slug === "yappuccino") ??
+    featuredCodeProjects[0];
 
   return (
     <section className="pt-14 pb-16 sm:pt-24 sm:pb-24">
@@ -60,21 +63,46 @@ export function Hero() {
 
       {lead ? (
         <Container className="mt-16 sm:mt-24">
-          <Link href={`/work/${lead.slug}`} className="group block">
-            <Shot
-              media={lead.cover}
-              priority
-              sizes="(max-width: 1280px) 100vw, 1248px"
-            />
+          <div className="flex items-baseline justify-between gap-4 border-b border-rule-soft pb-3">
+            <span className="annot annot-bright">Currently in beta</span>
+            <span className="annot">{lead.status}</span>
+          </div>
 
-            <div className="mt-5 flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
-              <h2 className="t-h2 text-paper transition-colors group-hover:text-accent">
-                {lead.title}
-              </h2>
+          <Link href={`/work/${lead.slug}`} className="group mt-6 block">
+            {lead.cover ? (
+              <Shot
+                media={lead.cover}
+                priority
+                sizes="(max-width: 1280px) 100vw, 1248px"
+              />
+            ) : lead.plate ? (
+              <Plate plate={lead.plate} />
+            ) : null}
+
+            <div className="mt-5 flex flex-wrap items-baseline justify-between gap-x-8 gap-y-3">
+              <div>
+                <h2 className="t-h2 text-paper transition-colors group-hover:text-accent">
+                  {lead.title}
+                </h2>
+                <p className="annot mt-2">
+                  30 MB idle &nbsp;·&nbsp; 0.22 s launch &nbsp;·&nbsp; no browser
+                  engine
+                </p>
+              </div>
               <p className="t-body max-w-lg flex-1 text-sm sm:text-right">
                 {lead.summary}
               </p>
             </div>
+
+            <span className="annot mt-5 inline-flex items-center gap-2 text-paper transition-colors group-hover:text-accent">
+              Read case study
+              <span
+                aria-hidden
+                className="transition-transform duration-300 group-hover:translate-x-1"
+              >
+                &rarr;
+              </span>
+            </span>
           </Link>
         </Container>
       ) : null}

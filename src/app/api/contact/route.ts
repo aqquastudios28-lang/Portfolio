@@ -64,7 +64,7 @@ export async function POST(req: Request) {
     if (!rateLimit.success) {
       return NextResponse.json(
         {
-          error: "Too many commission requests sent from this IP. Please wait a few minutes or reach out on Discord.",
+          error: "Too many messages sent from this IP. Please wait a few minutes or reach out on Discord.",
         },
         {
           status: 429,
@@ -99,12 +99,12 @@ export async function POST(req: Request) {
     // 4. Input constraints & sanitization
     const cleanName = typeof name === "string" ? name.trim().slice(0, 100) : "";
     const cleanGame = typeof game === "string" ? game.trim().slice(0, 200) : "";
-    const cleanScope = typeof scope === "string" ? scope.trim().slice(0, 50) : "Full UI Set";
+    const cleanScope = typeof scope === "string" ? scope.trim().slice(0, 50) : "Desktop app";
     const cleanMessage = typeof message === "string" ? message.trim().slice(0, 3000) : "";
 
     if (!cleanName || !cleanMessage) {
       return NextResponse.json(
-        { error: "Name/Handle and project requirements are required." },
+        { error: "A name and a message are required." },
         { status: 400, headers: rateLimitHeaders }
       );
     }
@@ -137,21 +137,21 @@ export async function POST(req: Request) {
 <html>
 <head>
   <meta charset="utf-8">
-  <title>New Commission Request</title>
+  <title>New project enquiry</title>
 </head>
-<body style="margin: 0; padding: 24px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #0a0b0e; color: #ffffff;">
+<body style="margin: 0; padding: 24px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #0a0c12; color: #ffffff;">
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td align="center">
-        <table width="100%" style="max-width: 580px; background-color: #12141a; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 16px; padding: 32px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        <table width="100%" style="max-width: 580px; background-color: #12151e; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 16px; padding: 32px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
           <!-- Header -->
           <tr>
             <td>
-              <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #ff4a1c; text-transform: uppercase; margin-bottom: 8px;">
-                Cerbis UI Portfolio • Commission Alert
+              <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #ffe100; text-transform: uppercase; margin-bottom: 8px;">
+                Cerbis Portfolio • Project enquiry
               </div>
               <h1 style="margin: 0 0 20px 0; font-size: 22px; font-weight: 700; color: #ffffff;">
-                🎨 New Commission Request [${escapedScope}]
+                New enquiry [${escapedScope}]
               </h1>
               <div style="height: 1px; background-color: rgba(255,255,255,0.08); margin-bottom: 24px;"></div>
             </td>
@@ -162,15 +162,15 @@ export async function POST(req: Request) {
             <td>
               <table width="100%" style="margin-bottom: 20px; font-size: 14px;">
                 <tr>
-                  <td style="padding: 6px 0; color: #8e929e; width: 140px; vertical-align: top;"><strong>Client / Handle:</strong></td>
+                  <td style="padding: 6px 0; color: #a9adba; width: 140px; vertical-align: top;"><strong>From:</strong></td>
                   <td style="padding: 6px 0; color: #ffffff; font-weight: 600;">${escapedName}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 6px 0; color: #8e929e; vertical-align: top;"><strong>Project Scope:</strong></td>
-                  <td style="padding: 6px 0; color: #ff4a1c; font-weight: 600;">${escapedScope}</td>
+                  <td style="padding: 6px 0; color: #a9adba; vertical-align: top;"><strong>Scope:</strong></td>
+                  <td style="padding: 6px 0; color: #ffe100; font-weight: 600;">${escapedScope}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 6px 0; color: #8e929e; vertical-align: top;"><strong>Game / Roblox URL:</strong></td>
+                  <td style="padding: 6px 0; color: #a9adba; vertical-align: top;"><strong>Project link:</strong></td>
                   <td style="padding: 6px 0; color: #ffffff;">${escapedGame}</td>
                 </tr>
               </table>
@@ -180,10 +180,10 @@ export async function POST(req: Request) {
           <!-- Message Details -->
           <tr>
             <td>
-              <div style="font-size: 12px; font-weight: 600; color: #8e929e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">
-                Project Requirements & Scope:
+              <div style="font-size: 12px; font-weight: 600; color: #a9adba; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">
+                Message:
               </div>
-              <div style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 16px; font-size: 14px; line-height: 1.6; color: #e2e8f0; white-space: pre-wrap;">${escapedMessage}</div>
+              <div style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 16px; font-size: 14px; line-height: 1.6; color: #f7f7f5; white-space: pre-wrap;">${escapedMessage}</div>
             </td>
           </tr>
 
@@ -191,8 +191,8 @@ export async function POST(req: Request) {
           <tr>
             <td style="padding-top: 28px;">
               <div style="height: 1px; background-color: rgba(255,255,255,0.08); margin-bottom: 16px;"></div>
-              <div style="font-size: 11px; color: #5c606c; line-height: 1.5;">
-                Sent directly via Cerbis Portfolio (<a href="https://cerbis.xyz" style="color: #8e929e; text-decoration: none;">cerbis.xyz</a>)<br>
+              <div style="font-size: 11px; color: #82879a; line-height: 1.5;">
+                Sent directly via Cerbis Portfolio (<a href="https://cerbis.xyz" style="color: #a9adba; text-decoration: none;">cerbis.xyz</a>)<br>
                 Timestamp: ${submissionDate}
               </div>
             </td>
@@ -223,7 +223,7 @@ export async function POST(req: Request) {
             to: [targetEmail],
             reply_to: replyTo,
             subject: headerSafe(
-              `Commission request [${cleanScope}] - ${cleanName}`,
+              `Project enquiry [${cleanScope}] - ${cleanName}`,
             ).slice(0, 180),
             html: emailHtml,
           }),
@@ -288,7 +288,7 @@ export async function POST(req: Request) {
     }
 
     if (!emailDelivered && !resendApiKey) {
-      console.log("📥 Commission Submission (Local Mode):", {
+      console.log("📥 Contact submission (local mode):", {
         name: cleanName,
         game: cleanGame,
         scope: cleanScope,
@@ -300,7 +300,7 @@ export async function POST(req: Request) {
       {
         success: true,
         delivered: emailDelivered,
-        message: "Commission request submitted successfully",
+        message: "Message submitted successfully",
       },
       {
         status: 200,

@@ -28,6 +28,65 @@ export type ProcessStep = {
   body: string;
 };
 
+/** A typographic cover for a project that has no honest screenshot. */
+export type Plate = {
+  kicker: string;
+  /** One line per array entry. The last line is set in the accent colour. */
+  headline: string[];
+  /** Mono lines shown as a small terminal sample. */
+  code: string[];
+};
+
+/** A software project. The engineering counterpart to `Project`. */
+export type CodeProject = {
+  slug: string;
+  title: string;
+  /** One line shown under the title in the index and on cards. */
+  summary: string;
+  kind:
+    | "Desktop app"
+    | "Developer tool"
+    | "Web app"
+    | "Browser extension"
+    | "Game systems";
+  language: string;
+  year: string;
+  /** Release state plus licence, e.g. "Beta · GPL-3.0". */
+  status: string;
+  /** What I did on it. */
+  role: string;
+  repo?: string;
+  site?: string;
+  stack: string[];
+  published: boolean;
+  featured: boolean;
+
+  /** Honest provenance: forks, collaborators, AI assistance. */
+  note?: string;
+
+  /** Real screenshots only. Leave out when the project has no honest shot. */
+  cover?: Media;
+  gallery: Media[];
+  /** Required when `cover` is absent. */
+  plate?: Plate;
+
+  overview: string;
+  problem: string;
+  process: ProcessStep[];
+  /** How the thing is put together. */
+  architecture: ProcessStep[];
+  outcome: string;
+  /** Only print numbers that can be pointed at. */
+  metrics: Metric[];
+};
+
+export type AlsoBuilt = {
+  title: string;
+  body: string;
+  href: string;
+  year: string;
+};
+
 export type Project = {
   slug: string;
   title: string;

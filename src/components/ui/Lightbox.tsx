@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
   ReactNode,
 } from "react";
@@ -25,8 +26,12 @@ const LightboxContext = createContext<LightboxContextType>({
 
 export function LightboxProvider({ children }: { children: ReactNode }) {
   const [current, setCurrent] = useState<Shot | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const triggerRef = useRef<HTMLElement | null>(null);
 
   const openLightbox = useCallback((src: string, alt: string) => {
+    triggerRef.current = document.activeElement as HTMLElement | null;
     setCurrent({ src, alt });
   }, []);
 
@@ -36,15 +41,35 @@ export function LightboxProvider({ children }: { children: ReactNode }) {
     if (!current) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    closeRef.current?.focus();
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") closeLightbox();
+
+      if (e.key === "Tab") {
+        const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        );
+        if (!focusable?.length) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
     window.addEventListener("keydown", onKey);
 
     return () => {
       document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
+      triggerRef.current?.focus?.();
     };
   }, [current, closeLightbox]);
 
@@ -55,6 +80,7 @@ export function LightboxProvider({ children }: { children: ReactNode }) {
       <AnimatePresence>
         {current && (
           <motion.div
+            ref={dialogRef}
             role="dialog"
             aria-modal="true"
             aria-label={current.alt}
@@ -66,6 +92,7 @@ export function LightboxProvider({ children }: { children: ReactNode }) {
             onClick={closeLightbox}
           >
             <button
+              ref={closeRef}
               type="button"
               onClick={closeLightbox}
               className="absolute top-6 right-6 z-10 flex h-12 w-12 items-center justify-center rounded-soft border border-rule bg-surface text-paper transition-colors hover:border-accent hover:text-accent"

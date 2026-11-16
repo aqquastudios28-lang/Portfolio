@@ -141,7 +141,7 @@ export const cookies: { intro: string; sections: LegalSection[] } = {
 
 export const terms: { intro: string; sections: LegalSection[] } = {
   intro:
-    "Plain terms for using this website. They are not the contract for a commission — that gets agreed separately in writing before any work starts.",
+    "Plain terms for using this website. They are not the contract for a project — that gets agreed separately in writing before any work starts.",
   sections: [
     {
       heading: "Using the site",

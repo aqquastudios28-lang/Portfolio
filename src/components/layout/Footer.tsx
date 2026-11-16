@@ -5,6 +5,7 @@ import { site } from "@/content/site";
 
 const PAGES = [
   { href: "/work", label: "Work" },
+  { href: "/design", label: "Design" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
@@ -86,7 +87,8 @@ export function Footer() {
 
         <div className="border-t border-rule-soft py-6">
           <p className="annot">
-            {site.name} {year} — game names and logos belong to their owners
+            {site.name} {year} — software, interfaces and the occasional game
+            system
           </p>
         </div>
       </Container>

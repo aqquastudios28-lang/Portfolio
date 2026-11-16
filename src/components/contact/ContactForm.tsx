@@ -5,28 +5,19 @@ import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
 
 const SCOPES = [
-  "Full UI Set",
-  "Shop & Economy",
-  "HUD Overhaul",
-  "Luau Tweening",
-  "UI Review",
+  "Desktop app",
+  "Developer tool",
+  "Web interface",
+  "Game systems",
+  "Something else",
 ];
 
-export function ContactForm({
-  email,
-  initialDiscordUser,
-}: {
-  email: string;
-  initialDiscordUser?: { id?: string; username?: string };
-}) {
-  const [name, setName] = useState(
-    initialDiscordUser?.username ? `@${initialDiscordUser.username}` : ""
-  );
-  const [experience, setExperience] = useState("");
-  const [selectedScope, setSelectedScope] = useState("Full UI Set");
+export function ContactForm({ email }: { email: string }) {
+  const [name, setName] = useState("");
+  const [project, setProject] = useState("");
+  const [selectedScope, setSelectedScope] = useState("Desktop app");
   const [message, setMessage] = useState("");
   const [hpWebsite, setHpWebsite] = useState(""); // Honeypot spam trap
-  const discordUser = initialDiscordUser;
 
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -34,11 +25,10 @@ export function ContactForm({
   const [, startTransition] = useTransition();
 
   const formattedBrief = [
-    `Commission Request: ${selectedScope}`,
-    `Client: ${name || "Anonymous"}`,
-    experience ? `Game ${experience}` : "",
+    `Project enquiry: ${selectedScope}`,
+    `From: ${name || "Anonymous"}`,
+    project ? `Project: ${project}` : "",
     "",
-    "Project Requirements:",
     message,
   ]
     .filter(Boolean)
@@ -54,7 +44,7 @@ export function ContactForm({
       setCopied(true);
       setTimeout(() => setCopied(false), 2200);
     } catch {
-      // Fallback
+      // Clipboard access can be denied; the message is still in the form.
     }
   };
 
@@ -69,13 +59,12 @@ export function ContactForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
-          game: experience,
+          /* The API keeps its original field names; this is the project link. */
+          game: project,
           scope: selectedScope,
           message,
           email,
           hp_website: hpWebsite,
-          discord_id: discordUser?.id,
-          discord_user: discordUser?.username,
         }),
       });
 
@@ -83,7 +72,7 @@ export function ContactForm({
 
       if (!res.ok) {
         throw new Error(
-          data.error || "That did not send. Copy the brief and message me on Discord instead."
+          data.error || `That did not send. Email me at ${email} instead.`
         );
       }
 
@@ -98,10 +87,10 @@ export function ContactForm({
   };
 
   const handleReset = () => {
-    setName(initialDiscordUser?.username ? `@${initialDiscordUser.username}` : "");
-    setExperience("");
+    setName("");
+    setProject("");
     setMessage("");
-    setSelectedScope("Full UI Set");
+    setSelectedScope("Desktop app");
     setStatus("idle");
     setErrorMessage("");
   };
@@ -118,7 +107,6 @@ export function ContactForm({
             transition={{ duration: 0.25, ease: "easeOut" }}
             className="flex flex-col items-start space-y-6 py-2"
           >
-            {/* Success Header */}
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center border border-accent text-accent">
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -127,15 +115,14 @@ export function ContactForm({
               </div>
               <div>
                 <h3 className="font-display font-semibold text-lg text-paper">
-                  Brief sent
+                  Message sent
                 </h3>
                 <p className="font-mono text-xs text-paper-2 mt-0.5">
-                  Logged in my Discord channel. I will review it today and reply.
+                  Thanks — I usually reply within a couple of days.
                 </p>
               </div>
             </div>
 
-            {/* Brief Summary Box */}
             <div className="w-full border border-rule p-4 text-xs font-mono space-y-2 text-paper-2">
               <div className="flex justify-between border-b border-rule-soft pb-2">
                 <span className="text-paper-3">Scope</span>
@@ -145,10 +132,10 @@ export function ContactForm({
                 <span className="text-paper-3">From</span>
                 <span className="text-paper font-medium">{name}</span>
               </div>
-              {experience && (
+              {project && (
                 <div className="flex justify-between border-b border-rule-soft pb-2">
-                  <span className="text-paper-3">Game</span>
-                  <span className="text-paper font-medium truncate max-w-[220px]">{experience}</span>
+                  <span className="text-paper-3">Project</span>
+                  <span className="text-paper font-medium truncate max-w-[220px]">{project}</span>
                 </div>
               )}
               <div className="pt-1 text-paper-3 text-[11px] leading-relaxed line-clamp-3">
@@ -156,18 +143,17 @@ export function ContactForm({
               </div>
             </div>
 
-            {/* Quick Actions */}
             <div className="w-full space-y-3">
               <div className="flex flex-wrap gap-3">
                 <button
                   type="button"
                   onClick={handleCopy}
-                  className="btn-ghost text-xs gap-2 py-2 px-3.5 cursor-pointer text-paper "
+                  className="btn-ghost text-xs gap-2 py-2 px-3.5 cursor-pointer text-paper"
                 >
                   <svg className="h-3.5 w-3.5 text-paper-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
-                  <span>{copied ? "Copied" : "Copy brief"}</span>
+                  <span>{copied ? "Copied" : "Copy message"}</span>
                 </button>
               </div>
             </div>
@@ -178,7 +164,7 @@ export function ContactForm({
                 onClick={handleReset}
                 className="text-xs font-mono text-paper-3 hover:text-paper underline underline-offset-4 transition-colors cursor-pointer"
               >
-                &larr; Send another brief
+                &larr; Send another message
               </button>
             </div>
           </motion.div>
@@ -191,7 +177,6 @@ export function ContactForm({
             className="space-y-6"
             onSubmit={handleSubmit}
           >
-            {/* Honeypot Spam Trap */}
             <div className="hidden" aria-hidden="true" tabIndex={-1}>
               <label htmlFor="hp_website">Website</label>
               <input
@@ -204,17 +189,15 @@ export function ContactForm({
               />
             </div>
 
-            {/* Scope Chips */}
             <div>
-              <label className="annot mb-3 block">
-                Scope
-              </label>
+              <label className="annot mb-3 block">What is it</label>
               <div className="flex flex-wrap gap-2">
                 {SCOPES.map((scope) => (
                   <button
                     key={scope}
                     type="button"
                     onClick={() => setSelectedScope(scope)}
+                    aria-pressed={selectedScope === scope}
                     className={cn(
                       "pill cursor-pointer transition-colors",
                       selectedScope === scope
@@ -228,60 +211,49 @@ export function ContactForm({
               </div>
             </div>
 
-            {/* Name / Handle Input */}
             <div>
-              <div className="mb-2 flex items-center justify-between">
-                <label htmlFor="cf-name" className="annot block">
-                  Name, Discord or email
-                </label>
-                {discordUser && (
-                  <span className="annot">
-                    Linked as @{discordUser.username}
-                  </span>
-                )}
-              </div>
+              <label htmlFor="cf-name" className="annot mb-2 block">
+                Name or email
+              </label>
               <input
                 id="cf-name"
                 type="text"
                 value={name}
                 maxLength={100}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Discord handle, name, or email"
+                placeholder="Name, handle, or email address"
                 autoComplete="name"
                 className="field"
                 required
               />
             </div>
 
-            {/* Game Link */}
             <div>
-              <label htmlFor="cf-exp" className="annot mb-2 block">
-                Game name or Roblox link
+              <label htmlFor="cf-project" className="annot mb-2 block">
+                Project link or platform
               </label>
               <input
-                id="cf-exp"
+                id="cf-project"
                 type="text"
-                value={experience}
+                value={project}
                 maxLength={200}
-                onChange={(e) => setExperience(e.target.value)}
-                placeholder="Game title or Roblox experience URL"
+                onChange={(e) => setProject(e.target.value)}
+                placeholder="Repository, live site, or the OS it has to run on"
                 className="field"
-                required
               />
             </div>
 
-            {/* Message */}
             <div>
               <label htmlFor="cf-msg" className="annot mb-2 block">
-                What needs building
+                What are you building
               </label>
               <textarea
                 id="cf-msg"
-                rows={5}
+                rows={6}
                 value={message}
                 maxLength={3000}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Game link, which menus you need made or reworked, and your timeline. That is enough for me to quote."
+                placeholder="What it is, what is slow or missing, and any deadline that is real. A paragraph is enough to start."
                 className="field"
                 required
               />
@@ -293,7 +265,6 @@ export function ContactForm({
               </div>
             )}
 
-            {/* Submit & Action Row */}
             <div className="pt-2">
               <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                 <button
@@ -310,7 +281,7 @@ export function ContactForm({
                       Sending...
                     </span>
                   ) : (
-                    <span>Send brief &rarr;</span>
+                    <span>Send message &rarr;</span>
                   )}
                 </button>
 
@@ -318,12 +289,12 @@ export function ContactForm({
                   type="button"
                   onClick={handleCopy}
                   className="btn-ghost text-xs gap-1.5 py-2.5 px-3.5 cursor-pointer"
-                  title="Copy full commission brief to clipboard"
+                  title="Copy the message to your clipboard"
                 >
                   <svg className="h-3.5 w-3.5 text-paper-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
-                  <span>{copied ? "Copied" : "Copy brief"}</span>
+                  <span>{copied ? "Copied" : "Copy message"}</span>
                 </button>
               </div>
             </div>

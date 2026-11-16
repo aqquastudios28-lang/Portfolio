@@ -4,10 +4,10 @@ import { site } from "@/content/site";
 /** Scope, written out. Name on the left, what it means on the right. */
 export function Capabilities() {
   return (
-    <section className="py-16 sm:py-24">
+    <section className="border-t border-rule py-16 sm:py-24">
       <Container>
         <div className="sec-head">
-          <h2 className="annot annot-bright">What I take on</h2>
+          <h2 className="annot annot-bright">What I build</h2>
           <span className="sec-head__fill" />
         </div>
 

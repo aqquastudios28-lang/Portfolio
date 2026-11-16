@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { publishedCodeProjects } from "@/content/code-projects";
 import { publishedProjects } from "@/content/projects";
 import { site } from "@/content/site";
 
@@ -8,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = [
     { path: "", priority: 1 },
     { path: "/work", priority: 0.9 },
+    { path: "/design", priority: 0.7 },
     { path: "/about", priority: 0.7 },
     { path: "/contact", priority: 0.7 },
     { path: "/privacy", priority: 0.2 },
@@ -20,17 +22,28 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: r.priority,
   }));
 
-  const projectRoutes = publishedProjects.map((p) => ({
-    url: `${site.url}/work/${p.slug}`,
+  const codeProjectRoutes = publishedCodeProjects.map((project) => ({
+    url: `${site.url}/work/${project.slug}`,
     lastModified: now,
     changeFrequency: "yearly" as const,
-    priority: 0.8,
-    /* Image sitemap entries. The screenshots are the portfolio, so they are
-       worth getting into image search. */
-    images: [p.cover, ...p.gallery]
-      .filter((m) => m.kind === "image" && m.src)
-      .map((m) => `${site.url}${m.src}`),
+    priority: 0.9,
+    images: [project.cover, ...project.gallery]
+      .filter(
+        (media): media is NonNullable<typeof media> =>
+          media?.kind === "image" && Boolean(media.src),
+      )
+      .map((media) => `${site.url}${media.src}`),
   }));
 
-  return [...staticRoutes, ...projectRoutes];
+  const designRoutes = publishedProjects.map((project) => ({
+    url: `${site.url}/design/${project.slug}`,
+    lastModified: now,
+    changeFrequency: "yearly" as const,
+    priority: 0.6,
+    images: [project.cover, ...project.gallery]
+      .filter((media) => media.kind === "image" && media.src)
+      .map((media) => `${site.url}${media.src}`),
+  }));
+
+  return [...staticRoutes, ...codeProjectRoutes, ...designRoutes];
 }
